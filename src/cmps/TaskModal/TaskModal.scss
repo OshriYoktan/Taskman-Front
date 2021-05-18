@@ -1,0 +1,192 @@
+.task-modal {
+    display: flex;
+    width: 700px;
+    height: 96vh;
+    padding: 20px;
+    position: fixed;
+    left: 50%;
+    top: 53%;
+    overflow-y: auto;
+    z-index: 30;
+    transform: translate(-50%, -50%);
+    border-radius: 2px;
+    border: 1px solid rgba(207, 191, 191, 0.6);
+    background-color: #f4f5f7;
+    button {
+        border-radius: 3px;
+        padding: 10px;
+    }
+    > :first-child {
+        width: 70%;
+    }
+    textarea {
+        font-size: 16px;
+        width: 90%;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        height: 45px;
+        background-color: rgba(9, 30, 66, 0.04);
+        &::placeholder {
+            color: black;
+        }
+        &:focus-visible {
+            outline: solid 2px #0079bf;
+            cursor: text;
+            height: 60px;
+            background-color: #fff;
+        }
+    }
+    .member-list {
+        display: flex;
+    }
+    .checklist-in-modal {
+        margin-bottom: 10px;
+        .demo-range-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(9, 30, 66, 0.08);
+            border-radius: 4px;
+            width: 90%;
+            .demo-range-checked {
+                background-color: #0079bf;
+                height: 8px;
+                border-radius: 4px;
+            }
+        }
+    }
+    input {
+        font-size: 1em;
+        width: 90%;
+        height: 32px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: none;
+        padding: 7px;
+        background-color: rgba(9, 30, 66, 0.04);
+        text-align: left;
+        cursor: pointer;
+        &::placeholder {
+            color: black;
+            font-size: 1em;
+        }
+        &:focus-visible {
+            cursor: text;
+            background-color: #fff;
+            outline: solid 2px #0079bf;
+        }
+    }
+    .add-to-task {
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        .right-task-modal {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .right-task-modal-btns {
+            display: flex;
+            flex-direction: column;
+            & > * {
+                margin-bottom: 5px;
+                text-align: left;
+            }
+            .right-task-btn {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border-radius: 10px;
+                font-weight: 400;
+                background-color: rgba(0, 0, 0, 0.07);
+                transition: 0.3s;
+                cursor: pointer;
+                &:hover {
+                    background-color: #516079;
+                    color: white;
+                }
+                & > :first-child {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+    .checklist-items {
+        display: flex;
+        align-items: center;
+        input {
+            width: 20px;
+            height: 15px;
+        }
+        & * {
+            margin-left: 10px;
+        }
+    }
+    .checklist-svg {
+        display: flex;
+        align-items: center;
+        width: 90%;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        > :first-child {
+            margin-right: 12px;
+        }
+        .flex {
+            align-items: center;
+            > :first-child {
+                margin-right: 12px;
+            }
+        }
+        
+    }
+    .task-header {
+        display: flex;
+        justify-content: space-between;
+        overflow: hidden;
+        margin-bottom: 16px;
+    }
+
+    .label-in-modal {
+        border-radius: 3px;
+        box-sizing: border-box;
+        display: block;
+        float: left;
+        font-weight: 600;
+        height: 32px;
+        line-height: 32px;
+        margin: 0 4px 4px 0;
+        min-width: 40px;
+        padding: 0 12px;
+        width: auto;
+    }
+    .task-description-modal {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 12px;
+        .due-date-moment{
+            background-color: red;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 10px;
+        }
+        .desc-svg {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            > :first-child {
+                margin-right: 12px;
+            }
+        }
+        > * {
+            margin-bottom: 15px;
+        }
+    }
+    .task-modal-form {
+        display: flex;
+        flex-direction: column;
+        > * {
+            margin-bottom: 15px;
+        }
+    }
+}

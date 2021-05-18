@@ -1,0 +1,72 @@
+.label-modal {
+    
+    background-color: #F4F5F7;
+    position: absolute;
+    left: 100%;
+    top: 15%;
+    transform: translate(-100%, 0);
+    border-radius: 2px;
+    border: 1px solid  rgba(207, 191, 191, 0.6);
+
+    width: 50%;
+    max-width: 0;
+    white-space: nowrap;
+    overflow: auto;
+    transition: 0.6s;
+    
+    .labels-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid black;
+        margin:0  10px 0 10px ;
+        height: 60px;
+         > :first-child{
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button {
+            background-color: inherit;
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 60px;
+        }
+    }
+    .label-container {
+        > * {
+            width: 80%;
+            height: 12%;
+            padding: 0 12px;
+            position: relative;
+            color : white;
+        }
+        li{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            .label-to-show{
+                display: flex;
+                justify-content: space-between;
+                border-radius: 3px;
+                cursor: pointer;
+                font-weight: 700;
+                min-height: 20px;
+                padding: 6px 12px;
+                position: relative;
+                transition: padding 85ms,margin 85ms,box-shadow 85ms;
+                width: 80%;
+            }
+        }
+        .edit-label-btn{
+            width: 20%;
+            background-color:inherit;
+        }
+    }
+}

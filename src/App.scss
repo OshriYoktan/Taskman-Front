@@ -1,0 +1,168 @@
+@font-face {
+    font-family: abril;
+    src: url("https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap");
+}
+
+* {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", /* Emojis*/ "Segoe UI Emoji", /* Emojis*/ "Segoe UI Symbol"; /* Emojis*/
+}
+
+html {
+    font-family: abril;
+}
+
+body {
+    font-family: abril;
+    margin: 0 auto;
+}
+
+ul {
+    list-style-type: none;
+    padding-inline-start: 0;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    // font-family: abril;
+    padding: 0;
+    margin: 0;
+}
+
+input {
+    padding: 0 10px;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    border-radius: 7px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", /* Emojis*/ "Segoe UI Emoji", /* Emojis*/ "Segoe UI Symbol"; /* Emojis*/
+    height: 40px;
+    &::placeholder {
+        color: black;
+        font-size: 1em;
+    }
+    &:focus-visible {
+        outline: solid 1px #0079bf;
+        cursor: text;
+        background-color: #fff;
+    }
+}
+
+button {
+    padding: 1em;
+    border-radius: 10px;
+    border: none;
+    font-weight: 600;
+    background-color: rgba(0, 0, 0, 0.07);
+    transition: 0.3s;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", /* Emojis*/ "Segoe UI Emoji", /* Emojis*/ "Segoe UI Symbol"; /* Emojis*/
+    cursor: pointer;
+    &:hover {
+        background-color: #516079;
+        color: white;
+    }
+}
+
+textarea {
+    width: 200px;
+    padding: 1em;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    border-radius: 7px;
+    font-family: abril;
+    resize: none;
+}
+
+.App {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: center;
+    background-attachment: fixed;
+    height: 100vh;
+    justify-content: flex-start !important;
+}
+
+[data-rbd-drag-handle-context-id="1"] {
+    height: 0;
+}
+
+// loader
+
+.loader-container {
+    position: fixed;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffdeab;
+}
+
+// COLOR PALETTE
+$clr1: #014d56;
+$clr2: #002f34;
+$clr3: #004047;
+$clr4: #f67d7d;
+$clr5: #002529;
+$clr6: #ffffff;
+$clr7: #002529;
+$clr8: #f67e7e;
+
+// Helpers
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.sub-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100vw;
+}
+
+.flex {
+    display: flex;
+}
+
+.link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.hide-overflow {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.btn-close-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50px;
+    width: 35px;
+    height: 35px;
+    &:hover {
+        background-color: rgba(250, 250, 250, 0.8);
+    }
+}
+
+.fa {
+    font-size: 20px;
+}

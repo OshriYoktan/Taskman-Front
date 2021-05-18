@@ -1,0 +1,191 @@
+.board-details {
+    height: 95vh;
+    .board-header {
+        width: 100%;
+        height: 7%;
+        > :first-child {
+            width: 85%;
+            justify-content: flex-start;
+            align-items: center;
+            > :nth-child(2) {
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                margin-left: 20px;
+                > :nth-child(2) {
+                    background-color: hsla(0, 0%, 100%, 0.24);
+                }
+            }
+            input {
+                font-size: 1em;
+                font-weight: 600;
+                width: 100%;
+                height: 32px;
+                margin: 10px 0;
+                border-radius: 5px;
+                border: none;
+                background-color: inherit;
+                margin-left: 15px;
+                color: black;
+                background-color: hsla(0, 0%, 100%, 0.24);
+                text-align: left;
+                cursor: pointer;
+                &::placeholder {
+                    color: black;
+                    font-size: 1em;
+                }
+                &:focus-visible {
+                    outline: solid 2px #0079bf;
+                    cursor: text;
+                }
+            }
+        }
+        > :last-child {
+            margin-right: 15px;
+        }
+        > :nth-child(2) {
+            width: 15%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            .open-menu-btn {
+                cursor: pointer;
+                color: black;
+                background-color: hsla(0, 0%, 100%, 0.24);
+                padding: 10px;
+                border-radius: 7px;
+                opacity: 0.7;
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+        .invite-members-modal {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            flex-direction: column;
+            border: 1px solid black;
+            overflow-y: auto;
+            border-radius: 3px;
+            position: relative;
+            transform: translate(0px, 220px);
+            background-color: #f4f5f7;
+            height: 350px;
+            z-index: 50;
+            .invite-title {
+                margin-top: 15px;
+            }
+            input {
+                margin: 10px 0;
+                box-shadow: inset 0 0 0 2px #dfe1e6;
+                width: 90%;
+                height: 40px;
+                &:focus-visible {
+                    outline: solid 2px #0079bf;
+                    box-shadow: none;
+                    cursor: text;
+                    background-color: #fff;
+                }
+                &::placeholder {
+                    font-size: 13px;
+                }
+            }
+            > * {
+                margin-bottom: 15px;
+            }
+            & > :last-child {
+                border-bottom: none;
+            }
+            button {
+                display: flex;
+                align-items: center;
+                margin-bottom: 5px;
+                border-radius: 3px;
+                width: 90%;
+                margin-left: 10px;
+                height: 35px;
+                padding: 0;
+            }
+        }
+        .suggested-user {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+        }
+        .exist-members {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            flex-direction: column;
+            p {
+                margin-bottom: 15px;
+            }
+        }
+        
+    }
+    .cards-container {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        width: 100%;
+        overflow: auto;
+        height: 93%;
+        > :first-child {
+            > :first-child {
+                margin-left: 0;
+                padding-left: 0;
+            }
+        }
+    }
+    .add-card-btn {
+        height: 32px;
+        width: 264px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 0.5px solid rgba(128, 128, 128, 0.5);
+        background-color: rgba(128, 128, 128, 0.2);
+        padding: 7px;
+        cursor: pointer;
+        color: black;
+        text-align: left;
+        &:hover {
+            filter: brightness(75%);
+        }
+    }
+    .add-card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        form {
+            width: 100%;
+            textarea {
+                width: 100%;
+                background-color: white;
+                font-family: inherit;
+            }
+            button {
+                background-color: rgba(83, 216, 83, 0.76);
+                border-radius: 3px;
+                padding: 7px;
+                margin-top: 10px;
+            }
+        }
+        p {
+            position: relative;
+            top: -25px;
+            right: -110px;
+            cursor: pointer;
+        }
+    }
+    .avatars {
+        min-width: 100px;
+        padding: 6px;
+        margin-left: 5%;
+        > * {
+            margin-left: -5%;
+        }
+    }
+}
