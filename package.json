@@ -1,6 +1,6 @@
 {
   "name": "taskman",
-  "homepage": "http://avivzo9.github.io/taskman",
+  "homepage": "https://taskman-app.herokuapp.com",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -38,7 +38,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build --dest ../backend/public",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
