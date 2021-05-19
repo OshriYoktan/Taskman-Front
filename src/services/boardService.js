@@ -368,11 +368,6 @@ const gActivities = [
 async function query() {
     try {
         return await httpService.get(KEY)
-
-        return new Promise((resolve, reject) => {
-            var boardsToReturn = gBoards;
-            resolve(boardsToReturn)
-        })
     } catch (err) {
         console.log('err:', err)
     }
@@ -381,11 +376,6 @@ async function query() {
 async function getBoardById(id) {
     try {
         return await httpService.get(KEY + id)
-
-        return new Promise((resolve, reject) => {
-            const board = gBoards.find(board => board._id === id)
-            board ? resolve(board) : reject(`Board id ${id} not found!`)
-        })
     } catch (err) {
         console.log('err:', err)
     }
