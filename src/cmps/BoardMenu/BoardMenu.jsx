@@ -127,7 +127,7 @@ export function BoardMenu({ boardMenuOp }) {
                 </div>
                 <div className="flex">
                     <h3>Members</h3>
-                    <div>{boardMenuOp.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}</div>
+                    <div>{boardMenuOp.members.map((member, idx) => <Avatar key={idx} name={member} size="30" round={true} />)}</div>
                 </div>
                 <div className="flex">
                     <h3>Description</h3>

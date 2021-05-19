@@ -22,8 +22,8 @@ export function MemberModal(props) {
                 {currBoard.members.map((member, idx) => {
                     return <li onClick={() => chooseMember(member)} key={idx}  >
                         <div className="member-details">
-                        <Avatar key={idx} name={member.name} size="30" round={true} />
-                        <span >{member.name}</span>
+                        <Avatar key={idx} name={member} size="30" round={true} />
+                        <span >{member}</span>
                         </div>
                         <span >{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span>
                     </li>

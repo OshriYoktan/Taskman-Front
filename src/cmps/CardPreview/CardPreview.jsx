@@ -107,7 +107,7 @@ export function CardPreview(props) {
                                                         {!task.dueDate ? null : <div className="due-date-to-preview"><FontAwesomeIcon icon={faClock} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div>}
                                                         {!task.members.length ? null :
                                                             <div>
-                                                                {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
+                                                                {task.members.map((member, idx) => <Avatar key={idx} name={member} size="30" round={true} />)}
                                                             </div>}
                                                     </section>
                                                 </li>

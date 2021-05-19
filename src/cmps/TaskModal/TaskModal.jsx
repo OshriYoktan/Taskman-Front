@@ -92,7 +92,7 @@ export function TaskModal(props) {
                         <div className="member-list">
                             {currTask.members.map((member, idx) =>
                                 <div className="member-in-modal" key={idx}>
-                                    <Avatar key={idx} name={member.name} size="30" round={true} />
+                                    <Avatar key={idx} name={member} size="30" round={true} />
                                 </div>)}
                             <button onClick={() => setMemberModal(true)}>+</button>
                         </div>

@@ -121,7 +121,7 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-        addActivity('Aviv Zohar', 'Attached', member.name, currTask.title)
+        addActivity('Aviv Zohar', 'Attached', member, currTask.title)
     }
 
     const addNewCard = (data) => {
@@ -253,8 +253,8 @@ export function BoardDetails(props) {
                                             <li key={member._id}>
                                                 <p>Add members:</p>
                                                 <button className="suggested-user">
-                                                    <Avatar key={idx} name={member.name} size="30" round={true} />
-                                                    <p>{member.name}</p>
+                                                    <Avatar key={idx} name={member} size="30" round={true} />
+                                                    <p>{member}</p>
                                                     <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
                                                 </button>
                                             </li>
