@@ -41,7 +41,7 @@ export function TaskModal(props) {
     const onSubmitItemInList = (data, idxInList) => {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
         currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
-        updateBoard(currTask)
+        setRange(currTask.checklists[idxInList])
     }
 
     const changeCheckBox = (item) => {
