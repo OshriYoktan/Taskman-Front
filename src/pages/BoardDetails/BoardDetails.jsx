@@ -236,7 +236,7 @@ export function BoardDetails(props) {
                     </form>
                     <div className="flex">
                         <div className="avatars">
-                            {currBoard.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
+                            {currBoard.members.map((member, idx) => <Avatar key={idx} name={member} size="30" round={true} />)}
                         </div>
                         <button onClick={() => setIsInvite(!isInvite)}>Invite</button>
                         {isInvite && <div className="invite-members-modal">
@@ -263,7 +263,9 @@ export function BoardDetails(props) {
                                 </ul>
                             </div>}
                             <div className="exist-members">
+                                <div className="suggested-title">
                                 <p>Suggested Users:</p>
+                                </div>
                                 {users.map((user, idx) => {
                                     if (!user.boards.includes(currBoard._id)) return (
                                         <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
