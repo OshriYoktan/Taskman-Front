@@ -26,7 +26,7 @@ export function TaskModal(props) {
 
     var descValue;
     var currBoard = useSelector(state => state.boardReducer.currBoard)
-
+    
     const currCard = currBoard.cards.find(card => {
         return card.tasks.find(t => {
             return t._id === currTask._id
@@ -57,9 +57,6 @@ export function TaskModal(props) {
         checklist.range = rengeToShow
         updateBoard(currTask)
     }
-    // useEffect(() => {
-    //     console.log('currTask',currTask);
-    // })
     const updateBoard = task => {
         const updatedBoard = boardService.updateCard(task, currCard, currBoard)
         dispatch(saveBoard(updatedBoard))
@@ -68,7 +65,6 @@ export function TaskModal(props) {
 
     return (
         <div className="task-modal">
-            {/* <form className="task-modal-form" onChange={handleSubmit(onSubmit)}> */}
             <div className="task-modal-form">
                 <div className="task-header">
                     <div className="task-title">
@@ -134,7 +130,6 @@ export function TaskModal(props) {
                     <p>Post a Comment:</p>
                     <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("activity")} defaultValue={currTask.activity} />
                 </div>
-                {/* </form> */}
             </div>
             <div className="add-to-task">
                 <div className="right-task-modal">
