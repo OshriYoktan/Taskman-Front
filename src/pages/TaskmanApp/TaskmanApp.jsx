@@ -10,7 +10,7 @@ export function TaskmanApp() {
     const dispatch = useDispatch()
     const boards = useSelector(state => state.boardReducer.boards)
     const newBoard = boardService.getEmptyBoard()
-//hadar
+    //hadar
     useEffect(() => {
         socketService.setup();
         dispatch(loadBoards())
