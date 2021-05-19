@@ -109,14 +109,12 @@ export function BoardDetails(props) {
 
     const addMember = (member) => {
         if (!currTask.members.length) currTask.members.push(member)
-        else {
-            if (currTask.members.some((currMember) => currMember._id === member._id)) {
-                // member is already in the Task
-                const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
-                currTask.members.splice(memberToRemove, 1)
-            } else {
-                currTask.members.push(member)
-            }
+        if (currTask.members.some((currMember) => currMember === member)) {
+            // member is already in the Task
+            const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
+            currTask.members.splice(memberToRemove, 1)
+        } else {
+            currTask.members.push(member)
         }
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
@@ -264,7 +262,7 @@ export function BoardDetails(props) {
                             </div>}
                             <div className="exist-members">
                                 <div className="suggested-title">
-                                <p>Suggested Users:</p>
+                                    <p>Suggested Users:</p>
                                 </div>
                                 {users.map((user, idx) => {
                                     if (!user.boards.includes(currBoard._id)) return (
