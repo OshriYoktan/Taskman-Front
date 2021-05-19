@@ -75,7 +75,9 @@ export function BoardMenu({ boardMenuOp }) {
         setIsAddLabel(!isAddLabel)
         boardMenuOp.addActivity('Aviv Zohar', 'added', 'label')
     }
-
+    useEffect(() => {
+        console.log('currBoard.activity:', currBoard.activity)
+    })
     const deleteLabel = (idx) => {
         currBoard.labels.splice(idx, 1)
         dispatch(saveBoard(currBoard))
@@ -112,8 +114,14 @@ export function BoardMenu({ boardMenuOp }) {
                     <ul>
                         {currBoard.activity.length && currBoard.activity.map(activity => <li key={activity._id}>
                             {activity.type !== 'Attached' ? <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span>{activity.card === 'board' ? '' : ' card'}.</p>
-                                : <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span> task.</p>}
+                                : <p><span>{activity.member}</span> {activity.type} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span> task.</p>}
                             <small><Moment fromNow>{activity.createdAt}</Moment></small>
+                            {/* 
+                            {activity.desc} ------- is sometimes an object, therefore makes errors
+                            
+                            {activity.type !== 'Attached' ? <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span>{activity.card === 'board' ? '' : ' card'}.</p>
+                                : <p><span>{activity.member}</span> {activity.type} ------{activity.desc}------ {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span> task.</p>}
+                            <small><Moment fromNow>{activity.createdAt}</Moment></small> */}
                         </li>)}
                         {!currBoard.activity.length && <li><h1>No activity here...</h1></li>}
                     </ul>

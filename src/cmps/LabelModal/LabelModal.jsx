@@ -14,9 +14,7 @@ export function LabelModal(props) {
     const labels = currBoard.labels
 
     const func = (ev) => {
-        console.log('ev.pageX:', ev.pageX)
-        console.log('ev.pageX:', ev.pageY)
-        console.log('props:', props.addLabel)
+        
     }
 
     const chooseLabel = (color) => {

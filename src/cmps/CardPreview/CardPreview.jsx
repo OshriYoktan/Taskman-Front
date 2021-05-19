@@ -29,21 +29,6 @@ export function CardPreview(props) {
     useEffect(() => {
         // console.log('currBoard', currBoard);
     })
-    //Hadar's-----------------------DONT DELETE YA ZONOT
-
-    // tasks:
-    // activity: []
-    // checklists: (2) [{…}, {…}]    {title: "a", list: Array(1), range: 0}  {desc: "as", isChecked: false}
-    // cover: "white"
-    // createdAt: 1620731453432
-    // desc: ""
-    // doneAt: null
-    // isDone: false
-    // isWithAttachment: false
-    // labels: (4) [{…}, {…}, {…}, {…}]
-    // members: (3) [{…}, {…}, {…}]   {_id: "m101", name: "Aviv Zohar"}
-    // title: "app"
-
     const labelsDescToggle = (ev, bool) => {
         ev.stopPropagation()
         props.setIsDescShown(bool)
