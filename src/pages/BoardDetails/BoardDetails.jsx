@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCheckCircle, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
+import { socketService } from '../../services/socketService'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
@@ -32,12 +33,15 @@ export function BoardDetails(props) {
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
 
+
     useEffect(() => {
         dispatch(updateBackground(false))
         const { id } = props.match.params
         if (!currBoard) dispatch(setCurrBoard(id))
         else if (!draggedCards) setDraggedCards(currBoard.cards)
         dispatch(loadBoards())
+        if (currBoard?._id){
+            socketService.emit("chat topic", currBoard._id);}
         // console.log('render!');
     }, [currBoard])
     useEffect(() => {
@@ -73,9 +77,10 @@ export function BoardDetails(props) {
     const addMemberToBoard = data => {
         console.log('data:', data)
         var userToAdd = users.filter(user => {
-        console.log('user:', user)
+            console.log('user:', user)
 
-            return user.name.toLowerCase().includes(data.member.toLowerCase())})
+            return user.name.toLowerCase().includes(data.member.toLowerCase())
+        })
         if (data.member === '') userToAdd = null
         console.log('userToAdd:', userToAdd)
         // setMembersToBoard(userToAdd)
@@ -122,7 +127,7 @@ export function BoardDetails(props) {
             console.log('first if');
             currTask.members.push(member)
         }
-        else if (currTask.members.some((currMember) => currMember._id === member._id)){
+        else if (currTask.members.some((currMember) => currMember._id === member._id)) {
             //     // member is already in the Task
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
@@ -325,7 +330,7 @@ export function BoardDetails(props) {
                                 {provided.placeholder}
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}> + Add Card.</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                                    <input type="text" id="title" name="title" {...register("newCardTitle")} />
+                                    <input type="text" autoComplete="off" id="title" name="title" {...register("newCardTitle")} />
                                     <button>Add Card</button>
                                 </form>}
                             </div>

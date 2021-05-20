@@ -34,6 +34,13 @@ export function CardPreview(props) {
         props.setIsDescShown(bool)
         dispatch(setCurrBoard(currBoard._id))
     }
+    const doneAtToggle = (ev, task) => {
+        console.log('task:', task)
+        ev.stopPropagation()
+        if (!task.doneAt) task.doneAt = Date.now()
+        else task.doneAt = ''
+        dispatch(setCurrBoard(currBoard._id))
+    }
     const addTask = async data => {
         newTask.title = data.newTask
         tasks.push(newTask)
@@ -78,7 +85,7 @@ export function CardPreview(props) {
                                                 <li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className="card-task">
                                                     <div className="label-color-to-preview-container">
                                                         {!props.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, true)}></label>)}
-                                                        {props.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}`}} onClick={(ev) => labelsDescToggle(ev, false)}>{label.desc}</label>)}
+                                                        {props.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, false)}>{label.desc}</label>)}
                                                     </div>
                                                     <span>{task.title}</span>
                                                     <section className="buttom-preview-info">
@@ -89,11 +96,13 @@ export function CardPreview(props) {
                                                                 }, 0)}/
                                                         {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
                                                             </p>}
-                                                        {!task.dueDate ? null : <div className="due-date-to-preview"><FontAwesomeIcon icon={faClock} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div>}
-                                                        {!task.members.length ? null :
-                                                            <div>
-                                                                {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
-                                                            </div>}
+                   
+                                                        {!task.dueDate ? null : !task.doneAt ?
+                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev,task)}><FontAwesomeIcon icon={faClock} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div> :
+                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev,task)}><FontAwesomeIcon icon={faCheckSquare} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div>}
+                                                        {!task.members.length ? null : <div>
+                                                            {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
+                                                        </div>}
                                                     </section>
                                                 </li>
                                             )

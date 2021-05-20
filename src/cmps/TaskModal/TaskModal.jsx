@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faThermometerEmpty, faSquare } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -26,7 +26,7 @@ export function TaskModal(props) {
 
     var descValue;
     var currBoard = useSelector(state => state.boardReducer.currBoard)
-    
+
     const currCard = currBoard.cards.find(card => {
         return card.tasks.find(t => {
             return t._id === currTask._id
@@ -46,6 +46,11 @@ export function TaskModal(props) {
 
     const changeCheckBox = (item) => {
         item.isChecked = !item.isChecked
+        updateBoard(currTask)
+    }
+    const tuggleTaskDone = () => {
+        if (!currTask.doneAt) currTask.doneAt = Date.now()
+        else currTask.doneAt = ''
         updateBoard(currTask)
     }
 
@@ -73,8 +78,9 @@ export function TaskModal(props) {
                     </div>
                 </div>
                 <div className="task-description-modal">
-                    {!currTask.dueDate ? null : <section>
-                        <Moment className="due-date-moment" fromNow>{currTask.dueDate}</Moment>
+                    {!currTask.dueDate ? null : <section onClick={tuggleTaskDone}>
+                        <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span>
+                        {/* <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span> */}
                         <Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment>
                     </section>}
                     {!currTask.labels.length ? null : <section><h4>Lables</h4>

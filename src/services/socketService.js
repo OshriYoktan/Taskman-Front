@@ -14,6 +14,7 @@ function createSocketService() {
             console.log('using sockets!!!');
         },
         on(eventName, cb) {
+            console.log('eventName back from back:', eventName)
             if (!socket) socketService.setup();
             socket.on(eventName, cb)
         },
@@ -23,6 +24,7 @@ function createSocketService() {
             else socket.off(eventName, cb)
         },
         emit(eventName, data) {
+            console.log('eventName front to back:', eventName)
             if (!socket) socketService.setup();
             socket.emit(eventName, data)
         },

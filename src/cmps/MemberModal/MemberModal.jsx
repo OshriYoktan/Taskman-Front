@@ -6,6 +6,7 @@ import './MemberModal.scss'
 import { useSelector } from 'react-redux'
 import Avatar from 'react-avatar'
 import { socketService } from '../../services/socketService'
+import { useEffect } from 'react'
 
 export function MemberModal(props) {
     const chooseMember = (member) => {
@@ -13,11 +14,16 @@ export function MemberModal(props) {
         props.addMemberToTask(member)
     }
     const chooseMemberForSockets = (member) => {
+        console.log('workes');
+        console.log('member:', member)
         props.addMemberToTask(member)
     }
-    // useEffect(() => {
-    // socketService.on("add-member-to-task-from-back", chooseMemberForSockets)
-    // })
+    useEffect(() => {
+        socketService.on("add-member-to-task-from-back", (() => {
+            console.log('workes');
+        }))
+        // socketService.on("add-member-to-task-from-back", chooseMemberForSockets)
+    })
 
     var currBoard = useSelector(state => state.boardReducer.currBoard)
     return (
