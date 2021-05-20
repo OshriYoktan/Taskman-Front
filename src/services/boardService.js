@@ -14,6 +14,7 @@ export default {
     updateBoard,
     getCloudImages,
     getEmptyTask,
+    getUsers
 }
 
 const cloudUrls = [
@@ -43,6 +44,12 @@ const cloudUrls = [
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621016534/taskman/danielle-macinnes-IuLgi9PWETU-unsplash_u9xmg7.jpg',
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621016533/taskman/carolyn-christine-D7bmnvGJA2Q-unsplash_oz27jz.jpg',
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621018122/taskman/vlad-kutepov-WYJ9c7uSdnU-unsplash_c2g6gy.jpg',
+]
+
+const gUsers = [
+    { _id: 'u101', name: 'Aviv Zohar' },
+    { _id: 'u102', name: 'Hadar Marom' },
+    { _id: 'u103', name: 'Oshri Yoktan' },
 ]
 
 // CRUDL
@@ -107,6 +114,10 @@ function updateBoard(cardToUpdate, boardToUpdate) {
 
 function getCloudImages() {
     return cloudUrls;
+}
+
+function getUsers() {
+    return gUsers;
 }
 
 function getEmptyBoard() {

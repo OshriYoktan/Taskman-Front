@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import boardService from '../../services/boardService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHome, faCheckSquare, faList, faTimes, faClock } from '@fortawesome/free-solid-svg-icons'
+import { faCheckSquare, faList, faTimes, faClock, faPlus } from '@fortawesome/free-solid-svg-icons'
 import './CardPreview.scss'
 import Avatar from 'react-avatar';
 import Moment from 'react-moment';
@@ -26,12 +26,9 @@ export function CardPreview(props) {
         dispatch(saveBoard(boardToUpdate))
     }
 
-    useEffect(() => {
-        // console.log('currBoard', currBoard);
-    })
     const labelsDescToggle = (ev, bool) => {
         ev.stopPropagation()
-        props.setIsDescShown(bool)
+        cardPreviewOp.setIsDescShown(bool)
         dispatch(setCurrBoard(currBoard._id))
     }
     const doneAtToggle = (ev, task) => {
@@ -84,8 +81,8 @@ export function CardPreview(props) {
                                             {(provided) => (
                                                 <li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className="card-task">
                                                     <div className="label-color-to-preview-container">
-                                                        {!props.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, true)}></label>)}
-                                                        {props.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, false)}>{label.desc}</label>)}
+                                                        {!cardPreviewOp.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, true)}></label>)}
+                                                        {cardPreviewOp.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, false)}>{label.desc}</label>)}
                                                     </div>
                                                     <span>{task.title}</span>
                                                     <section className="buttom-preview-info">
@@ -96,23 +93,22 @@ export function CardPreview(props) {
                                                                 }, 0)}/
                                                         {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
                                                             </p>}
-                   
+
                                                         {!task.dueDate ? null : !task.doneAt ?
-                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev,task)}><FontAwesomeIcon icon={faClock} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div> :
-                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev,task)}><FontAwesomeIcon icon={faCheckSquare} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div>}
+                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev, task)}><FontAwesomeIcon icon={faClock} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div> :
+                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev, task)}><FontAwesomeIcon icon={faCheckSquare} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div>}
                                                         {!task.members.length ? null : <div>
                                                             {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
                                                         </div>}
                                                     </section>
                                                 </li>
-                                            )
-                                            }</Draggable>)
+                                            )}</Draggable>)
                                 })}{provided.placeholder}
                             </ul>)}
                     </Droppable>
                 </DragDropContext>
-                {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}> + Add a task:</button>}
-                {isAddTask && <div className="add-card-container"><form onSubmit={handleSubmit(addTask)}>
+                {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
+                {isAddTask && <div className="add-task-container"><form onSubmit={handleSubmit(addTask)}>
                     <textarea type="text" id="title" name="title" {...register("newTask")} placeholder="Task name" defaultValue={newTask.title} />
                     <button>Add Task</button>
                 </form>

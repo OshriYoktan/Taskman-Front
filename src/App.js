@@ -3,6 +3,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.scss';
 import { AppHeader } from './cmps/AppHeader';
 import { BoardDetails } from './pages/BoardDetails';
+import { LandingPage } from './pages/LandingPage';
 import { TaskmanApp } from './pages/TaskmanApp';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <AppHeader />
         <Switch>
           <Route component={BoardDetails} path='/board/:id?' />
+          <Route component={LandingPage} path='/boards' />
           <Route component={TaskmanApp} path='/' />
         </Switch>
       </div>
