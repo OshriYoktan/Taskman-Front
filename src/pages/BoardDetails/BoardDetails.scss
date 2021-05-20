@@ -76,6 +76,9 @@
             .invite-title {
                 margin-top: 15px;
             }
+            .suggested-title {
+                margin-bottom: 15px;
+            }
             input {
                 margin: 10px 0;
                 box-shadow: inset 0 0 0 2px #dfe1e6;
@@ -118,9 +121,7 @@
             width: 100%;
             justify-content: space-between;
             flex-direction: column;
-            p {
-                margin-bottom: 15px;
-            }
+            
         }
         
     }
@@ -154,11 +155,14 @@
     }
     .add-card-container {
         display: flex;
-        justify-content: center;
+        margin-top: 10px;
         align-items: center;
         flex-direction: column;
         height: 100%;
         width: 100%;
+        input{
+            border: none;
+        }
         form {
             width: 100%;
             textarea {

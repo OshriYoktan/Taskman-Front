@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCheckCircle, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
+import { socketService } from '../../services/socketService'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
@@ -32,14 +33,20 @@ export function BoardDetails(props) {
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
 
+
     useEffect(() => {
         dispatch(updateBackground(false))
         const { id } = props.match.params
         if (!currBoard) dispatch(setCurrBoard(id))
         else if (!draggedCards) setDraggedCards(currBoard.cards)
         dispatch(loadBoards())
-        console.log('render!');
+        if (currBoard?._id){
+            socketService.emit("chat topic", currBoard._id);}
+        // console.log('render!');
     }, [currBoard])
+    useEffect(() => {
+        // console.log('currBoard:', currBoard)
+    })
 
     //Card Drag
     const handleOnDragEnd = (result) => {
@@ -68,9 +75,15 @@ export function BoardDetails(props) {
     }
 
     const addMemberToBoard = data => {
-        var userToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
+        console.log('data:', data)
+        var userToAdd = users.filter(user => {
+            console.log('user:', user)
+
+            return user.name.toLowerCase().includes(data.member.toLowerCase())
+        })
         if (data.member === '') userToAdd = null
-        setMembersToBoard(userToAdd)
+        console.log('userToAdd:', userToAdd)
+        // setMembersToBoard(userToAdd)
     }
 
     const addLabel = (label) => {
@@ -108,20 +121,23 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
-        if (!currTask.members.length) currTask.members.push(member)
-        else {
-            if (currTask.members.some((currMember) => currMember._id === member._id)) {
-                // member is already in the Task
-                const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
-                currTask.members.splice(memberToRemove, 1)
-            } else {
-                currTask.members.push(member)
-            }
+        console.log('member:', member)
+        console.log('currTask.members:', currTask.members)
+        if (!currTask.members.length) {
+            console.log('first if');
+            currTask.members.push(member)
+        }
+        else if (currTask.members.some((currMember) => currMember._id === member._id)) {
+            //     // member is already in the Task
+            const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
+            currTask.members.splice(memberToRemove, 1)
+        } else {
+            currTask.members.push(member)
         }
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-        addActivity('Aviv Zohar', 'Attached', member.name, currTask.title)
+        addActivity('Aviv Zohar', 'Attached', member, currTask.title)
     }
 
     const addNewCard = (data) => {
@@ -159,6 +175,9 @@ export function BoardDetails(props) {
 
     const removeUserFromBoard = (user) => {
         if (user.boards.includes(currBoard._id)) {
+            //עד שלא נעשה יוזר לא נוכל לרנדר את היוזרים
+            // -ה USER.BOARD 
+            // שלהם קבוע, כלומר כל פעם הוא יהיה אותו דבר
             const boardIdx = user.boards.findIndex(board => board._id === currBoard._id)
             user.boards.splice(boardIdx, 1)
         } else {
@@ -241,6 +260,7 @@ export function BoardDetails(props) {
                         <button onClick={() => setIsInvite(!isInvite)}>Invite</button>
                         {isInvite && <div className="invite-members-modal">
                             <form onChange={handleSubmit(addMemberToBoard)} >
+                                <button onClick={() => setIsInvite(!isInvite)}>x</button>
                                 <div className="invite-title">
                                     <p>Invite to board:</p>
                                     <input type="text" autoComplete="off" placeholder="Search Taskman Members.." id="member" name="member"  {...register("member")} />
@@ -253,8 +273,8 @@ export function BoardDetails(props) {
                                             <li key={member._id}>
                                                 <p>Add members:</p>
                                                 <button className="suggested-user">
-                                                    <Avatar key={idx} name={member.name} size="30" round={true} />
-                                                    <p>{member.name}</p>
+                                                    <Avatar key={idx} name={member} size="30" round={true} />
+                                                    <p>{member}</p>
                                                     <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
                                                 </button>
                                             </li>
@@ -263,7 +283,9 @@ export function BoardDetails(props) {
                                 </ul>
                             </div>}
                             <div className="exist-members">
-                                <p>Suggested Users:</p>
+                                <div className="suggested-title">
+                                    <p>Suggested Users:</p>
+                                </div>
                                 {users.map((user, idx) => {
                                     if (!user.boards.includes(currBoard._id)) return (
                                         <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
@@ -308,7 +330,7 @@ export function BoardDetails(props) {
                                 {provided.placeholder}
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}> + Add Card.</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                                    <input type="text" id="title" name="title" {...register("newCardTitle")} />
+                                    <input type="text" autoComplete="off" id="title" name="title" {...register("newCardTitle")} />
                                     <button>Add Card</button>
                                 </form>}
                             </div>

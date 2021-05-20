@@ -138,7 +138,6 @@
                 margin-right: 12px;
             }
         }
-        
     }
     .task-header {
         display: flex;
@@ -164,12 +163,13 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 12px;
-        .due-date-moment{
+        .due-date-moment {
             background-color: red;
             color: white;
             padding: 8px 15px;
             border-radius: 10px;
         }
+
         .desc-svg {
             display: flex;
             align-items: center;

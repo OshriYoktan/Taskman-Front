@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faThermometerEmpty, faSquare } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -41,11 +41,16 @@ export function TaskModal(props) {
     const onSubmitItemInList = (data, idxInList) => {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
         currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
-        updateBoard(currTask)
+        setRange(currTask.checklists[idxInList])
     }
 
     const changeCheckBox = (item) => {
         item.isChecked = !item.isChecked
+        updateBoard(currTask)
+    }
+    const tuggleTaskDone = () => {
+        if (!currTask.doneAt) currTask.doneAt = Date.now()
+        else currTask.doneAt = ''
         updateBoard(currTask)
     }
 
@@ -57,9 +62,6 @@ export function TaskModal(props) {
         checklist.range = rengeToShow
         updateBoard(currTask)
     }
-    // useEffect(() => {
-    //     console.log('currTask',currTask);
-    // })
     const updateBoard = task => {
         const updatedBoard = boardService.updateCard(task, currCard, currBoard)
         dispatch(saveBoard(updatedBoard))
@@ -68,7 +70,6 @@ export function TaskModal(props) {
 
     return (
         <div className="task-modal">
-            {/* <form className="task-modal-form" onChange={handleSubmit(onSubmit)}> */}
             <div className="task-modal-form">
                 <div className="task-header">
                     <div className="task-title">
@@ -77,8 +78,9 @@ export function TaskModal(props) {
                     </div>
                 </div>
                 <div className="task-description-modal">
-                    {!currTask.dueDate ? null : <section>
-                        <Moment className="due-date-moment" fromNow>{currTask.dueDate}</Moment>
+                    {!currTask.dueDate ? null : <section onClick={tuggleTaskDone}>
+                        <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span>
+                        {/* <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span> */}
                         <Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment>
                     </section>}
                     {!currTask.labels.length ? null : <section><h4>Lables</h4>
@@ -134,7 +136,6 @@ export function TaskModal(props) {
                     <p>Post a Comment:</p>
                     <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("activity")} defaultValue={currTask.activity} />
                 </div>
-                {/* </form> */}
             </div>
             <div className="add-to-task">
                 <div className="right-task-modal">

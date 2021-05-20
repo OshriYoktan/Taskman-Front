@@ -132,7 +132,7 @@ function getEmptyTask() {
     return {
         _id: utilService.makeId(),
         title: '',
-        desc: null,
+        desc: '',
         createdAt: Date.now(),
         labels: [],
         dueDate: '',
@@ -141,6 +141,6 @@ function getEmptyTask() {
         isWithAttachment: false,
         cover: 'white',
         checklists: [],
-        doneAt: null
+        doneAt: ''
     }
 }
