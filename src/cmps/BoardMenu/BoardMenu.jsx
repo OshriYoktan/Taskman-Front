@@ -75,9 +75,7 @@ export function BoardMenu({ boardMenuOp }) {
         setIsAddLabel(!isAddLabel)
         boardMenuOp.addActivity('Aviv Zohar', 'added', 'label')
     }
-    useEffect(() => {
-        console.log('currBoard.activity:', currBoard.activity)
-    })
+    
     const deleteLabel = (idx) => {
         currBoard.labels.splice(idx, 1)
         dispatch(saveBoard(currBoard))

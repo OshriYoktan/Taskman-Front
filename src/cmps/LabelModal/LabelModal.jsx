@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import boardService from '../../services/boardService'
 import { LabelEditModal } from '../LabelEditModal/LabelEditModal'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes, faPencilAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faPencilAlt, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import './LabelModal.scss'
 import { useSelector } from 'react-redux'
 
@@ -20,6 +20,7 @@ export function LabelModal(props) {
     const chooseLabel = (color) => {
         props.addLabel(color)
     }
+    
 
     const editLabel = (ev, label) => {
         ev.stopPropagation()
@@ -53,14 +54,14 @@ export function LabelModal(props) {
                         return <li onClick={() => chooseLabel(label)} key={idx}  >
                             <div className="label-to-show" style={{ backgroundColor: `${label.color}` }}>
                                 <span>{label.desc}</span>
-                                <span>{(props.currTask.labels.find((currLabel) => currLabel.color === label.color) ? 'v' : null)}</span>
+                                <span>{(props.currTask.labels.find((currLabel) => currLabel.color === label.color) ? <FontAwesomeIcon className="fa" icon={faCheckCircle} /> : null)}</span>
                             </div>
                             <button className="edit-label-btn" onClick={(ev) => editLabel(ev, label)}><FontAwesomeIcon icon={faPencilAlt} /></button>
                         </li>
                     })}
                 </ul>
             </div>}
-            { labelEditModal && <LabelEditModal setLabelModal={props.setLabelModal} setLabelEditModal={setLabelEditModal} addLabel={props.addLabel}></LabelEditModal>}
+            { labelEditModal && <LabelEditModal setLabelModal={props.setLabelModal} labelEditModal={labelEditModal} setLabelEditModal={setLabelEditModal} addLabel={props.addLabel}></LabelEditModal>}
         </section >
     )
 }

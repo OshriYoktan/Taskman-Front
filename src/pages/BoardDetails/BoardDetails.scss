@@ -155,11 +155,14 @@
     }
     .add-card-container {
         display: flex;
-        justify-content: center;
+        margin-top: 10px;
         align-items: center;
         flex-direction: column;
         height: 100%;
         width: 100%;
+        input{
+            border: none;
+        }
         form {
             width: 100%;
             textarea {
