@@ -62,8 +62,9 @@ export function CardPreview(props) {
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(currBoard._id))
     }
+
     return (
-        <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)} >
+        <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
                 <div className="title">
                     <form onChange={handleSubmit(setCardTitle)}>
