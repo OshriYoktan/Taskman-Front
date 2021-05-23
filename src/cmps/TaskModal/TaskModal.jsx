@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faThermometerEmpty, faSquare } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faThermometerEmpty, faSquare, faPaperclip, faClipboard } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -13,20 +13,25 @@ import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
 import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
+import { utilService } from '../../services/utilService.js';
 
 export function TaskModal(props) {
     const { taskModalOp } = props
     const { currTask } = taskModalOp
+    const inputFile = useRef(null)
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm();
     const [labelModal, setLabelModal] = useState(false)
+    const [attModal, setAttModal] = useState(false)
     const [memberModal, setMemberModal] = useState(false)
     const [checklistModal, setChecklistModal] = useState(false)
     const [dueDateModal, setDueDateModal] = useState(false)
     const [isDesc, setIsDesc] = useState(false)
+    const [attSrc, setAttSrc] = useState(null)
 
     var descValue;
     var currBoard = useSelector(state => state.boardReducer.currBoard)
+
 
     const currCard = currBoard.cards.find(card => {
         return card.tasks.find(t => {
@@ -69,9 +74,22 @@ export function TaskModal(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+    const onButtonClick = () => {
+        inputFile.current.click()
+    }
+
+    const onAttChange = (ev) => {
+        if (ev.target.files.length) {
+            const newAtt = { _id: utilService.makeId(), title: ev.target.files[0].name }
+            currTask.attachments.push(newAtt)
+            setAttSrc(URL.createObjectURL(ev.target.files[0]))
+        }
+
+    }
+
+
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
-    console.log('currTask:', currTask)
-    console.log('currCard:', currCard)
+
 
     return (
         <div className="task-modal">
@@ -111,6 +129,7 @@ export function TaskModal(props) {
                     <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
                     {isDesc && <div className="saveDesc"><button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }} >Save</button> <button onClick={() => setIsDesc(false)}>x</button> </div>}
                 </div>
+
                 {!currTask.checklists.length ? null : <section >
                     {currTask.checklists.map((checklist, listIdx) =>
                         <div className="checklist-in-modal" key={listIdx}>
@@ -136,6 +155,26 @@ export function TaskModal(props) {
 
                             </form>
                         </div>)}
+                </section>}
+                {!currTask.attachments.length ? null : <section >
+                    <div className="att-svg"><FontAwesomeIcon icon={faPaperclip} />
+                        <p>Attachments:</p>
+                    </div>
+                    {currTask.attachments.map((attac, idx) =>
+                        <div className="attachments-container">
+                            <div className="att-src">
+                                <img src={attSrc} alt="photo" />
+                            </div>
+                            <div className="att-details">
+                                <p>{attac.title}</p>
+                                <p>Added Right now!</p>
+                                <div className="att-btns">
+                                    <button>Edit</button>
+                                    <button>Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </section>}
                 <div className="task-comment">
                     <p>Post a Comment:</p>
@@ -164,12 +203,28 @@ export function TaskModal(props) {
                         <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
                         <p> Due Date </p>
                     </div>
+                    <div onClick={() => setAttModal(true)} className="right-task-btn">
+                        <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
+                        <p> Attachment </p>
+                    </div>
                 </div>
             </div>
             {(!labelModal) ? null : <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal>}
             {(!memberModal) ? null : <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal>}
             {(!checklistModal) ? null : <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal>}
             {(!dueDateModal) ? null : <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal>}
+            {(!attModal) ? null :
+                <div className="att-modal">
+                    <div className="att-modal-header">
+                        <h3>Attach from..</h3>
+                        <button onClick={() => setAttModal(false)}>x</button>
+                    </div>
+                    <div className="att-buttons">
+                        <button onClick={onButtonClick}>Computer</button>
+                        <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
+                    </div>
+
+                </div>}
         </div>
     )
 }

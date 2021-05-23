@@ -5,7 +5,7 @@ import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import boardService from '../../services/boardService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckSquare, faList, faTimes, faClock, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faCheckSquare, faList, faTimes, faClock, faSquare, faPlus } from '@fortawesome/free-solid-svg-icons'
 import './CardPreview.scss'
 import Avatar from 'react-avatar';
 import Moment from 'react-moment';
@@ -120,8 +120,16 @@ export function CardPreview(props) {
                                                             </p>}
 
                                                         {!task.dueDate ? null : !task.doneAt ?
-                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev, task)}><FontAwesomeIcon icon={faClock} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div> :
-                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev, task)}><FontAwesomeIcon icon={faCheckSquare} /><Moment className="due-date-to-preview" format="MMM D" withTitle>{task.dueDate}</Moment></div>}
+                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev, task)}>
+                                                                <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
+                                                                <FontAwesomeIcon className="font-awesome-home" icon={faSquare} />
+                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
+                                                            </div> :
+                                                            <div className="due-date-to-preview" style={{ backgroundColor: "green" }} onClick={(ev) => doneAtToggle(ev, task)}>
+                                                                <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
+                                                                <FontAwesomeIcon className="font-awesome-check-square" icon={faCheckSquare} />
+                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
+                                                            </div>}
                                                         {!task.members.length ? null : <div>
                                                             {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
                                                         </div>}
