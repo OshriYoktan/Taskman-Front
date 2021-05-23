@@ -34,7 +34,6 @@ export function BoardDetails(props) {
     const [isDescShown, setIsDescShown] = useState(false)
 
     useEffect(() => {
-        console.log('useEffect:')
         dispatch(updateBackground(true))
         dispatch(updateBackground(false))
         const { id } = props.match.params
@@ -50,7 +49,6 @@ export function BoardDetails(props) {
 
     //Card Drag
     const handleOnDragEnd = (result) => {
-        console.log('result:', result)
         if (!result.destination) return;
         const items = draggedCards;
         const [reorderedItem] = items.splice(result.source.index, 1);
