@@ -11,6 +11,7 @@ import { MemberModal } from '../MemberModal/MemberModal';
 import { CheckListModal } from '../CheckListModal/CheckListModal';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
+import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
 
@@ -51,7 +52,7 @@ export function TaskModal(props) {
         item.isChecked = !item.isChecked
         updateBoard(currTask)
     }
-    const tuggleTaskDone = () => {
+    const toggleTaskDone = () => {
         if (!currTask.doneAt) currTask.doneAt = Date.now()
         else currTask.doneAt = ''
         updateBoard(currTask)
@@ -71,25 +72,9 @@ export function TaskModal(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
-    const onButtonClick = () => {
-        inputFile.current.click();
-        // const newAtt = { _id: utilService.makeId(), title: inputFile.current.value }
-        // currTask.attachments.push(newAtt)
-        // const newBoard = boardService.updateCard(currTask, currCard, currBoard)
-        // dispatch(saveBoard(newBoard))
-        // dispatch(setCurrBoard(newBoard._id))
-        // addActivity('Aviv Zohar', 'added', 'attachment')
-
-    };
-
-    const onAttSubmit = (ev) => {
-        ev.preventDefault()
-        const newAtt = { _id: utilService.makeId(), title: inputFile.current.value }
-        currTask.attachments.push(newAtt)
-        boardService.updateCard(currTask, currCard, currBoard)
-        console.log(currTask.attachments);
-        
-      }
+    if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+    console.log('currTask:', currTask)
+    console.log('currCard:', currCard)
 
     return (
         <div className="task-modal">
@@ -97,11 +82,11 @@ export function TaskModal(props) {
                 <div className="task-header">
                     <div className="task-title">
                         <h3>{currTask.title}</h3>
-                        <p>In list: {currCard.title} </p>
+                        <p>In list: {currCard.title}</p>
                     </div>
                 </div>
                 <div className="task-description-modal">
-                    {!currTask.dueDate ? null : <section onClick={tuggleTaskDone}>
+                    {!currTask.dueDate ? null : <section onClick={toggleTaskDone}>
                         <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span>
                         {/* <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span> */}
                         <Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment>
@@ -111,7 +96,7 @@ export function TaskModal(props) {
                             <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
                                 <p>{label.desc}</p>
                             </div>)}
-                        <button onClick={() => setLabelModal(true)}>+ </button>
+                        <button onClick={() => setLabelModal(true)}>+</button>
                     </section>}
                     {!currTask.members.length ? null : <section><h4>Members</h4>
                         <div className="member-list">

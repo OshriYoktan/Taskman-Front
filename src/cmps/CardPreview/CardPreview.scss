@@ -52,12 +52,14 @@
         width: 100%;
         -ms-flex-wrap: wrap;
         flex-wrap: wrap;
+        transition: .3s;
         .label-color-to-preview {
-            height: 8px;
             width: 40px;
+            height: 8px;
             border-radius: 4px;
             margin: 0 4px 4px 0;
             cursor: pointer;
+            transition: .3s;
         }
         .label-color-open-to-preview {
             width: auto;
@@ -70,6 +72,7 @@
             font-weight: 500;
             margin: 0 4px 4px 0;
             cursor: pointer;
+            font-size: 12px;
         }
     }
     .buttom-preview-info {
@@ -81,6 +84,26 @@
             border-radius: 3px;
             color: #fff;
             padding: 2px 3px;
+            .font-awesome-clock {
+                display: inline-block;
+            }
+            .font-awesome-home {
+                display: none;
+            }
+            .font-awesome-check-square {
+                display: none;
+            }
+            &:hover {
+                .font-awesome-clock {
+                    display: none;
+                }
+                .font-awesome-home {
+                    display: inline-block;
+                }
+                .font-awesome-check-square {
+                    display: inline-block;
+                }
+            }
         }
     }
 }
