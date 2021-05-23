@@ -52,6 +52,7 @@ export function CardPreview(props) {
     }
 
     const handleOnDragEnd = async (result) => {
+        console.log('result: 111', result)
         if (!result.destination) return;
         const items = Array.from(tasks);
         const [reorderedItem] = items.splice(result.source.index, 1);

@@ -25,7 +25,7 @@ export function BoardDetails(props) {
     const [currTask, setCurrTask] = useState(null)
     const [isAddCard, setIsAddCard] = useState(null)
     const [isMenu, setIsMenu] = useState(false)
-    const [draggedCards, setDraggedCards] = useState(null)
+    const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
     const [isInvite, setIsInvite] = useState(null)
     const [isCardModal, setIsCardModal] = useState(null)
     const [x, setX] = useState(null)
@@ -33,13 +33,15 @@ export function BoardDetails(props) {
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
 
-
     useEffect(() => {
+        console.log('useEffect:')
         dispatch(updateBackground(true))
         dispatch(updateBackground(false))
         const { id } = props.match.params
         if (!currBoard) dispatch(setCurrBoard(id))
-        else if (!draggedCards) setDraggedCards(currBoard.cards)
+        else if (!draggedCards) {
+            setDraggedCards(currBoard.cards)
+        }
         dispatch(loadBoards())
         if (currBoard?._id) {
             socketService.emit("chat topic", currBoard._id);
@@ -48,10 +50,12 @@ export function BoardDetails(props) {
 
     //Card Drag
     const handleOnDragEnd = (result) => {
+        console.log('result:', result)
         if (!result.destination) return;
         const items = draggedCards;
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
+        // console.log('items:', items)
         setDraggedCards(items);
     }
 
@@ -73,14 +77,8 @@ export function BoardDetails(props) {
     }
 
     const addMemberToBoard = data => {
-        console.log('data:', data)
-        var userToAdd = users.filter(user => {
-            console.log('user:', user)
-
-            return user.name.toLowerCase().includes(data.member.toLowerCase())
-        })
+        var userToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
         if (data.member === '') userToAdd = null
-        console.log('userToAdd:', userToAdd)
         // setMembersToBoard(userToAdd)
     }
 
@@ -142,7 +140,7 @@ export function BoardDetails(props) {
         newCard.title = data.newCardTitle
         currBoard.cards.push(newCard)
         setDraggedCards(currBoard.cards)
-        dispatch(saveBoard({ ...currBoard, cards: [...currBoard.cards, newCard] }))
+        dispatch(saveBoard({ ...currBoard, cards: [...currBoard.cards] }))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
         newCard = boardService.getEmptyCard()
         setIsAddCard(!isAddCard)
@@ -318,16 +316,17 @@ export function BoardDetails(props) {
                 </div>
             </div>
             <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="characters" type="TASK">
+                <Droppable droppableId="cards" type="CARD">
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
                             <div className="flex">
-                                {draggedCards.map((card, idx) =>
-                                    <Draggable key={card._id} draggableId={card._id} index={idx}>
-                                        {provided => (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                {draggedCards.map((card, idx) => {
+                                    return <Draggable key={card._id} draggableId={card._id} index={idx}>
+                                        {previewProvider => (<div {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                             <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                         </div>)}
-                                    </Draggable>)}
+                                    </Draggable>
+                                })}
                                 {provided.placeholder}
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>

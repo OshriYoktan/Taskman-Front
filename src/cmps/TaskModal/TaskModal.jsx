@@ -70,9 +70,6 @@ export function TaskModal(props) {
     }
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
-    console.log('currTask:', currTask)
-    console.log('currCard:', currCard)
-
     return (
         <div className="task-modal">
             <div className="task-modal-form">
