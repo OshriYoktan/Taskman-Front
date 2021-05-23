@@ -460,7 +460,8 @@ function getEmptyTask() {
         isWithAttachment: false,
         cover: 'white',
         checklists: [],
-        doneAt: ''
+        doneAt: '',
+        attachments: []
     }
 }
 

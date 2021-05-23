@@ -14,13 +14,13 @@ export function LabelModal(props) {
     const labels = currBoard.labels
 
     const func = (ev) => {
-        
+
     }
 
     const chooseLabel = (color) => {
         props.addLabel(color)
     }
-    
+
 
     const editLabel = (ev, label) => {
         ev.stopPropagation()

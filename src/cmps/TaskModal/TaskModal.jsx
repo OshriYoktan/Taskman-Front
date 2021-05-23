@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faThermometerEmpty, faSquare } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faThermometerEmpty, faSquare, faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -12,13 +12,16 @@ import { CheckListModal } from '../CheckListModal/CheckListModal';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
 import Moment from 'react-moment';
+import { utilService } from '../../services/utilService.js';
 
 export function TaskModal(props) {
     const { taskModalOp } = props
     const { currTask } = taskModalOp
+    const inputFile = useRef(null)
     const dispatch = useDispatch()
     const { register, handleSubmit } = useForm();
     const [labelModal, setLabelModal] = useState(false)
+    const [attModal, setAttModal] = useState(false)
     const [memberModal, setMemberModal] = useState(false)
     const [checklistModal, setChecklistModal] = useState(false)
     const [dueDateModal, setDueDateModal] = useState(false)
@@ -68,6 +71,26 @@ export function TaskModal(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+    const onButtonClick = () => {
+        inputFile.current.click();
+        // const newAtt = { _id: utilService.makeId(), title: inputFile.current.value }
+        // currTask.attachments.push(newAtt)
+        // const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+        // dispatch(saveBoard(newBoard))
+        // dispatch(setCurrBoard(newBoard._id))
+        // addActivity('Aviv Zohar', 'added', 'attachment')
+
+    };
+
+    const onAttSubmit = (ev) => {
+        ev.preventDefault()
+        const newAtt = { _id: utilService.makeId(), title: inputFile.current.value }
+        currTask.attachments.push(newAtt)
+        boardService.updateCard(currTask, currCard, currBoard)
+        console.log(currTask.attachments);
+        
+      }
+
     return (
         <div className="task-modal">
             <div className="task-modal-form">
@@ -106,6 +129,14 @@ export function TaskModal(props) {
                     <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
                     {isDesc && <div className="saveDesc"><button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }} >Save</button> <button onClick={() => setIsDesc(false)}>x</button> </div>}
                 </div>
+                {!currTask.attachments.length ? null : <section className="attachments-container" >
+                    {currTask.attachments.map((att, idx) => {
+                        <div>
+                            <h4>{att.title}</h4>
+                            <p>test</p>
+                        </div>
+                    })}
+                </section>}
                 {!currTask.checklists.length ? null : <section >
                     {currTask.checklists.map((checklist, listIdx) =>
                         <div className="checklist-in-modal" key={listIdx}>
@@ -159,12 +190,31 @@ export function TaskModal(props) {
                         <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
                         <p> Due Date </p>
                     </div>
+                    <div onClick={() => setAttModal(true)} className="right-task-btn">
+                        <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
+                        <p> Attachment </p>
+                    </div>
                 </div>
             </div>
             {(!labelModal) ? null : <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal>}
             {(!memberModal) ? null : <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal>}
             {(!checklistModal) ? null : <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal>}
             {(!dueDateModal) ? null : <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal>}
+            {(!attModal) ? null :
+                <div className="att-modal">
+                    <div className="att-modal-header">
+                        <h3>Attach from..</h3>
+                        <button onClick={() => setAttModal(false)}>x</button>
+                    </div>
+                    <div className="att-buttons">
+                        <button onClick={onButtonClick}>Computer</button>
+                        <form  onSubmit={(ev) => onAttSubmit(ev)}>
+                            <input id="file" type="file" ref={inputFile} name="name" style={{ display: 'none' }} />
+                            <button>Save</button>
+                        </form>
+                    </div>
+
+                </div>}
         </div>
     )
 }
