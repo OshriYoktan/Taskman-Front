@@ -24,7 +24,7 @@ function createSocketService() {
             else socket.off(eventName, cb)
         },
         emit(eventName, data) {
-            console.log('eventName front to back:', eventName)
+            // console.log('eventName front to back:', eventName)
             if (!socket) socketService.setup();
             socket.emit(eventName, data)
         },

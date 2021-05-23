@@ -32,7 +32,6 @@ export function CardPreview(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
     const doneAtToggle = (ev, task) => {
-        console.log('task:', task)
         ev.stopPropagation()
         if (!task.doneAt) task.doneAt = Date.now()
         else task.doneAt = ''
