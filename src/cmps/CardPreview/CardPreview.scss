@@ -81,6 +81,26 @@
             border-radius: 3px;
             color: #fff;
             padding: 2px 3px;
+            .font-awesome-clock {
+                display: inline-block;
+            }
+            .font-awesome-home {
+                display: none;
+            }
+            .font-awesome-check-square {
+                display: none;
+            }
+            &:hover {
+                .font-awesome-clock {
+                    display: none;
+                }
+                .font-awesome-home {
+                    display: inline-block;
+                }
+                .font-awesome-check-square {
+                    display: inline-block;
+                }
+            }
         }
     }
 }
