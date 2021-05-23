@@ -35,6 +35,7 @@ export function BoardDetails(props) {
 
 
     useEffect(() => {
+        dispatch(updateBackground(true))
         dispatch(updateBackground(false))
         const { id } = props.match.params
         if (!currBoard) dispatch(setCurrBoard(id))
@@ -43,11 +44,7 @@ export function BoardDetails(props) {
         if (currBoard?._id) {
             socketService.emit("chat topic", currBoard._id);
         }
-        // console.log('render!');
     }, [currBoard])
-    useEffect(() => {
-        // console.log('currBoard:', currBoard)
-    })
 
     //Card Drag
     const handleOnDragEnd = (result) => {
