@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.scss';
@@ -6,10 +5,12 @@ import { AppHeader } from './cmps/AppHeader';
 import { BoardDetails } from './pages/BoardDetails';
 import { LandingPage } from './pages/LandingPage';
 import { TaskmanApp } from './pages/TaskmanApp';
+import { socketService } from './services/socketService';
 
 function App() {
   const background = useSelector(state => state.boardReducer.background)
   const currBoard = useSelector(state => state.boardReducer.currBoard)
+  socketService.setup();
 
   return (
     <Router>

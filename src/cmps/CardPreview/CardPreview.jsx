@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
@@ -21,20 +21,25 @@ export function CardPreview(props) {
     var newTask = boardService.getEmptyTask()
 
     useEffect(() => {
-        socketService.on('task add-task', task => {
-            addTaskForSockets(task)
+        socketService.on('task add-task', data => {
+            addTaskForSockets(data)
         })
         socketService.on('update-board', data => {
             console.log('update board!', data);
             setTimeout(() => dispatch(setCurrBoard(data)), 1000)
         })
+        return () => socketService.terminate();
     }, [])
 
-    function addTaskForSockets(task) {
-        tasks.push(task)
-        setTasks(tasks)
+    // Sockets /////////////////////////////////////////////////////////
+
+    const addTaskForSockets = (data) => {
+        const addTo = currBoard.cards.find(c => c._id === data.card)
+        addTo.tasks.push(data.task)
         dispatch(setCurrBoard(currBoard._id))
     }
+
+    ////////////////////////////////////////////////////////////////////
 
     const setCardTitle = data => {
         card.title = data.cardTitle
@@ -63,7 +68,8 @@ export function CardPreview(props) {
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(currBoard._id))
         setIsAddTask(!isAddTask)
-        socketService.emit('task to-add-task', newTask);
+        const forSocket = { task: newTask, card: card._id }
+        socketService.emit('task to-add-task', forSocket);
         cardPreviewOp.addActivity('Aviv Zohar', 'added', 'task', card.title)
         newTask = boardService.getEmptyTask()
         data.newTask = ''

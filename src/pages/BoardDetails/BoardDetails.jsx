@@ -38,7 +38,7 @@ export function BoardDetails(props) {
         dispatch(updateBackground(true))
         dispatch(updateBackground(false))
         const { id } = props.match.params
-        socketService.emit("chat topic", id);
+        socketService.emit("board topic", id);
         if (!currBoard) dispatch(setCurrBoard(id))
         else if (!draggedCards) setDraggedCards(currBoard.cards)
         dispatch(loadBoards())
