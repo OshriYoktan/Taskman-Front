@@ -72,6 +72,15 @@ export function TaskModal(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+    const onButtonClick = () => {
+        inputFile.current.click()
+    }
+
+    const onAttSubmit = (ev) => {
+        ev.preventDefault()
+        console.log(inputFile.current.value);
+    }
+
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
     console.log('currTask:', currTask)
     console.log('currCard:', currCard)
