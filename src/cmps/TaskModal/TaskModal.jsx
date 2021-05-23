@@ -28,6 +28,7 @@ export function TaskModal(props) {
     const [dueDateModal, setDueDateModal] = useState(false)
     const [isDesc, setIsDesc] = useState(false)
     const [attSrc, setAttSrc] = useState(null)
+    const [attNameModal, setAttNameModal] = useState(null)
 
     var descValue;
     var currBoard = useSelector(state => state.boardReducer.currBoard)
@@ -48,6 +49,13 @@ export function TaskModal(props) {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
         currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
         setRange(currTask.checklists[idxInList])
+    }
+    const onSubmitAtt = (data, idx) => {
+        console.log('data:', data);
+        console.log('idx:', idx);
+        // const input = Object.keys(data).find(str => str === ('attItem' + idx))
+        var input = 'attItem' + idx
+        currTask.attachments[idx].title = data[input]
     }
 
     const changeCheckBox = (item) => {
@@ -80,9 +88,9 @@ export function TaskModal(props) {
 
     const onAttChange = (ev) => {
         if (ev.target.files.length) {
-            const newAtt = { _id: utilService.makeId(), title: ev.target.files[0].name }
+            const newAtt = { _id: utilService.makeId(), title: ev.target.files[0].name, src: URL.createObjectURL(ev.target.files[0]) }
             currTask.attachments.push(newAtt)
-            setAttSrc(URL.createObjectURL(ev.target.files[0]))
+            updateBoard(currTask)
         }
 
     }
@@ -161,18 +169,31 @@ export function TaskModal(props) {
                         <p>Attachments:</p>
                     </div>
                     {currTask.attachments.map((attac, idx) =>
-                        <div className="attachments-container">
+                        <div key={idx} className="attachments-container">
                             <div className="att-src">
-                                <img src={attSrc} alt="photo" />
+                                <img src={attac.src} alt="photo" />
                             </div>
                             <div className="att-details">
                                 <p>{attac.title}</p>
                                 <p>Added Right now!</p>
                                 <div className="att-btns">
-                                    <button>Edit</button>
+                                    <button onClick={() => setAttNameModal(!attNameModal)}>Edit</button>
                                     <button>Delete</button>
                                 </div>
                             </div>
+                            {attNameModal && <div className="att-edit">
+                                <div className="att-edit-header">
+                                    <p>Edit attachment</p>
+                                    <button onClick={() => setAttNameModal(false)}>x</button>
+                                </div>
+                                <div className="att-edit-main">
+                                    <p>Link name:</p>
+                                    <form onSubmit={handleSubmit(res => onSubmitAtt(res, idx))}>
+                                        <input type="text" autoComplete="off" id={'att-item-' + idx} defaultValue={attac.title}  {...register('attItem' + idx)} />
+                                        <button>Save</button>
+                                    </form>
+                                </div>
+                            </div>}
                         </div>
                     )}
                 </section>}
