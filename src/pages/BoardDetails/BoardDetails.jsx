@@ -10,7 +10,7 @@ import Avatar from 'react-avatar';
 import { BoardMenu } from '../../cmps/BoardMenu'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faCheckCircle, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faCheckCircle, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
@@ -35,18 +35,16 @@ export function BoardDetails(props) {
 
 
     useEffect(() => {
+        dispatch(updateBackground(true))
         dispatch(updateBackground(false))
         const { id } = props.match.params
         if (!currBoard) dispatch(setCurrBoard(id))
         else if (!draggedCards) setDraggedCards(currBoard.cards)
         dispatch(loadBoards())
-        if (currBoard?._id){
-            socketService.emit("chat topic", currBoard._id);}
-        // console.log('render!');
+        if (currBoard?._id) {
+            socketService.emit("chat topic", currBoard._id);
+        }
     }, [currBoard])
-    useEffect(() => {
-        // console.log('currBoard:', currBoard)
-    })
 
     //Card Drag
     const handleOnDragEnd = (result) => {
@@ -178,6 +176,7 @@ export function BoardDetails(props) {
             //עד שלא נעשה יוזר לא נוכל לרנדר את היוזרים
             // -ה USER.BOARD 
             // שלהם קבוע, כלומר כל פעם הוא יהיה אותו דבר
+            // Why in hebrew?!
             const boardIdx = user.boards.findIndex(board => board._id === currBoard._id)
             user.boards.splice(boardIdx, 1)
         } else {
@@ -224,7 +223,9 @@ export function BoardDetails(props) {
         closeModal,
         addActivity,
         setCurrCard,
-        setCurrTask
+        setCurrTask,
+        isDescShown,
+        setIsDescShown
     }
 
     const boardMenuOp = {
@@ -324,14 +325,17 @@ export function BoardDetails(props) {
                                 {draggedCards.map((card, idx) =>
                                     <Draggable key={card._id} draggableId={card._id} index={idx}>
                                         {provided => (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
-                                            <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} isDescShown={isDescShown} setIsDescShown={setIsDescShown} card={card}></CardPreview>
+                                            <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                         </div>)}
                                     </Draggable>)}
                                 {provided.placeholder}
-                                {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}> + Add Card.</button>}
+                                {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                                    <input type="text" autoComplete="off" id="title" name="title" {...register("newCardTitle")} />
-                                    <button>Add Card</button>
+                                    <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
+                                    <div className="flex">
+                                        <button>Add Card</button>
+                                        <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+                                    </div>
                                 </form>}
                             </div>
                         </div>)}

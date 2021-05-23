@@ -61,7 +61,7 @@ export function LabelModal(props) {
                     })}
                 </ul>
             </div>}
-            { labelEditModal && <LabelEditModal setLabelModal={props.setLabelModal} labelEditModal={labelEditModal} setLabelEditModal={setLabelEditModal} addLabel={props.addLabel}></LabelEditModal>}
+            { labelEditModal && <LabelEditModal setLabelModal={props.setLabelModal} currBoard={currBoard} labelEditModal={labelEditModal} setLabelEditModal={setLabelEditModal} addLabel={props.addLabel}></LabelEditModal>}
         </section >
     )
 }
