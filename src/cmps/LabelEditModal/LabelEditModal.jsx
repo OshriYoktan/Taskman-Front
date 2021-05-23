@@ -2,15 +2,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronLeft, faTimes } from '@fortawesome/free-solid-svg-icons'
 import './LabelEditModal.scss'
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { saveBoard } from '../../store/actions/boardActions';
 
 export function LabelEditModal(props) {
-    const { labelEditModal } = props
+    const { labelEditModal, currBoard } = props
+    const dispatch = useDispatch()
     const { register, handleSubmit } = useForm();
+
 
     const onChangeEditLabel = (data) => {
         labelEditModal.desc = data.labelName
         labelEditModal.color = data.labelColor
         props.setLabelModal(labelEditModal)
+        dispatch(saveBoard({ ...currBoard}))
+        
     }
     return (
         <div className="label-edit-modal">
@@ -22,9 +28,9 @@ export function LabelEditModal(props) {
             <div className="label-edit-details">
                 <form onChange={handleSubmit(res => onChangeEditLabel(res))}>
                     <p>Name:</p>
-                    <input type="text" name="edit-name" autoComplete="off" value={labelEditModal.desc} {...register('labelName')} />
+                    <input type="text" name="edit-name" autoComplete="off"  defaultValue={labelEditModal.desc} {...register('labelName')} />
                     <p>Color:</p>
-                    <input type="color" name="edit-color" value={labelEditModal.color} {...register('labelColor')}/>
+                    <input type="color" name="edit-color"  defaultValue={labelEditModal.color} {...register('labelColor')}/>
                 </form>
             </div>
         </div>
