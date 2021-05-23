@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
@@ -9,7 +9,7 @@ import { faCheckSquare, faList, faTimes, faClock, faPlus } from '@fortawesome/fr
 import './CardPreview.scss'
 import Avatar from 'react-avatar';
 import Moment from 'react-moment';
-
+import { socketService } from '../../services/socketService';
 
 export function CardPreview(props) {
     const { card, cardPreviewOp } = props
@@ -19,6 +19,22 @@ export function CardPreview(props) {
     const [tasks, setTasks] = useState(card.tasks)
     const [isAddTask, setIsAddTask] = useState(null)
     var newTask = boardService.getEmptyTask()
+
+    useEffect(() => {
+        socketService.on('task add-task', task => {
+            addTaskForSockets(task)
+        })
+        socketService.on('update-board', data => {
+            console.log('update board!', data);
+            setTimeout(() => dispatch(setCurrBoard(data)), 1000)
+        })
+    }, [])
+
+    function addTaskForSockets(task) {
+        tasks.push(task)
+        setTasks(tasks)
+        dispatch(setCurrBoard(currBoard._id))
+    }
 
     const setCardTitle = data => {
         card.title = data.cardTitle
@@ -38,6 +54,7 @@ export function CardPreview(props) {
         else task.doneAt = ''
         dispatch(setCurrBoard(currBoard._id))
     }
+
     const addTask = async data => {
         newTask.title = data.newTask
         tasks.push(newTask)
@@ -45,10 +62,11 @@ export function CardPreview(props) {
         const newBoard = boardService.updateCard(newTask, card, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(currBoard._id))
-        newTask = boardService.getEmptyTask()
         setIsAddTask(!isAddTask)
-        data.newTask = ''
+        socketService.emit('task to-add-task', newTask);
         cardPreviewOp.addActivity('Aviv Zohar', 'added', 'task', card.title)
+        newTask = boardService.getEmptyTask()
+        data.newTask = ''
     }
 
     const handleOnDragEnd = async (result) => {

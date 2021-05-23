@@ -38,12 +38,10 @@ export function BoardDetails(props) {
         dispatch(updateBackground(true))
         dispatch(updateBackground(false))
         const { id } = props.match.params
+        socketService.emit("chat topic", id);
         if (!currBoard) dispatch(setCurrBoard(id))
         else if (!draggedCards) setDraggedCards(currBoard.cards)
         dispatch(loadBoards())
-        if (currBoard?._id) {
-            socketService.emit("chat topic", currBoard._id);
-        }
     }, [currBoard])
 
     //Card Drag
@@ -142,7 +140,7 @@ export function BoardDetails(props) {
         newCard.title = data.newCardTitle
         currBoard.cards.push(newCard)
         setDraggedCards(currBoard.cards)
-        dispatch(saveBoard({ ...currBoard, cards: [...currBoard.cards, newCard] }))
+        dispatch(saveBoard({ ...currBoard, cards: [...currBoard.cards] }))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
         newCard = boardService.getEmptyCard()
         setIsAddCard(!isAddCard)
