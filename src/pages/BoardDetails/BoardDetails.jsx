@@ -151,15 +151,16 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(newBoard._id))
     }
 
+    const addCover = (cover) => {
+        currTask.cover = cover
+        const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+        dispatch(saveBoard(newBoard))
+        dispatch(setCurrBoard(newBoard._id))
+    }
+
     const addMember = (member) => {
-        console.log('member:', member)
-        console.log('currTask.members:', currTask.members)
-        if (!currTask.members.length) {
-            console.log('first if');
-            currTask.members.push(member)
-        }
-        else if (currTask.members.some((currMember) => currMember._id === member._id)) {
-            //     // member is already in the Task
+        if (!currTask.members.length) currTask.members.push(member)
+        else if (currTask.members.some((currMember) => currMember._id === member._id)) { // member is already in the Task
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
         } else {
@@ -287,7 +288,8 @@ export function BoardDetails(props) {
         addLabel,
         addMember,
         addChecklist,
-        addDueDate
+        addDueDate,
+        addCover
     }
 
     return (

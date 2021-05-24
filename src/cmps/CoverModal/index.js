@@ -1,0 +1,1 @@
+export { CoverModal } from './CoverModal'
