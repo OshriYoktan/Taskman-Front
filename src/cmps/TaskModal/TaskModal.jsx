@@ -33,7 +33,6 @@ export function TaskModal(props) {
     var descValue;
     var currBoard = useSelector(state => state.boardReducer.currBoard)
 
-
     const currCard = currBoard.cards.find(card => {
         return card.tasks.find(t => {
             return t._id === currTask._id
@@ -50,12 +49,13 @@ export function TaskModal(props) {
         currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
         setRange(currTask.checklists[idxInList])
     }
-    const onSubmitAtt = (data, idx) => {
+    const onSubmitAtt = (data, attac) => {
+        console.log('attac:', attac)
         console.log('data:', data);
-        console.log('idx:', idx);
         // const input = Object.keys(data).find(str => str === ('attItem' + idx))
-        var input = 'attItem' + idx
-        currTask.attachments[idx].title = data[input]
+        // console.log('input:', input)
+        // var input = 'attItem' + idx
+        // currTask.attachments[idx].title = data[input]
     }
 
     const changeCheckBox = (item) => {
@@ -85,6 +85,12 @@ export function TaskModal(props) {
     const onButtonClick = () => {
         inputFile.current.click()
     }
+    const dueDateSpanText = (task) => {
+        return task.doneAt? 'COMPLETED':(task.dueDate > Date.now()) ? '' : 'OVERDUE'        
+    }
+    const backgroundColorDueDate = (task) => {
+        return task.doneAt? 'green': ((task.dueDate > Date.now()) ? 'inherite' : 'red')
+    }
 
     const onAttChange = (ev) => {
         if (ev.target.files.length) {
@@ -93,6 +99,21 @@ export function TaskModal(props) {
             updateBoard(currTask)
         }
 
+    }
+    const defVal = (attac, idx) => {
+        console.log('idx:', idx)
+        // console.log('idx:', idx)
+        console.log('attac:', attac)
+        var found = currTask.attachments.find((currAttach) => {
+            return currAttach._id === attac._id
+        })
+        return idx
+        // console.log('found:', found)
+        // const input = Object.keys(attac).find(str => {
+        // console.log('str:', str)
+        // return str === ('attItem' + idx)
+        // })
+        // return input
     }
 
 
@@ -107,11 +128,13 @@ export function TaskModal(props) {
                     </div>
                 </div>
                 <div className="task-description-modal">
-                    {!currTask.dueDate ? null : <section onClick={toggleTaskDone}>
-                        <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span>
-                        {/* <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span> */}
-                        <Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment>
-                    </section>}
+                    {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}>
+                    <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> :<FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
+                   </span> </section>}
+                    {/* {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}>
+                        <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> :<FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span>
+                        <Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><span style={{ backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</span>
+                    </section>} */}
                     {!currTask.labels.length ? null : <section><h4>Lables</h4>
                         {currTask.labels.map((label, idx) =>
                             <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
@@ -158,7 +181,6 @@ export function TaskModal(props) {
                             <form onSubmit={handleSubmit(res => onSubmitItemInList(res, listIdx))}>
                                 <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="add an item"  {...register('inputItem' + listIdx)} />
                                 <button >Add An Item</button>
-
                             </form>
                         </div>)}
                 </section>}
@@ -186,8 +208,12 @@ export function TaskModal(props) {
                                 </div>
                                 <div className="att-edit-main">
                                     <p>Link name:</p>
-                                    <form onSubmit={handleSubmit(res => onSubmitAtt(res, idx))}>
-                                        <input type="text" autoComplete="off" id={'att-item-' + idx} defaultValue={attac.title}  {...register('attItem' + idx)} />
+                                    {/* <form onSubmit={handleSubmit(res => onSubmitItemInList(res, listIdx))}>
+                                        <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="add an item"  {...register('inputItem' + listIdx)} />
+                                        <button >Add An Item</button>
+                                    </form> */}
+                                    <form onSubmit={handleSubmit(res => onSubmitAtt(res, attac))}>
+                                        <input type="text" autoComplete="off" id={'att-item-' + idx} defaultValue={defVal(attac, idx)}  {...register('attItem' + idx)} />
                                         <button>Save</button>
                                     </form>
                                 </div>

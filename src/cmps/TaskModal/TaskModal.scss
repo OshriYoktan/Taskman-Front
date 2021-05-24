@@ -164,11 +164,14 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 12px;
-        .due-date-moment {
-            background-color: red;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 10px;
+        .due-date-moment-section {
+            cursor: pointer;
+            .due-date-moment {
+                color: black;
+                background-color: #e2e4e9;
+                padding: 8px 15px;
+                border-radius: 10px;
+            }
         }
 
         .desc-svg {
@@ -276,7 +279,7 @@
             border: 1px solid rgba(207, 191, 191, 0.6);
             height: 170px;
             width: 270px;
-            
+
             .att-edit-main {
                 margin-top: 10px;
                 margin-left: 10px;
