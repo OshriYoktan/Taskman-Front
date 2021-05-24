@@ -63,7 +63,6 @@ export function CardPreview(props) {
     }
 
     const backgroundColorDueDate = (task) => {
-        console.log('task.doneAt:', task.doneAt)
         return task.doneAt ? 'green' : ((task.dueDate > Date.now()) ? '#F4F5F7' : '#EB5A46')
     }
     const colorDueDate = (task) => {

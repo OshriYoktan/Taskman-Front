@@ -21,11 +21,57 @@ export function TaskModal(props) {
     const inputFile = useRef(null)
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
-    const [labelModal, setLabelModal] = useState(false)
+    const useOnClickOutside = (ref, handler) => {
+        useEffect(
+            () => {
+                const listener = (event) => {
+                    if (!ref.current || ref.current.contains(event.target)) {
+                        return;
+                    }
+                    handler(event);
+                };
+                document.addEventListener("mousedown", listener);
+                document.addEventListener("touchstart", listener);
+                return () => {
+                    document.removeEventListener("mousedown", listener);
+                    document.removeEventListener("touchstart", listener);
+                };
+            },
+            // Add ref and handler to effect dependencies
+            // It's worth noting that because passed in handler is a new ...
+            // ... function on every render that will cause this effect ...
+            // ... callback/cleanup to run every render. It's not a big deal ...
+            // ... but to optimize you can wrap handler in useCallback before ...
+            // ... passing it into this hook.
+            [ref, handler]
+        );
+    }
+
+    
     const [attModal, setAttModal] = useState(false)
+
+    const [labelModal, setLabelModal] = useState(false)
+    const labelRef = useRef()
+    useOnClickOutside(labelRef, () => setLabelModal(false));
+
+    
+
+
     const [memberModal, setMemberModal] = useState(false)
+    const memberRef = useRef()
+    useOnClickOutside(memberRef, () => setMemberModal(false));
+
+
     const [checklistModal, setChecklistModal] = useState(false)
+    const checklistRef = useRef()
+    useOnClickOutside(checklistRef, () => setChecklistModal(false));
+
+
     const [dueDateModal, setDueDateModal] = useState(false)
+    const dueDateRef = useRef()
+    useOnClickOutside(dueDateRef, () => setDueDateModal(false));
+
+
     const [isDesc, setIsDesc] = useState(false)
     const [attSrc, setAttSrc] = useState(null)
     const [attNameModal, setAttNameModal] = useState(null)
@@ -287,10 +333,10 @@ export function TaskModal(props) {
                     </div>
                 </div>
             </div>
-            {(!labelModal) ? null : <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal>}
-            {(!memberModal) ? null : <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal>}
-            {(!checklistModal) ? null : <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal>}
-            {(!dueDateModal) ? null : <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal>}
+            {(!labelModal) ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
+            {(!memberModal) ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
+            {(!checklistModal) ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
+            {(!dueDateModal) ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
             {(!attModal) ? null :
                 <div className="att-modal">
                     <div className="att-modal-header">
