@@ -101,10 +101,16 @@ export function CardPreview(props) {
                                                                 }, 0)}/
                                                         {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
                                                             </p>}
-                                                        {!task.dueDate ? null :
+                                                        {!task.dueDate ? null : !task.doneAt ?
                                                             <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
                                                                 <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
-                                                                <FontAwesomeIcon className="font-awesome-home" icon={faSquare} /> <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
+                                                                <FontAwesomeIcon className="font-awesome-home" icon={faSquare} />
+                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
+                                                            </div> :
+                                                            <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
+                                                                <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
+                                                                <FontAwesomeIcon className="font-awesome-check-square" icon={faCheckSquare} />
+                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div>}
                                                         {!task.members.length ? null : <div>
                                                             {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
