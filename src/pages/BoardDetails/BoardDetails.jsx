@@ -17,7 +17,7 @@ import { socketService } from '../../services/socketService'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit, reset } = useForm()
     var newCard = boardService.getEmptyCard()
     const [users, setUsers] = useState(boardService.getUsers())
     const currBoard = useSelector(state => state.boardReducer.currBoard)
@@ -143,6 +143,7 @@ export function BoardDetails(props) {
         newCard = boardService.getEmptyCard()
         setIsAddCard(!isAddCard)
         data.newCardTitle = ''
+        reset()
         addActivity('Aviv Zohar', 'added', 'card')
     }
 
@@ -180,6 +181,8 @@ export function BoardDetails(props) {
         }
     }
 
+
+
     const filterTasks = (filterBy) => {
         if (filterBy.task || filterBy.labels.length) {
             var cards = currBoard.cards
@@ -189,7 +192,9 @@ export function BoardDetails(props) {
                         return task.title.includes(filterBy.task)
                     })
                 })
+
             }
+
             if (filterBy.labels.length) {
                 cards = currBoard.cards.find(card => {
                     return card.tasks.find(task => {

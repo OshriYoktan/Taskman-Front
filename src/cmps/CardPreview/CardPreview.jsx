@@ -62,6 +62,14 @@ export function CardPreview(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+    const backgroundColorDueDate = (task) => {
+        console.log('task.doneAt:', task.doneAt)
+        return task.doneAt ? 'green' : ((task.dueDate > Date.now()) ? '#F4F5F7' : '#EB5A46')
+    }
+    const colorDueDate = (task) => {
+        return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
+    }
+
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
@@ -93,17 +101,10 @@ export function CardPreview(props) {
                                                                 }, 0)}/
                                                         {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
                                                             </p>}
-
-                                                        {!task.dueDate ? null : !task.doneAt ?
-                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev, task)}>
+                                                        {!task.dueDate ? null :
+                                                            <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
                                                                 <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
-                                                                <FontAwesomeIcon className="font-awesome-home" icon={faSquare} />
-                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
-                                                            </div> :
-                                                            <div className="due-date-to-preview" style={{ backgroundColor: "green" }} onClick={(ev) => doneAtToggle(ev, task)}>
-                                                                <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
-                                                                <FontAwesomeIcon className="font-awesome-check-square" icon={faCheckSquare} />
-                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
+                                                                <FontAwesomeIcon className="font-awesome-home" icon={faSquare} /> <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div>}
                                                         {!task.members.length ? null : <div>
                                                             {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
