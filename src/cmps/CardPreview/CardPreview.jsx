@@ -14,7 +14,7 @@ import Moment from 'react-moment';
 export function CardPreview(props) {
     const { card, cardPreviewOp } = props
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [tasks, setTasks] = useState(card.tasks)
     const [isAddTask, setIsAddTask] = useState(null)
@@ -47,6 +47,7 @@ export function CardPreview(props) {
         newTask = boardService.getEmptyTask()
         setIsAddTask(!isAddTask)
         data.newTask = ''
+        reset()
         cardPreviewOp.addActivity('Aviv Zohar', 'added', 'task', card.title)
     }
 
