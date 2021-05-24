@@ -14,7 +14,8 @@ export default {
     updateBoard,
     getCloudImages,
     getEmptyTask,
-    getUsers
+    getUsers,
+    getCoverColors
 }
 
 const cloudUrls = [
@@ -51,6 +52,7 @@ const gUsers = [
     { _id: 'u102', name: 'Hadar Marom' },
     { _id: 'u103', name: 'Oshri Yoktan' },
 ]
+const gCoverColors = ['#7bc86c','#f5dd29','#ffaf3f','#ef7564','#cd8de5','#5ba4cf','#29cce5','#6deca9','#ff8ed4','#172b4d']
 
 // CRUDL
 async function query() {
@@ -119,6 +121,9 @@ function getCloudImages() {
 function getUsers() {
     return gUsers;
 }
+function getCoverColors() {
+    return gCoverColors;
+}
 
 function getEmptyBoard() {
     return {
@@ -150,7 +155,7 @@ function getEmptyTask() {
         activity: [],
         members: [],
         isWithAttachment: false,
-        cover: 'white',
+        cover: '',
         checklists: [],
         doneAt: '',
         attachments: []

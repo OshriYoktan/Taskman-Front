@@ -11,6 +11,7 @@ import { MemberModal } from '../MemberModal/MemberModal';
 import { CheckListModal } from '../CheckListModal/CheckListModal';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
+import { CoverModal } from '../CoverModal/CoverModal.jsx';
 import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
@@ -23,6 +24,7 @@ export function TaskModal(props) {
     const { register, handleSubmit, reset } = useForm();
     const [labelModal, setLabelModal] = useState(false)
     const [attModal, setAttModal] = useState(false)
+    const [coverModal, setCoverModal] = useState(false)
     const [memberModal, setMemberModal] = useState(false)
     const [checklistModal, setChecklistModal] = useState(false)
     const [dueDateModal, setDueDateModal] = useState(false)
@@ -90,10 +92,10 @@ export function TaskModal(props) {
         inputFile.current.click()
     }
     const dueDateSpanText = (task) => {
-        return task.doneAt? 'COMPLETED':(task.dueDate > Date.now()) ? '' : 'OVERDUE'        
+        return task.doneAt ? 'COMPLETED' : (task.dueDate > Date.now()) ? '' : 'OVERDUE'
     }
     const backgroundColorDueDate = (task) => {
-        return task.doneAt? 'green': ((task.dueDate > Date.now()) ? 'inherite' : 'red')
+        return task.doneAt ? 'green' : ((task.dueDate > Date.now()) ? 'inherite' : 'red')
     }
 
     const onAttChange = (ev) => {
@@ -129,6 +131,7 @@ export function TaskModal(props) {
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
     return (
         <div className="task-modal">
+            {/* {!currTask.cover ? null : <section className=" cover-section" style={{ backgroundColor: `${currTask.cover}` }} > <h1>hhhhhhhhhhhhhhhhhhhh</h1></section>} */}
             <div className="task-modal-form">
                 <div className="task-header">
                     <div className="task-title">
@@ -138,12 +141,8 @@ export function TaskModal(props) {
                 </div>
                 <div className="task-description-modal">
                     {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}>
-                    <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> :<FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
-                   </span> </section>}
-                    {/* {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}>
-                        <span className="due-date-moment">{!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> :<FontAwesomeIcon icon={faCheckSquare} />} <Moment fromNow>{currTask.dueDate}</Moment></span>
-                        <Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><span style={{ backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</span>
-                    </section>} */}
+                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
+                        </span> </section>}
                     {!currTask.labels.length ? null : <section><h4>Lables</h4>
                         {currTask.labels.map((label, idx) =>
                             <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
@@ -285,12 +284,17 @@ export function TaskModal(props) {
                         <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
                         <p> Attachment </p>
                     </div>
+                    <div onClick={() => setCoverModal(true)} className="right-task-btn">
+                        <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
+                        <p> Cover </p>
+                    </div>
                 </div>
             </div>
             {(!labelModal) ? null : <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal>}
             {(!memberModal) ? null : <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal>}
             {(!checklistModal) ? null : <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal>}
             {(!dueDateModal) ? null : <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal>}
+            {(!coverModal) ? null : <CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask}></CoverModal>}
             {(!attModal) ? null :
                 <div className="att-modal">
                     <div className="att-modal-header">
@@ -304,6 +308,7 @@ export function TaskModal(props) {
 
                 </div>}
         </div>
+        // </div>
     )
 }
 
