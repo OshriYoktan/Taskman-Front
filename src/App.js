@@ -10,7 +10,6 @@ import { socketService } from './services/socketService';
 function App() {
   const background = useSelector(state => state.boardReducer.background)
   const currBoard = useSelector(state => state.boardReducer.currBoard)
-  socketService.setup();
 
   return (
     <Router>

@@ -21,14 +21,10 @@ export function CardPreview(props) {
     var newTask = boardService.getEmptyTask()
 
     useEffect(() => {
-        socketService.on('task add-task', data => {
-            addTaskForSockets(data)
-        })
-        socketService.on('update-board', data => {
-            console.log('update board!', data);
-            setTimeout(() => dispatch(setCurrBoard(data)), 1000)
-        })
-        return () => socketService.terminate();
+        socketService.on('task add-task', data => addTaskForSockets(data))
+        return () => {
+            socketService.off('task add-task', addTaskForSockets);
+        };
     }, [])
 
     // Sockets /////////////////////////////////////////////////////////
