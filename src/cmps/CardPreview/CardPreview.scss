@@ -52,14 +52,14 @@
         width: 100%;
         -ms-flex-wrap: wrap;
         flex-wrap: wrap;
-        transition: .3s;
+        transition: 0.3s;
         .label-color-to-preview {
             width: 40px;
             height: 8px;
             border-radius: 4px;
             margin: 0 4px 4px 0;
             cursor: pointer;
-            transition: .3s;
+            transition: 0.3s;
         }
         .label-color-open-to-preview {
             width: auto;
@@ -75,15 +75,31 @@
             font-size: 12px;
         }
     }
+    .task-cover-color {
+        width: 100%;
+        height: 32px;
+        border-radius: 3px 3px 0 0;
+        margin-bottom: 5px;
+    }
+    .task-cover-img {
+        width: 100%;
+        height: 130px;
+        border-radius: 3px 3px 0 0;
+        margin-bottom: 5px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
     .buttom-preview-info {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        color: #8B95A7;
+        color: #8b95a7;
         .due-date-to-preview {
             // background-color: #ec9488;
             border-radius: 3px;
             padding: 2px 3px;
+            width: 80px;
             .font-awesome-clock {
                 display: inline-block;
             }
@@ -104,6 +120,15 @@
                     display: inline-block;
                 }
             }
+        }
+    }
+    .avatar-card-preview {
+        display: flex;
+        margin-top: 5px;
+        margin-left: 79%;
+
+        > * {
+            margin-left: -10%;
         }
     }
 }

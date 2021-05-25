@@ -64,13 +64,15 @@
             display: grid;
             align-items: center;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
+            gap: 15px 28px;
             padding: 4px 0;
             overflow-x: hidden;
             .cover-attach {
                 background-color: rgb(109, 128, 149);
-                background-image: url(https://trello-attachments.s3.amazonaws.com/60aa1d0…/300x200/b3e4378…/better-smartphone-photos.jpg);
-                background-size: contain;
+                height: 48px;
+                max-width: 89px;
+                border-radius: 3px;
+                cursor: pointer;
             }
         }
     }

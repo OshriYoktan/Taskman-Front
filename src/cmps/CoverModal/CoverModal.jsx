@@ -25,7 +25,7 @@ export function CoverModal(props) {
                     {console.log('props.currTask.attachments:', props.currTask.attachments)}
                     {props.currTask.attachments.map((attach) => {
                         console.log('attach:', attach)
-                        return <img className="cover-attach" key={attach._id} src={attach.src} alt={attach.title}/>
+                        return <img className="cover-attach" key={attach._id} onClick={() => props.addCover(attach.src)} src={attach.src} alt={attach.title}/>
                     })}
                 </div>
                 <h4>hahahahha</h4>

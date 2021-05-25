@@ -164,9 +164,9 @@ export function TaskModal(props) {
     }
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
     return (
-        <div className="task-modal">
+        <div className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
-                {!currTask.cover ? null : <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} ></div>}
+                {!currTask.cover ? null :currTask.cover.includes('#')? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} />:<div className="cover-section" style={{ backgroundImage: `url(${currTask.cover})` }} />}
                 <div className="task-header">
                     <div className="task-title">
                         <h3>{currTask.title}</h3>
@@ -177,14 +177,14 @@ export function TaskModal(props) {
                     {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}>
                         <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
                         </span> </section>}
-                    {!currTask.labels.length ? null : <section><h4>Lables</h4>
+                    {!currTask.labels.length ? null : <section className="labels-section"><p>Lables:</p>
                         {currTask.labels.map((label, idx) =>
                             <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
                                 <p>{label.desc}</p>
                             </div>)}
                         <button onClick={() => setLabelModal(true)}>+</button>
                     </section>}
-                    {!currTask.members.length ? null : <section><h4>Members</h4>
+                    {!currTask.members.length ? null : <section className="members-section"><p>Members:</p>
                         <div className="member-list">
                             {currTask.members.map((member, idx) =>
                                 <div className="member-in-modal" key={idx}>
@@ -204,8 +204,8 @@ export function TaskModal(props) {
                 {!currTask.checklists.length ? null : <section >
                     {currTask.checklists.map((checklist, listIdx) =>
                         <div className="checklist-in-modal" key={listIdx}>
-                            <div className="checklist-svg"> <div className="flex"> <FontAwesomeIcon icon={faList} ></FontAwesomeIcon> <p>{checklist.title}</p></div>
-                                <button onClick={() => taskModalOp.addChecklist(listIdx)}>delete list</button>
+                            <div className="checklist-svg"> <div className="flex"> <FontAwesomeIcon icon={faList} ></FontAwesomeIcon> <p>{checklist.title}:</p></div>
+                                <button onClick={() => taskModalOp.addChecklist(listIdx)}>Delete list</button>
                             </div>
                             {!checklist.list.length ? null : <div className="demo-range-container">
                                 <div className="demo-range-checked" style={{ width: checklist.range + '%' }}></div>
@@ -221,7 +221,7 @@ export function TaskModal(props) {
                                 </div>
                             })}
                             <form onSubmit={handleSubmit(res => onSubmitItemInList(res, listIdx))}>
-                                <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="add an item"  {...register('inputItem' + listIdx)} />
+                                <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="Add an item"  {...register('inputItem' + listIdx)} />
                                 <button >Add An Item</button>
                             </form>
                         </div>)}
@@ -258,32 +258,6 @@ export function TaskModal(props) {
                             </div>}
                         </div>
                     )}
-                </section>}
-                {!currTask.checklists.length ? null : <section >
-                    {currTask.checklists.map((checklist, listIdx) =>
-                        <div className="checklist-in-modal" key={listIdx}>
-                            <div className="checklist-svg"> <div className="flex"> <FontAwesomeIcon icon={faList} ></FontAwesomeIcon> <p>{checklist.title}</p></div>
-                                <button onClick={() => taskModalOp.addChecklist(listIdx)}>delete list</button>
-                            </div>
-                            {!checklist.list.length ? null : <div className="demo-range-container">
-                                <div className="demo-range-checked" style={{ width: checklist.range + '%' }}></div>
-                            </div>}
-                            {!checklist.list.length ? null : <span>{checklist.range}%</span>}
-                            {!checklist.list.length ? null : checklist.list.map((item, idx) => {
-                                return <div className="checklist-items" key={idx}>
-                                    <input type="checkbox" id={'checklist-item-' + idx} checked={item.isChecked} onChange={() => {
-                                        changeCheckBox(item)
-                                        setRange(checklist)
-                                    }} />
-                                    {item.isChecked ? <label style={{ textDecoration: 'line-through' }}>{item.desc}</label> : <label>{item.desc}</label>}
-                                </div>
-                            })}
-                            <form onSubmit={handleSubmit(res => onSubmitItemInList(res, listIdx))}>
-                                <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="add an item"   {...register('inputItem' + listIdx)} />
-                                <button >Add An Item</button>
-
-                            </form>
-                        </div>)}
                 </section>}
                 <div className="task-comment">
                     <p>Post a Comment:</p>
