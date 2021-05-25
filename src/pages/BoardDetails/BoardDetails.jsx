@@ -373,10 +373,9 @@ export function BoardDetails(props) {
                                         (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                             <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                             </div>)}
-                                    </Draggable></div>
+                                    </Draggable>{provided.placeholder}</div>
                                 })}
-                                {provided.placeholder}
-                                
+
                                 
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
