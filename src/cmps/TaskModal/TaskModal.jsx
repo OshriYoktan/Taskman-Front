@@ -16,12 +16,15 @@ import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
 
+
 export function TaskModal(props) {
     const { taskModalOp } = props
     const { currTask } = taskModalOp
     const inputFile = useRef(null)
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
+
+    //--------onClickOutside (to close modal)---------
     const useOnClickOutside = (ref, handler) => {
         useEffect(
             () => {
@@ -38,49 +41,38 @@ export function TaskModal(props) {
                     document.removeEventListener("touchstart", listener);
                 };
             },
-            // Add ref and handler to effect dependencies
-            // It's worth noting that because passed in handler is a new ...
-            // ... function on every render that will cause this effect ...
-            // ... callback/cleanup to run every render. It's not a big deal ...
-            // ... but to optimize you can wrap handler in useCallback before ...
-            // ... passing it into this hook.
             [ref, handler]
         );
     }
-
-    
     const [attModal, setAttModal] = useState(false)
-
+    const attRef = useRef()
+    useOnClickOutside(attRef, () => setAttModal(false));
 
     const [labelModal, setLabelModal] = useState(false)
     const labelRef = useRef()
     useOnClickOutside(labelRef, () => setLabelModal(false));
 
-    
-
-
     const [coverModal, setCoverModal] = useState(false)
+    const coverRef = useRef()
+    useOnClickOutside(coverRef, () => setCoverModal(false));
+
     const [memberModal, setMemberModal] = useState(false)
     const memberRef = useRef()
     useOnClickOutside(memberRef, () => setMemberModal(false));
-
 
     const [checklistModal, setChecklistModal] = useState(false)
     const checklistRef = useRef()
     useOnClickOutside(checklistRef, () => setChecklistModal(false));
 
-
     const [dueDateModal, setDueDateModal] = useState(false)
     const dueDateRef = useRef()
     useOnClickOutside(dueDateRef, () => setDueDateModal(false));
-
-
-    const [isDesc, setIsDesc] = useState(false)
-    const [attSrc, setAttSrc] = useState(null)
-    const [attNameModal, setAttNameModal] = useState(null)
+    //--------------------------------------------------
 
     var descValue;
     var currBoard = useSelector(state => state.boardReducer.currBoard)
+    const [isDesc, setIsDesc] = useState(false)
+    const [attNameModal, setAttNameModal] = useState(null)
 
     const currCard = currBoard.cards.find(card => {
         return card.tasks.find(t => {
@@ -100,14 +92,11 @@ export function TaskModal(props) {
         reset({ inputItem0: '' })
         reset({ inputItem1: '' })
         reset({ inputItem2: '' })
-
-
     }
 
     const onSubmitAtt = (data, idx) => {
         const input = Object.keys(data).find(str => str === ('attItem' + idx))
         currTask.attachments[idx].title = data[input];
-
     }
 
     const changeCheckBox = (item) => {
@@ -173,13 +162,12 @@ export function TaskModal(props) {
         // })
         // return input
     }
-
-
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
     return (
         <div className="task-modal hide-overflow">
-            {/* {!currTask.cover ? null : <section className=" cover-section" style={{ backgroundColor: `${currTask.cover}` }} > <h1>hhhhhhhhhhhhhhhhhhhh</h1></section>} */}
-            <div className="task-modal-form">
+            {/* {!currTask.cover ? console.log('task-modal') : console.log('task-modal-with-cover')} */}
+            <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
+                {!currTask.cover ? null : <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} ></div>}
                 <div className="task-header">
                     <div className="task-title">
                         <h3>{currTask.title}</h3>
@@ -214,7 +202,6 @@ export function TaskModal(props) {
                         {isDesc && <div className="saveDesc"><button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }} >Save</button> <button onClick={() => setIsDesc(false)}>x</button> </div>}
                     </form>
                 </div>
-
                 {!currTask.checklists.length ? null : <section >
                     {currTask.checklists.map((checklist, listIdx) =>
                         <div className="checklist-in-modal" key={listIdx}>
@@ -278,7 +265,7 @@ export function TaskModal(props) {
                     <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("activity")} defaultValue={currTask.activity} />
                 </div>
             </div>
-            <div className="add-to-task">
+            <div className="add-to-task" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 <div className="right-task-modal">
                     <h3>Add To Task:</h3>
                     <p onClick={() => taskModalOp.setCurrTask(null)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
@@ -314,21 +301,22 @@ export function TaskModal(props) {
             {(!memberModal) ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
             {(!checklistModal) ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
             {(!dueDateModal) ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
-            {(!coverModal) ? null : <CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask}></CoverModal>}
+            {(!coverModal) ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask}></CoverModal></div>}
             {(!attModal) ? null :
-                <div className="att-modal">
-                    <div className="att-modal-header">
-                        <h3>Attach from..</h3>
-                        <button onClick={() => setAttModal(false)}>x</button>
+                <div ref={attRef}>
+                    <div className="att-modal" >
+                        <div className="att-modal-header">
+                            <h3>Attach from..</h3>
+                            <button onClick={() => setAttModal(false)}>x</button>
+                        </div>
+                        <div className="att-buttons">
+                            <button onClick={onButtonClick}>Computer</button>
+                            <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
+                        </div>
                     </div>
-                    <div className="att-buttons">
-                        <button onClick={onButtonClick}>Computer</button>
-                        <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
-                    </div>
-
-                </div>}
-        </div>
-        // </div>
+                </div>
+            }
+        </div >
     )
 }
 

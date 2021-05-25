@@ -1,11 +1,14 @@
 .task-modal {
-    .cover-section{
+    .cover-section {
         width: 100%;
-        height: 50px;
+        height: 160px;
+        position: absolute;
+        left: 0;
+        top: 0;
     }
-    
+
     display: flex;
-    // flex-direction: row;
+    // flex-direction: column;
     width: 700px;
     height: 96vh;
     padding: 20px;
@@ -158,7 +161,7 @@
         display: flex;
         justify-content: space-between;
         overflow: hidden;
-        margin-bottom: 16px;
+        padding-bottom: 60px;
     }
 
     .label-in-modal {
@@ -178,7 +181,7 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 12px;
-        .labels-section{
+        .labels-section {
             p {
                 margin-bottom: 15px;
             }
@@ -226,10 +229,8 @@
         > * {
             margin-bottom: 15px;
         }
-        > :first-child {
-            padding-bottom: 60px ;
-        }
-        > :last-child{
+
+        > :last-child {
             padding: 0 0 60px 0;
         }
     }
@@ -339,5 +340,4 @@
             }
         }
     }
-    
 }

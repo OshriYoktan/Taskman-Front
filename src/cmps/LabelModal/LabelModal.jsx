@@ -13,37 +13,17 @@ export function LabelModal(props) {
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const labels = currBoard.labels
 
-    const func = (ev) => {
-
-    }
-
     const chooseLabel = (color) => {
         props.addLabel(color)
     }
-
 
     const editLabel = (ev, label) => {
         ev.stopPropagation()
         setLabelEditModal(label)
     }
-    useEffect(() => {
-        // console.log('props.currTask:', props.currTask.labels)
-    })
-    // const isHasV = (currLabel) => {
-    //     // console.log('currLabel:', currLabel)
-    //     const a= props.currTask.labels.some((label) => {
-    //         // console.log('label.color:', label.color)
-    //         // console.log(' currLabel.color:',  currLabel.color)
-    //         // console.log('label.color === currLabel.color:', label.color === currLabel.color)
-    //         return label.color === currLabel.color
-    //     })
-    //     console.log('a',a);
-    //     return <h1>v</h1>
-    // }
+
     return (
         <section >
-            {/* <div className="label-modal" style={`top:${pageY}px}`}> */}
-            {/* <button onClick={func}>click</button> */}
             {  <div className="label-modal" style={!labelEditModal ? { maxWidth: 100 + '%' } : { maxWidth: 0, visibility: 'visible' }}>
                 <div className="labels-modal-header">
                     <h3>Labels</h3>
