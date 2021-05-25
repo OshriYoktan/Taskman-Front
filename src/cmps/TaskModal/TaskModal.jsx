@@ -20,11 +20,11 @@ import { utilService } from '../../services/utilService.js';
 export function TaskModal(props) {
     const { taskModalOp } = props
     const { currTask } = taskModalOp
-    const inputFile = useRef(null)
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
-
+    
     //--------onClickOutside (to close modal)---------
+    const inputFile = useRef(null)
     const useOnClickOutside = (ref, handler) => {
         useEffect(
             () => {
@@ -165,7 +165,6 @@ export function TaskModal(props) {
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
     return (
         <div className="task-modal">
-            {/* {!currTask.cover ? console.log('task-modal') : console.log('task-modal-with-cover')} */}
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 {!currTask.cover ? null : <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} ></div>}
                 <div className="task-header">
