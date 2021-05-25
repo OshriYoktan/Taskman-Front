@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import boardService from '../../services/boardService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckSquare, faList, faTimes, faClock, faSquare, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faCheckSquare, faList, faTimes, faClock, faSquare, faPlus, faPaperclip } from '@fortawesome/free-solid-svg-icons'
 import './CardPreview.scss'
 import Avatar from 'react-avatar';
 import Moment from 'react-moment';
@@ -49,7 +49,6 @@ export function CardPreview(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
     const doneAtToggle = (ev, task) => {
-        console.log('task:', task)
         ev.stopPropagation()
         if (!task.doneAt) task.doneAt = Date.now()
         else task.doneAt = ''
@@ -83,6 +82,12 @@ export function CardPreview(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+    const backgroundColorDueDate = (task) => {
+        return task.doneAt ? 'green' : ((task.dueDate > Date.now()) ? '#F4F5F7' : '#EB5A46')
+    }
+    const colorDueDate = (task) => {
+        return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
+    }
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
@@ -107,25 +112,24 @@ export function CardPreview(props) {
                                                     </div>
                                                     <span>{task.title}</span>
                                                     <section className="buttom-preview-info">
-                                                        {!task.checklists.length ? null :
-                                                            <p><FontAwesomeIcon icon={faList} />
-                                                                {task.checklists.reduce((accTotal, checklist) => {
-                                                                    return accTotal + checklist.list.reduce((acc, itemInList) => itemInList.isChecked + acc, 0)
-                                                                }, 0)}/
-                                                        {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
-                                                            </p>}
-
                                                         {!task.dueDate ? null : !task.doneAt ?
-                                                            <div className="due-date-to-preview" onClick={(ev) => doneAtToggle(ev, task)}>
+                                                            <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
                                                                 <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
                                                                 <FontAwesomeIcon className="font-awesome-home" icon={faSquare} />
                                                                 <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div> :
-                                                            <div className="due-date-to-preview" style={{ backgroundColor: "green" }} onClick={(ev) => doneAtToggle(ev, task)}>
+                                                            <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
                                                                 <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
                                                                 <FontAwesomeIcon className="font-awesome-check-square" icon={faCheckSquare} />
                                                                 <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div>}
+                                                        {!task.attachments.length ? null : <div><FontAwesomeIcon icon={faPaperclip} /> {task.attachments.length} </div>}
+                                                        {!task.checklists.length ? null :
+                                                            <p><FontAwesomeIcon icon={faList} />{task.checklists.reduce((accTotal, checklist) => {
+                                                                return accTotal + checklist.list.reduce((acc, itemInList) => itemInList.isChecked + acc, 0)
+                                                            }, 0)}/
+                                                        {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
+                                                            </p>}
                                                         {!task.members.length ? null : <div>
                                                             {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
                                                         </div>}

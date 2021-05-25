@@ -1,6 +1,6 @@
 .board-card {
     height: 100%;
-    width: 280px;
+    width: 355px;
     margin: 0 4px;
     padding: 10px;
     > :first-child {
@@ -79,10 +79,10 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        color: #8B95A7;
         .due-date-to-preview {
-            background-color: #ec9488;
+            // background-color: #ec9488;
             border-radius: 3px;
-            color: #fff;
             padding: 2px 3px;
             .font-awesome-clock {
                 display: inline-block;

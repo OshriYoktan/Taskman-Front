@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadBoards, saveBoard, setCurrBoard, updateBackground } from '../../store/actions/boardActions'
 import { CardPreview } from '../../cmps/CardPreview'
@@ -17,22 +17,58 @@ import { socketService } from '../../services/socketService'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm()
+    const { register, handleSubmit, reset } = useForm()
     var newCard = boardService.getEmptyCard()
     const [users, setUsers] = useState(boardService.getUsers())
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [currCard, setCurrCard] = useState(null)
+
     const [currTask, setCurrTask] = useState(null)
-    const [isAddCard, setIsAddCard] = useState(null)
+    const ref = useRef()
+    const useOnClickOutside = (ref, handler) => {
+        useEffect(
+            () => {
+                const listener = (event) => {
+                    if (!ref.current || ref.current.contains(event.target)) {
+                        return;
+                    }
+                    handler(event);
+                };
+                document.addEventListener("mousedown", listener);
+                document.addEventListener("touchstart", listener);
+                return () => {
+                    document.removeEventListener("mousedown", listener);
+                    document.removeEventListener("touchstart", listener);
+                };
+            },
+            // Add ref and handler to effect dependencies
+            // It's worth noting that because passed in handler is a new ...
+            // ... function on every render that will cause this effect ...
+            // ... callback/cleanup to run every render. It's not a big deal ...
+            // ... but to optimize you can wrap handler in useCallback before ...
+            // ... passing it into this hook.
+            [ref, handler]
+        );
+    }
+    useOnClickOutside(ref, () => setCurrTask(false));
+
     const [isMenu, setIsMenu] = useState(false)
-    const [draggedCards, setDraggedCards] = useState(null)
+    const menuRef = useRef()
+    useOnClickOutside(menuRef, () => setIsMenu(false));
+
+    const [cardModal, setCardModal] = useState(null)
+    const cardModalRef = useRef()
+    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
+
+    const [isAddCard, setIsAddCard] = useState(null)
+    const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
     const [isInvite, setIsInvite] = useState(null)
     const [isCardModal, setIsCardModal] = useState(null)
     const [x, setX] = useState(null)
-    const [cardModal, setCardModal] = useState(null)
+
+
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
-
 
     useEffect(() => {
         dispatch(updateBackground(true))
@@ -40,7 +76,9 @@ export function BoardDetails(props) {
         const { id } = props.match.params
         socketService.emit("board topic", id);
         if (!currBoard) dispatch(setCurrBoard(id))
-        else if (!draggedCards) setDraggedCards(currBoard.cards)
+        else if (!draggedCards) {
+            setDraggedCards(currBoard.cards)
+        }
         dispatch(loadBoards())
     }, [currBoard])
 
@@ -50,6 +88,7 @@ export function BoardDetails(props) {
         const items = draggedCards;
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
+        // console.log('items:', items)
         setDraggedCards(items);
     }
 
@@ -71,14 +110,8 @@ export function BoardDetails(props) {
     }
 
     const addMemberToBoard = data => {
-        console.log('data:', data)
-        var userToAdd = users.filter(user => {
-            console.log('user:', user)
-
-            return user.name.toLowerCase().includes(data.member.toLowerCase())
-        })
+        var userToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
         if (data.member === '') userToAdd = null
-        console.log('userToAdd:', userToAdd)
         // setMembersToBoard(userToAdd)
     }
 
@@ -116,15 +149,16 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(newBoard._id))
     }
 
+    const addCover = (cover) => {
+        currTask.cover = cover
+        const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+        dispatch(saveBoard(newBoard))
+        dispatch(setCurrBoard(newBoard._id))
+    }
+
     const addMember = (member) => {
-        console.log('member:', member)
-        console.log('currTask.members:', currTask.members)
-        if (!currTask.members.length) {
-            console.log('first if');
-            currTask.members.push(member)
-        }
-        else if (currTask.members.some((currMember) => currMember._id === member._id)) {
-            //     // member is already in the Task
+        if (!currTask.members.length) currTask.members.push(member)
+        else if (currTask.members.some((currMember) => currMember._id === member._id)) { // member is already in the Task
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
         } else {
@@ -145,6 +179,7 @@ export function BoardDetails(props) {
         newCard = boardService.getEmptyCard()
         setIsAddCard(!isAddCard)
         data.newCardTitle = ''
+        reset()
         addActivity('Aviv Zohar', 'added', 'card')
     }
 
@@ -182,28 +217,37 @@ export function BoardDetails(props) {
         }
     }
 
+
+
     const filterTasks = (filterBy) => {
+
         if (filterBy.task || filterBy.labels.length) {
             var cards = currBoard.cards
-            if (filterBy.task) {
-                cards = currBoard.cards.find(card => {
-                    return card.tasks.find(task => {
-                        return task.title.includes(filterBy.task)
+            var newCards = []
+            if (filterBy.task !== '') {
+                cards.map(card => {
+                    return card.tasks.filter(task => {
+                        if (task.title.includes(filterBy.task)) newCards.push(card);;
+                        return newCards
                     })
                 })
             }
+
             if (filterBy.labels.length) {
-                cards = currBoard.cards.find(card => {
-                    return card.tasks.find(task => {
-                        return task.labels.find(label => label.desc.includes(filterBy.labels))
+                cards.map(card => {
+                    return card.tasks.map(task => {
+                        return task.labels.map(label => {
+                            if (filterBy.labels.includes(label.desc)) newCards.push(card)
+                            return newCards
+                        })
                     })
                 })
             }
-            if (!cards || !Object.keys(cards).length) {
+            if (!newCards || !Object.keys(newCards).length) {
                 const failCard = boardService.getEmptyCard()
                 failCard.title = 'There are no matched tasks.'
                 setDraggedCards([failCard])
-            } else setDraggedCards([cards])
+            } else setDraggedCards(newCards)
         } else setDraggedCards(currBoard.cards)
     }
 
@@ -242,7 +286,8 @@ export function BoardDetails(props) {
         addLabel,
         addMember,
         addChecklist,
-        addDueDate
+        addDueDate,
+        addCover
     }
 
     return (
@@ -310,22 +355,23 @@ export function BoardDetails(props) {
                         </div>}
                     </div>
                 </div>
-                <div className="flex">
+                <div ref={menuRef} className="flex">
                     <p className="open-menu-btn" onClick={() => setIsMenu(true)}><FontAwesomeIcon className="fa" icon={faBars}></FontAwesomeIcon></p>
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>
             </div>
             <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="characters" type="TASK">
+                <Droppable droppableId="cards" type="CARD">
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
                             <div className="flex">
-                                {draggedCards.map((card, idx) =>
-                                    <Draggable key={card._id} draggableId={card._id} index={idx}>
-                                        {provided => (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef}>
+                                {draggedCards.map((card, idx) => {
+                                    return <Draggable key={card._id} draggableId={card._id} index={idx}>
+                                        {previewProvider => (<div {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                             <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                         </div>)}
-                                    </Draggable>)}
+                                    </Draggable>
+                                })}
                                 {provided.placeholder}
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
@@ -339,7 +385,7 @@ export function BoardDetails(props) {
                         </div>)}
                 </Droppable>
             </DragDropContext>
-            {isCardModal && <div style={{ left: `${x}px`, top: `155px` }} className="card-modal">
+            {isCardModal && <div ref={cardModalRef} style={{ left: `${x}px`, top: `155px` }} className="card-modal">
                 <div className="card-title-modal">
                     <p>{cardModal.title}</p>
                     <button onClick={() => closeModal()}>x</button>
@@ -348,7 +394,7 @@ export function BoardDetails(props) {
                     <button onClick={deleteCard}>Delete This Card</button>
                 </div>
             </div>}
-            {currTask && <TaskModal taskModalOp={taskModalOp}></TaskModal>}
+            {currTask && <div ref={ref}>   <TaskModal  taskModalOp={taskModalOp}></TaskModal></div> }
         </div>
     )
 }

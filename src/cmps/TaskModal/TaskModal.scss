@@ -1,5 +1,10 @@
 .task-modal {
+    .cover-section{
+        width: 100%;
+        height: 50px;
+    }
     display: flex;
+    // flex-direction: row;
     width: 700px;
     height: 96vh;
     padding: 20px;
@@ -164,11 +169,18 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 12px;
-        .due-date-moment {
-            background-color: red;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 10px;
+        // .cover-section{
+        //     width: 100%;
+        //     height: 50px;
+        // }
+        .due-date-moment-section {
+            cursor: pointer;
+            .due-date-moment {
+                color: black;
+                background-color: #e2e4e9;
+                padding: 8px 15px;
+                border-radius: 10px;
+            }
         }
 
         .desc-svg {
@@ -263,6 +275,35 @@
                     &:not(:first-child) {
                         margin-left: 5px;
                     }
+                }
+            }
+        }
+        .att-edit {
+            background-color: #f4f5f7;
+            position: absolute;
+            left: 100%;
+            top: 15%;
+            transform: translate(-534px, 170px);
+            border-radius: 2px;
+            border: 1px solid rgba(207, 191, 191, 0.6);
+            height: 170px;
+            width: 270px;
+
+            .att-edit-main {
+                margin-top: 10px;
+                margin-left: 10px;
+                button {
+                    margin-left: 40%;
+                }
+            }
+            .att-edit-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid black;
+                > :first-child {
+                    margin-left: auto;
+                    margin-right: auto;
                 }
             }
         }
