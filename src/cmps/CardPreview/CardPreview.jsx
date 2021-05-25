@@ -110,10 +110,10 @@ export function CardPreview(props) {
                                                                 }, 0)}/
                                                         {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
                                                             </p>}
-                                                        {!task.members.length ? null : <div>
-                                                            {task.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
-                                                        </div>}
                                                     </section>
+                                                        {!task.members.length ? null : <div className="avatar-card-preview">
+                                                            {task.members.map((member, idx) => <Avatar  key={idx} name={member.name} size="30" round={true} />)}
+                                                        </div>}
                                                 </li>
                                             )}</Draggable>)
                                 })}{provided.placeholder}

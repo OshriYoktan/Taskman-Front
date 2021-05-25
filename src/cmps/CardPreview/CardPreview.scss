@@ -84,6 +84,7 @@
             // background-color: #ec9488;
             border-radius: 3px;
             padding: 2px 3px;
+            width: 80px;
             .font-awesome-clock {
                 display: inline-block;
             }
@@ -105,6 +106,19 @@
                 }
             }
         }
+    }
+    .avatar-card-preview {
+        display: flex;
+        margin-top: 5px;
+        margin-left: 79%;
+        
+        > * {
+            margin-left: -10%;
+        }
+        
+         
+        
+        
     }
 }
 
