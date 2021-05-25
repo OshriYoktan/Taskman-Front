@@ -22,7 +22,8 @@ export function TaskModal(props) {
     const { currTask } = taskModalOp
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
-    
+    const [client,setClient] = useState(null)
+
     //--------onClickOutside (to close modal)---------
     const inputFile = useRef(null)
     const useOnClickOutside = (ref, handler) => {
@@ -162,6 +163,10 @@ export function TaskModal(props) {
         // })
         // return input
     }
+
+    const testLog = (ev) => {
+        setClient(ev)
+    }
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
     return (
         <div className="task-modal hide-overflow">
@@ -239,11 +244,11 @@ export function TaskModal(props) {
                                 <p>{attac.title}</p>
                                 <p>Added Right now!</p>
                                 <div className="att-btns">
-                                    <button onClick={() => setAttNameModal(!attNameModal)}>Edit</button>
+                                    <button onClick={(ev) => {setAttNameModal(!attNameModal); testLog(ev)}}>Edit</button>
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
-                            {attNameModal && <div className="att-edit">
+                            {attNameModal && <div style={{transform: `translate(-565px,${client.clientY + 400}px)`}} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>

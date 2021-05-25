@@ -317,6 +317,7 @@
         .att-edit {
             background-color: #f4f5f7;
             position: absolute;
+            z-index: 50;
             left: 100%;
             top: 15%;
             transform: translate(-534px, 170px);

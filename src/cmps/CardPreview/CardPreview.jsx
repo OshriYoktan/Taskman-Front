@@ -70,6 +70,7 @@ export function CardPreview(props) {
     }
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
+  
             <div className="hide-overflow">
                 <div className="title">
                     <form onChange={handleSubmit(setCardTitle)}>
