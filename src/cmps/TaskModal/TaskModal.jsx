@@ -162,12 +162,12 @@ export function TaskModal(props) {
         // })
         // return input
     }
-
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
     return (
         <div className="task-modal">
-            {/* {!currTask.cover ? null : <section className=" cover-section" style={{ backgroundColor: `${currTask.cover}` }} > <h1>hhhhhhhhhhhhhhhhhhhh</h1></section>} */}
-            <div className="task-modal-form">
+            {/* {!currTask.cover ? console.log('task-modal') : console.log('task-modal-with-cover')} */}
+            <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
+                {!currTask.cover ? null : <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} ></div>}
                 <div className="task-header">
                     <div className="task-title">
                         <h3>{currTask.title}</h3>
@@ -260,7 +260,6 @@ export function TaskModal(props) {
                         </div>
                     )}
                 </section>}
-
                 {!currTask.checklists.length ? null : <section >
                     {currTask.checklists.map((checklist, listIdx) =>
                         <div className="checklist-in-modal" key={listIdx}>
@@ -292,7 +291,7 @@ export function TaskModal(props) {
                     <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("activity")} defaultValue={currTask.activity} />
                 </div>
             </div>
-            <div className="add-to-task">
+            <div className="add-to-task" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 <div className="right-task-modal">
                     <h3>Add To Task:</h3>
                     <p onClick={() => taskModalOp.setCurrTask(null)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
@@ -344,7 +343,6 @@ export function TaskModal(props) {
                 </div>
             }
         </div >
-        // </div>
     )
 }
 
