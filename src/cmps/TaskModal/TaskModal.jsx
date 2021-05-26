@@ -18,15 +18,12 @@ import { utilService } from '../../services/utilService.js';
 import { socketService } from '../../services/socketService.js';
 
 
-export function TaskModal(props) {
-    const { taskModalOp } = props
-    const { currTask } = taskModalOp
+export function TaskModal({ taskModalOp }) {
+    const { currTask, currBoard } = taskModalOp
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
-    const currBoard = useSelector(state => state.boardReducer.currBoard)
-
-    //--------onClickOutside (to close modal)---------
+    //----------onClickOutside----------\\
     const inputFile = useRef(null)
     const useOnClickOutside = (ref, handler) => {
         useEffect(
@@ -47,10 +44,6 @@ export function TaskModal(props) {
             [ref, handler]
         );
     }
-
-    useEffect(() => {
-        console.log('render taskModal');
-    })
 
     const [attModal, setAttModal] = useState(false)
     const attRef = useRef()
@@ -74,8 +67,8 @@ export function TaskModal(props) {
 
     const [dueDateModal, setDueDateModal] = useState(false)
     const dueDateRef = useRef()
-    useOnClickOutside(dueDateRef, () => setDueDateModal(false));
-    //--------------------------------------------------
+    // useOnClickOutside(dueDateRef, () => setDueDateModal(false));
+    //--------------------------------------------------\\
 
     var descValue;
     const [isDesc, setIsDesc] = useState(false)
@@ -100,6 +93,7 @@ export function TaskModal(props) {
         reset({ inputItem0: '' })
         reset({ inputItem1: '' })
         reset({ inputItem2: '' })
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const onSubmitAtt = (data, idx) => {
@@ -110,11 +104,13 @@ export function TaskModal(props) {
     const changeCheckBox = (item) => {
         item.isChecked = !item.isChecked
         updateBoard(currTask)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
     const toggleTaskDone = () => {
         if (!currTask.doneAt) currTask.doneAt = Date.now()
         else currTask.doneAt = ''
         updateBoard(currTask)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const setRange = checklist => {
@@ -124,6 +120,7 @@ export function TaskModal(props) {
         const rengeToShow = +((itemsChecked / checklist.list.length * 100).toFixed(2))
         checklist.range = rengeToShow
         updateBoard(currTask)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const updateBoard = task => {
@@ -148,6 +145,7 @@ export function TaskModal(props) {
         if (ev.target.files.length) {
             const newAtt = { _id: utilService.makeId(), title: ev.target.files[0].name, src: URL.createObjectURL(ev.target.files[0]) }
             currTask.attachments.push(newAtt)
+            socketService.emit('task to-update-task', { card: currCard, task: currTask })
             updateBoard(currTask)
         }
     }
@@ -155,6 +153,7 @@ export function TaskModal(props) {
     const onAttRemove = (id) => {
         const idx = currTask.attachments.findIndex(att => { return att._id === id })
         currTask.attachments.splice(idx, 1)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
         updateBoard(currTask)
     }
 

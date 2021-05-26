@@ -86,16 +86,15 @@ export function BoardDetails(props) {
         console.log('card:', card)
         const cardIdx = currBoard.cards.findIndex(c => c._id === card._id)
         currBoard.cards.splice(cardIdx, 1, card)
+        dispatch(setCurrBoard(currBoard._id))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 500)
     }
 
     const updateTask = data => {
-        console.log('data:', data)
         const updateCard = currBoard.cards.find(c => c._id === data.card._id)
         const taskIdx = updateCard.tasks.findIndex(t => t._id === data.task._id)
         updateCard.tasks.splice(taskIdx, 1, data.task)
         dispatch(setCurrBoard(currBoard._id))
-        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 500)
     }
 
     const updateCardTitleForSockets = card => {
@@ -220,6 +219,7 @@ export function BoardDetails(props) {
     const addDueDate = (date) => {
         currTask.dueDate = date
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
     }
@@ -227,6 +227,7 @@ export function BoardDetails(props) {
     const addCover = (cover) => {
         currTask.cover = cover
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
     }
@@ -236,13 +237,12 @@ export function BoardDetails(props) {
         else if (currTask.members.some((currMember) => currMember._id === member._id)) { // member is already in the Task
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
-        } else {
-            currTask.members.push(member)
-        }
+        } else currTask.members.push(member)
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
+        addActivity('Aviv Zohar', 'Attached', member, currTask.title)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-        addActivity('Aviv Zohar', 'Attached', member, currTask.title)
     }
 
     const addNewCard = (data) => {
@@ -361,7 +361,8 @@ export function BoardDetails(props) {
         addMember,
         addChecklist,
         addDueDate,
-        addCover
+        addCover,
+        currBoard: currBoard
     }
 
     return (
@@ -440,15 +441,13 @@ export function BoardDetails(props) {
                         <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
                             <div className="flex">
                                 {draggedCards.map((card, idx) => {
-                                    return <div className="test"> <Draggable key={card._id} draggableId={card._id} index={idx}>
+                                    return <div className="test" key={card._id}> <Draggable key={card._id} draggableId={card._id} index={idx}>
                                         {(previewProvider) =>
                                         (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                             <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                         </div>)}
                                     </Draggable>{provided.placeholder}</div>
                                 })}
-
-
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
                                     <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
