@@ -368,15 +368,14 @@ export function BoardDetails(props) {
                         <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
                             <div className="flex">
                                 {draggedCards.map((card, idx) => {
-                                    return <div className="test"> <Draggable key={card._id} draggableId={card._id} index={idx}>
+                                    return <div className="test" key={card._id}> <Draggable key={card._id} draggableId={card._id} index={idx}>
                                         {(previewProvider) => 
                                         (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                             <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                             </div>)}
                                     </Draggable>{provided.placeholder}</div>
                                 })}
-
-                                
+    
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
                                     <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />

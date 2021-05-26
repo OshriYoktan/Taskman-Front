@@ -25,7 +25,7 @@ export function DueDateModal(props) {
                 <p className="btn-close-icon" onClick={() => props.setDueDateModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </section>
             <form onSubmit={submit}>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <MuiPickersUtilsProvider  utils={DateFnsUtils}>
                     <KeyboardDatePicker
                         disableToolbar
                         variant="inline"

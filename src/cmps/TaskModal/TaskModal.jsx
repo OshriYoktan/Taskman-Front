@@ -67,7 +67,7 @@ export function TaskModal(props) {
 
     const [dueDateModal, setDueDateModal] = useState(false)
     const dueDateRef = useRef()
-    useOnClickOutside(dueDateRef, () => setDueDateModal(false));
+    // useOnClickOutside(dueDateRef, () => setDueDateModal(false));
     //--------------------------------------------------
 
     var descValue;
