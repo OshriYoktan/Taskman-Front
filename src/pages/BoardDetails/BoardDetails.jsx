@@ -305,26 +305,29 @@ export function BoardDetails(props) {
 
     const filterTasks = (filterBy) => {
         if (filterBy.task || filterBy.labels.length) {
-            var cards = currBoard.cards
             var newCards = []
             if (filterBy.task !== '') {
-                cards.map(card => {
+                currBoard.cards.map(card => {
                     return card.tasks.filter(task => {
-                        if (task.title.includes(filterBy.task)) newCards.push(card);;
-                        return newCards
+                        if (task.title.includes(filterBy.task)) newCards.push(card);
                     })
                 })
             }
             if (filterBy.labels.length) {
-                cards.map(card => {
+                currBoard.cards.map(card => {
                     return card.tasks.map(task => {
                         return task.labels.map(label => {
                             if (filterBy.labels.includes(label.desc)) newCards.push(card)
-                            return newCards
                         })
                     })
                 })
             }
+            const cardsIds = []
+            newCards = newCards.filter(c => {
+                if (cardsIds.includes(c._id)) return
+                cardsIds.push(c._id)
+                return c;
+            })
             if (!newCards || !Object.keys(newCards).length) {
                 const failCard = boardService.getEmptyCard()
                 failCard.title = 'There are no matched tasks.'
