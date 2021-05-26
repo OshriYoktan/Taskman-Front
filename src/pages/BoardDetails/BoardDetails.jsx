@@ -65,6 +65,9 @@ export function BoardDetails(props) {
             socketService.on('card add-card', data => {
                 addNewCardForSockets(data)
             })
+            socketService.on('card delete-card', data => {
+                deleteTaskForSockets(data)
+            })
             socketService.on('board add-label', data => {
                 addLabelForSockets(data)
             })
@@ -107,6 +110,12 @@ export function BoardDetails(props) {
     const addTaskForSockets = data => {
         const addTo = currBoard.cards.find(c => c._id === data.card)
         addTo.tasks.push(data.task)
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const deleteTaskForSockets = data => {
+        const cardIdx = currBoard.cards.findIndex(c => c._id === data.card)
+        currBoard.cards.splice(cardIdx, 1)
         dispatch(setCurrBoard(currBoard._id))
     }
 
@@ -262,6 +271,7 @@ export function BoardDetails(props) {
     const deleteCard = () => {
         const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
+        socketService.emit('card to-delete-card', cardIdx);
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(boardToSave._id))
         addActivity('Aviv Zohar', 'deleted', 'card')
@@ -305,7 +315,6 @@ export function BoardDetails(props) {
                     })
                 })
             }
-
             if (filterBy.labels.length) {
                 cards.map(card => {
                     return card.tasks.map(task => {

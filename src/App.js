@@ -17,8 +17,8 @@ function App() {
         <AppHeader />
         <Switch>
           <Route component={BoardDetails} path='/board/:id?' />
-          <Route component={LandingPage} path='/boards' />
-          <Route component={TaskmanApp} path='/' />
+          <Route component={TaskmanApp} path='/boards' />
+          <Route component={LandingPage} path='/' />
         </Switch>
       </div>
     </Router>

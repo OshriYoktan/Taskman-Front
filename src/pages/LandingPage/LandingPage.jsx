@@ -1,28 +1,28 @@
 import './LandingPage.scss'
+import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { updateBackground } from '../../store/actions/boardActions'
 
 export function LandingPage() {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(updateBackground(false))
+    })
 
     return (
-        <div className="sub-container landing-page-container">
-            <h1>Welcome to Taskman!</h1>
-            <div className="landing-page-section">
+        <section className="sub-container landing-page-container">
+            <div>
                 <div>
-                    <div>
-                        <h3>Stop working alone!</h3>
-                        <p>Join now.</p>
-                    </div>
-                    <img src="https://media.giphy.com/media/3oEdv1vkhqxcynkB5C/giphy.gif" alt="" />
+                    <h3>Taskman</h3>
+                    <p>Join now.</p>
                 </div>
-            </div>
-            <div className="landing-page-section">
-                <div>
-                    <div>
-                        <h3>Suits for all!</h3>
-                        <p>Workspaces, projects, big meetings.</p>
-                    </div>
-                    <img src="https://media.giphy.com/media/l0Iybn1vpbUzeqkqQ/giphy.gif" alt="" />
+                <div className="flex">
+                    <Link to="/boards" className="link">Try it now!</Link>
                 </div>
+                <img src="https://salazarconsultores.com/wp-content/uploads/2019/12/software.gif?la=en&&hasF952A6248E013C59481352613DB474168E2C12" alt="" />
             </div>
-        </div>
+        </section>
     )
 }

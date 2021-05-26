@@ -11,6 +11,7 @@
 
 html {
     font-family: abril;
+    overflow: overlay;
 }
 
 body {
@@ -138,6 +139,7 @@ $clr8: #f67e7e;
 .link {
     text-decoration: none;
     color: inherit;
+    cursor: pointer;
 }
 
 .hide-overflow {
