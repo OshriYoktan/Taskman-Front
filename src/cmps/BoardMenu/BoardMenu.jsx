@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Avatar from 'react-avatar'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,7 +9,6 @@ import './BoardMenu.scss'
 import { faChevronLeft, faPalette, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utilService } from '../../services/utilService'
-import imgLoader from '../../assets/imgs/homepage.png'
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
@@ -28,6 +27,10 @@ export function BoardMenu({ boardMenuOp }) {
         setCloudImgs(boardService.getCloudImages())
         sendFilter()
     }, [filterBy])
+
+    useEffect(() => {
+        if (!boardMenuOp.isMenu) closeMenu()
+    }, [boardMenuOp.isMenu])
 
     const onSearchTask = data => {
         setFilterBy({ ...filterBy, task: data.searchTask })
@@ -75,7 +78,7 @@ export function BoardMenu({ boardMenuOp }) {
         setIsAddLabel(!isAddLabel)
         boardMenuOp.addActivity('Aviv Zohar', 'added', 'label')
     }
-    
+
     const deleteLabel = (idx) => {
         currBoard.labels.splice(idx, 1)
         dispatch(saveBoard(currBoard))

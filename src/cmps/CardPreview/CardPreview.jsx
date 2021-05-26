@@ -20,26 +20,13 @@ export function CardPreview(props) {
     const [isAddTask, setIsAddTask] = useState(null)
     var newTask = boardService.getEmptyTask()
 
-    useEffect(() => {
-        socketService.on('task add-task', data => addTaskForSockets(data))
-        return () => {
-            socketService.off('task add-task', addTaskForSockets);
-        };
-    }, [])
-
-    // Sockets /////////////////////////////////////////////////////////
-
-    const addTaskForSockets = (data) => {
-        const addTo = currBoard.cards.find(c => c._id === data.card)
-        addTo.tasks.push(data.task)
-        dispatch(setCurrBoard(currBoard._id))
-    }
-
-    ////////////////////////////////////////////////////////////////////
+    useEffect(() => console.log('render from card preview'))
 
     const setCardTitle = data => {
         card.title = data.cardTitle
         const boardToUpdate = boardService.updateBoard(card, currBoard)
+        // socketService.emit('card to-update-card-title', card)
+        socketService.emit('card to-update-card', card)
         dispatch(saveBoard(boardToUpdate))
     }
 

@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadBoards, saveBoard, setCurrBoard, updateBackground } from '../../store/actions/boardActions'
 import { CardPreview } from '../../cmps/CardPreview'
-import './BoardDetails.scss'
 import { TaskModal } from '../../cmps/TaskModal/TaskModal'
 import { useForm } from "react-hook-form";
 import boardService from '../../services/boardService'
@@ -14,6 +13,7 @@ import { faBars, faCheckCircle, faPlus, faTimes } from '@fortawesome/free-solid-
 import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
+import './BoardDetails.scss'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
@@ -22,65 +22,129 @@ export function BoardDetails(props) {
     const [users, setUsers] = useState(boardService.getUsers())
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [currCard, setCurrCard] = useState(null)
-
     const [currTask, setCurrTask] = useState(null)
     const ref = useRef()
     const useOnClickOutside = (ref, handler) => {
-        useEffect(
-            () => {
-                const listener = (event) => {
-                    if (!ref.current || ref.current.contains(event.target)) {
-                        return;
-                    }
-                    handler(event);
-                };
-                document.addEventListener("mousedown", listener);
-                document.addEventListener("touchstart", listener);
-                return () => {
-                    document.removeEventListener("mousedown", listener);
-                    document.removeEventListener("touchstart", listener);
-                };
-            },
-            // Add ref and handler to effect dependencies
-            // It's worth noting that because passed in handler is a new ...
-            // ... function on every render that will cause this effect ...
-            // ... callback/cleanup to run every render. It's not a big deal ...
-            // ... but to optimize you can wrap handler in useCallback before ...
-            // ... passing it into this hook.
-            [ref, handler]
-        );
+        useEffect(() => {
+            const listener = (event) => {
+                if (!ref.current || ref.current.contains(event.target)) {
+                    return;
+                }
+                handler(event);
+            };
+            document.addEventListener("mousedown", listener);
+            document.addEventListener("touchstart", listener);
+            return () => {
+                document.removeEventListener("mousedown", listener);
+                document.removeEventListener("touchstart", listener);
+            };
+        }, [ref, handler]);
+        // Add ref and handler to effect dependencies
+        // It's worth noting that because passed in handler is a new ...
+        // ... function on every render that will cause this effect ...
+        // ... callback/cleanup to run every render. It's not a big deal ...
+        // ... but to optimize you can wrap handler in useCallback before ...
+        // ... passing it into this hook.
     }
-    useOnClickOutside(ref, () => setCurrTask(false));
-
-    const [isMenu, setIsMenu] = useState(false)
-    const menuRef = useRef()
-    useOnClickOutside(menuRef, () => setIsMenu(false));
-
-    const [cardModal, setCardModal] = useState(null)
-    const cardModalRef = useRef()
-    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
-
-    const [isAddCard, setIsAddCard] = useState(null)
-    const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
-    const [isInvite, setIsInvite] = useState(null)
-    const [isCardModal, setIsCardModal] = useState(null)
-    const [x, setX] = useState(null)
-
-
-    const [addMembersToBoard, setMembersToBoard] = useState(null)
-    const [isDescShown, setIsDescShown] = useState(false)
 
     useEffect(() => {
-        dispatch(updateBackground(true))
+        dispatch(loadBoards())
         dispatch(updateBackground(false))
         const { id } = props.match.params
         socketService.emit("board topic", id);
         if (!currBoard) dispatch(setCurrBoard(id))
         else if (!draggedCards) {
             setDraggedCards(currBoard.cards)
+            socketService.on('task add-task', data => {
+                addTaskForSockets(data)
+            })
+            socketService.on('card add-card', data => {
+                addNewCardForSockets(data)
+            })
+            socketService.on('board add-label', data => {
+                addLabelForSockets(data)
+            })
+            socketService.on('card update-card', data => {
+                updateCardForSockets(data)
+            })
+            socketService.on('card update-card-title', data => {
+                updateCardTitleForSockets(data)
+            })
+            socketService.on('board add-activity', activity => {
+                addActivityForSockets(activity)
+            })
         }
-        dispatch(loadBoards())
     }, [currBoard])
+
+    // Sockets /////////////////////////////////////////////////////////
+
+    const updateCardForSockets = card => {
+        console.log('card:', card)
+        const cardIdx = currBoard.cards.findIndex(c => c._id === card._id)
+        currBoard.cards.splice(cardIdx, 1, card)
+        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 500)
+
+    }
+
+    const updateCardTitleForSockets = card => {
+        const cardToUpdate = currBoard.cards.find(c => c._id === card._id)
+        cardToUpdate.title = card.title
+        console.log('cardToUpdate:', cardToUpdate)
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const addTaskForSockets = data => {
+        const addTo = currBoard.cards.find(c => c._id === data.card)
+        addTo.tasks.push(data.task)
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const addNewCardForSockets = card => {
+        currBoard.cards.push(card)
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const addLabelForSockets = data => {
+        console.log('data:', data)
+        if (!data.task.labels.length) data.task.labels.push(data.label)
+        else {
+            if (data.task.labels.some((currLabel) => currLabel.color === data.label.color)) {
+                const labelToRemove = data.task.labels.findIndex(currLabel => currLabel.color === data.label.color)
+                data.task.labels.splice(labelToRemove, 1)
+            } else {
+                data.task.labels.push(data.label)
+            }
+        }
+        boardService.updateCard(data.task, data.card, currBoard)
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const addActivityForSockets = activity => {
+        currBoard.activity.unshift(activity)
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    // const addActivityForSockets = (member, type, desc, card = 'board') => {
+    //     const newActivity = { _id: utilService.makeId(), member, type, desc, card, createdAt: Date.now() }
+    //     currBoard.activity.unshift(newActivity)
+    // }
+
+    ////////////////////////////////////////////////////////////////////
+
+    useOnClickOutside(ref, () => setCurrTask(false));
+    const [isMenu, setIsMenu] = useState(false)
+    const menuRef = useRef()
+    useOnClickOutside(menuRef, () => setIsMenu(false));
+    const [cardModal, setCardModal] = useState(null)
+    const cardModalRef = useRef()
+    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
+    const [isAddCard, setIsAddCard] = useState(null)
+    const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
+    const [isInvite, setIsInvite] = useState(null)
+    const [isCardModal, setIsCardModal] = useState(null)
+    const [x, setX] = useState(null)
+    const [addMembersToBoard, setMembersToBoard] = useState(null)
+    const [isDescShown, setIsDescShown] = useState(false)
 
     //Card Drag
     const handleOnDragEnd = (result) => {
@@ -104,7 +168,6 @@ export function BoardDetails(props) {
         setIsCardModal(false)
     }
 
-    // forms
     const setBoardTitle = data => {
         dispatch(saveBoard({ ...currBoard, title: data.boardTitle }))
     }
@@ -130,13 +193,12 @@ export function BoardDetails(props) {
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
         addActivity('Aviv Zohar', 'added', 'labal')
+        socketService.emit('board to-add-label', { label, card: currCard, task: currTask })
     }
 
     const addChecklist = (list) => {
         if (typeof list === 'object') currTask.checklists.push(list)
-        else {//variable "list" is an index of the checklist we want to remove from the array
-            currTask.checklists.splice(list, 1);
-        }
+        else currTask.checklists.splice(list, 1);
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
@@ -176,11 +238,12 @@ export function BoardDetails(props) {
         setDraggedCards(currBoard.cards)
         dispatch(saveBoard({ ...currBoard, cards: [...currBoard.cards] }))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
-        newCard = boardService.getEmptyCard()
         setIsAddCard(!isAddCard)
-        data.newCardTitle = ''
         reset()
         addActivity('Aviv Zohar', 'added', 'card')
+        socketService.emit('card to-add-card', newCard);
+        newCard = boardService.getEmptyCard()
+        data.newCardTitle = ''
     }
 
     const deleteCard = () => {
@@ -217,10 +280,7 @@ export function BoardDetails(props) {
         }
     }
 
-
-
     const filterTasks = (filterBy) => {
-
         if (filterBy.task || filterBy.labels.length) {
             var cards = currBoard.cards
             var newCards = []
@@ -254,6 +314,7 @@ export function BoardDetails(props) {
     const addActivity = (member, type, desc, card = 'board') => {
         const newActivity = { _id: utilService.makeId(), member, type, desc, card, createdAt: Date.now() }
         currBoard.activity.unshift(newActivity)
+        socketService.emit('board to-add-activity', newActivity)
         dispatch(saveBoard(currBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
@@ -394,7 +455,7 @@ export function BoardDetails(props) {
                     <button onClick={deleteCard}>Delete This Card</button>
                 </div>
             </div>}
-            {currTask && <div ref={ref}>   <TaskModal  taskModalOp={taskModalOp}></TaskModal></div> }
+            {currTask && <div ref={ref}>   <TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
         </div>
     )
 }
