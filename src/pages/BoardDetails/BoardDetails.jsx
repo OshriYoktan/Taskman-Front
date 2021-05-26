@@ -354,7 +354,7 @@ export function BoardDetails(props) {
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
-                <div className="flex">
+                <div className="flex ">
                     <form onChange={handleSubmit(setBoardTitle)}>
                         <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} />
                     </form>
@@ -427,13 +427,15 @@ export function BoardDetails(props) {
                         <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
                             <div className="flex">
                                 {draggedCards.map((card, idx) => {
-                                    return <Draggable key={card._id} draggableId={card._id} index={idx}>
-                                        {previewProvider => (<div {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                    return <div className="test"> <Draggable key={card._id} draggableId={card._id} index={idx}>
+                                        {(previewProvider) => 
+                                        (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                             <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
-                                        </div>)}
-                                    </Draggable>
+                                            </div>)}
+                                    </Draggable>{provided.placeholder}</div>
                                 })}
-                                {provided.placeholder}
+
+                                
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
                                     <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />

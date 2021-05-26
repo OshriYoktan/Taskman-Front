@@ -1,10 +1,19 @@
 .task-modal {
-    .cover-section{
+    .cover-section {
         width: 100%;
-        height: 50px;
+        height: 160px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        object-fit: contain;
+        background-color: antiquewhite;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
     }
+
     display: flex;
-    // flex-direction: row;
+    // flex-direction: column;
     width: 700px;
     height: 96vh;
     padding: 20px;
@@ -29,7 +38,7 @@
         width: 90%;
         border: none;
         cursor: pointer;
-        padding: 0;
+        padding: 8px 10px;
         height: 45px;
         background-color: rgba(9, 30, 66, 0.04);
         &::placeholder {
@@ -44,6 +53,14 @@
     }
     .member-list {
         display: flex;
+        button {
+            display: flex;
+            align-items: center;
+            border-radius: 100%;
+            width: 30px;
+            height: 30px;
+            margin-left: 5px;
+        }
     }
     .checklist-in-modal {
         margin-bottom: 10px;
@@ -149,7 +166,7 @@
         display: flex;
         justify-content: space-between;
         overflow: hidden;
-        margin-bottom: 16px;
+        padding-bottom: 60px;
     }
 
     .label-in-modal {
@@ -169,6 +186,22 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 12px;
+        .labels-section {
+            p {
+                margin-bottom: 15px;
+            }
+            button {
+                display: flex;
+                align-items: center;
+                border-radius: 3px;
+                height: 32px;
+            }
+        }
+        .members-section {
+            p {
+                margin-bottom: 15px;
+            }
+        }
         // .cover-section{
         //     width: 100%;
         //     height: 50px;
@@ -200,6 +233,10 @@
         flex-direction: column;
         > * {
             margin-bottom: 15px;
+        }
+
+        > :last-child {
+            padding: 0 0 60px 0;
         }
     }
     .att-svg {
@@ -260,7 +297,6 @@
         }
         img {
             height: 80px;
-            width: 112px;
         }
         .att-details {
             margin-left: 10px;
@@ -281,6 +317,7 @@
         .att-edit {
             background-color: #f4f5f7;
             position: absolute;
+            z-index: 50;
             left: 100%;
             top: 15%;
             transform: translate(-534px, 170px);

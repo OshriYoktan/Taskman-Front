@@ -16,9 +16,17 @@ export function CoverModal(props) {
                 <p className="btn-close-icon" onClick={() => props.setCoverModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </section>
             <section className="cover-modal-body">
-                <h4>colors:</h4>
+                <h4>COLORS:</h4>
                 <div className="cover-color-container">
-                    {coverColors.map((color) => <span className="cover-color" onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
+                    {coverColors.map((color, idx) => <span className="cover-color" key={idx} onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
+                </div>
+                <h4>ATTACHMENTS:</h4>
+                <div className="cover-attachments-container">
+                    {console.log('props.currTask.attachments:', props.currTask.attachments)}
+                    {props.currTask.attachments.map((attach) => {
+                        console.log('attach:', attach)
+                        return <img className="cover-attach" key={attach._id} onClick={() => props.addCover(attach.src)} src={attach.src} alt={attach.title}/>
+                    })}
                 </div>
                 <h4>hahahahha</h4>
                 <h4>i made another component matherfuckers</h4>

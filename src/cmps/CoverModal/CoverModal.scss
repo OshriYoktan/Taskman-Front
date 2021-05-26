@@ -59,5 +59,21 @@
                 cursor: pointer;
             }
         }
+        .cover-attachments-container {
+            width: 100%;
+            display: grid;
+            align-items: center;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px 28px;
+            padding: 4px 0;
+            overflow-x: hidden;
+            .cover-attach {
+                background-color: rgb(109, 128, 149);
+                height: 48px;
+                max-width: 89px;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+        }
     }
 }
