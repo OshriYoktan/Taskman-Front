@@ -15,6 +15,7 @@ import { CoverModal } from '../CoverModal/CoverModal.jsx';
 import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
+import { socketService } from '../../services/socketService.js';
 
 
 export function TaskModal(props) {
@@ -22,7 +23,8 @@ export function TaskModal(props) {
     const { currTask } = taskModalOp
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
-    const [client,setClient] = useState(null)
+    const [client, setClient] = useState(null)
+    const currBoard = useSelector(state => state.boardReducer.currBoard)
 
     //--------onClickOutside (to close modal)---------
     const inputFile = useRef(null)
@@ -45,6 +47,11 @@ export function TaskModal(props) {
             [ref, handler]
         );
     }
+
+    useEffect(() => {
+        console.log('render taskModal');
+    })
+
     const [attModal, setAttModal] = useState(false)
     const attRef = useRef()
     useOnClickOutside(attRef, () => setAttModal(false));
@@ -71,7 +78,6 @@ export function TaskModal(props) {
     //--------------------------------------------------
 
     var descValue;
-    var currBoard = useSelector(state => state.boardReducer.currBoard)
     const [isDesc, setIsDesc] = useState(false)
     const [attNameModal, setAttNameModal] = useState(null)
 
@@ -84,6 +90,7 @@ export function TaskModal(props) {
     const onSubmitDesc = data => {
         currTask.desc = data.desc
         updateBoard(currTask)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const onSubmitItemInList = (data, idxInList) => {
@@ -117,8 +124,8 @@ export function TaskModal(props) {
         const rengeToShow = +((itemsChecked / checklist.list.length * 100).toFixed(2))
         checklist.range = rengeToShow
         updateBoard(currTask)
-
     }
+
     const updateBoard = task => {
         const updatedBoard = boardService.updateCard(task, currCard, currBoard)
         dispatch(saveBoard(updatedBoard))
@@ -128,9 +135,11 @@ export function TaskModal(props) {
     const onButtonClick = () => {
         inputFile.current.click()
     }
+
     const dueDateSpanText = (task) => {
         return task.doneAt ? 'COMPLETED' : (task.dueDate > Date.now()) ? '' : 'OVERDUE'
     }
+
     const backgroundColorDueDate = (task) => {
         return task.doneAt ? 'green' : ((task.dueDate > Date.now()) ? 'inherite' : 'red')
     }
@@ -148,6 +157,7 @@ export function TaskModal(props) {
         currTask.attachments.splice(idx, 1)
         updateBoard(currTask)
     }
+
     const defVal = (attac, idx) => {
         console.log('idx:', idx)
         // console.log('idx:', idx)
@@ -167,11 +177,13 @@ export function TaskModal(props) {
     const testLog = (ev) => {
         setClient(ev)
     }
+
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+
     return (
         <div className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
-                {!currTask.cover ? null :currTask.cover.includes('#')? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} />:<div className="cover-section" style={{ backgroundImage: `url(${currTask.cover})` }} />}
+                {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> : <div className="cover-section" style={{ backgroundImage: `url(${currTask.cover})` }} />}
                 <div className="task-header">
                     <div className="task-title">
                         <h3>{currTask.title}</h3>
@@ -203,7 +215,9 @@ export function TaskModal(props) {
                     </div>
                     <form onChange={handleSubmit(res => onSubmitDesc(res))}>
                         <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
-                        {isDesc && <div className="saveDesc"><button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }} >Save</button> <button onClick={() => setIsDesc(false)}>x</button> </div>}
+                        {isDesc && <div className="saveDesc">
+                            <button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }}>Save</button>
+                            <button onClick={() => setIsDesc(false)}>x</button> </div>}
                     </form>
                 </div>
                 {!currTask.checklists.length ? null : <section >
@@ -244,11 +258,11 @@ export function TaskModal(props) {
                                 <p>{attac.title}</p>
                                 <p>Added Right now!</p>
                                 <div className="att-btns">
-                                    <button onClick={(ev) => {setAttNameModal(!attNameModal); testLog(ev)}}>Edit</button>
+                                    <button onClick={(ev) => { setAttNameModal(!attNameModal); testLog(ev) }}>Edit</button>
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
-                            {attNameModal && <div style={{transform: `translate(-565px,${client.clientY + 400}px)`}} className="att-edit">
+                            {attNameModal && <div style={{ transform: `translate(-565px,${client.clientY + 400}px)` }} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>
