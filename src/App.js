@@ -5,7 +5,6 @@ import { AppHeader } from './cmps/AppHeader';
 import { BoardDetails } from './pages/BoardDetails';
 import { LandingPage } from './pages/LandingPage';
 import { TaskmanApp } from './pages/TaskmanApp';
-import { socketService } from './services/socketService';
 
 function App() {
   const background = useSelector(state => state.boardReducer.background)

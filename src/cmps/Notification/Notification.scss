@@ -1,0 +1,46 @@
+.notification-container {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    background-color: white;
+    padding: 10px 0;
+    position: fixed;
+    top: 5vh;
+    right: 0;
+    width: 300px;
+    z-index: 40;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    border-right: none;
+    height: 60px;
+    transition: 0.5s;
+    white-space: nowrap;
+    overflow: hidden;
+    > * {
+        height: 100%;
+    }
+    > :first-child {
+        width: 20%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(0, 206, 0);
+    }
+    > :nth-child(2) {
+        width: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: start;
+        flex-direction: column;
+        > :first-child {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        > :nth-child(2) {
+            font-size: 14px;
+            span {
+                font-weight: 600;
+            }
+        }
+    }
+}

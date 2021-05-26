@@ -14,6 +14,7 @@ import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
 import './BoardDetails.scss'
+import { Notification } from '../../cmps/Notification/Notification'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
@@ -23,6 +24,8 @@ export function BoardDetails(props) {
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
+    const [isMsg, setIsMsg] = useState(false)
+    const [msg, setMsg] = useState(null)
     const ref = useRef()
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -48,7 +51,6 @@ export function BoardDetails(props) {
     }
 
     useEffect(() => {
-        console.log('details render');
         dispatch(loadBoards())
         dispatch(updateBackground(false))
         const { id } = props.match.params
@@ -263,6 +265,7 @@ export function BoardDetails(props) {
         setIsAddCard(!isAddCard)
         reset()
         addActivity('Aviv Zohar', 'added', 'card')
+        sendMsg('Aviv Zohar', 'added', 'card', newCard.title)
         socketService.emit('card to-add-card', newCard);
         newCard = boardService.getEmptyCard()
         data.newCardTitle = ''
@@ -272,9 +275,9 @@ export function BoardDetails(props) {
         const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
         socketService.emit('card to-delete-card', cardIdx);
+        addActivity('Aviv Zohar', 'deleted', 'card')
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(boardToSave._id))
-        addActivity('Aviv Zohar', 'deleted', 'card')
         closeModal()
     }
 
@@ -344,6 +347,14 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+    const sendMsg = (member, action, what, name, type) => {
+        setMsg({ member, action, what, name, type })
+        setIsMsg(true)
+        setTimeout(() => {
+            setIsMsg(false)
+        }, 3000)
+    }
+
     if (!currBoard || !draggedCards || !draggedCards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
@@ -375,6 +386,11 @@ export function BoardDetails(props) {
         addDueDate,
         addCover,
         currBoard: currBoard
+    }
+
+    const notifyOp = {
+        isMsg: isMsg,
+        msg: msg,
     }
 
     return (
@@ -472,16 +488,19 @@ export function BoardDetails(props) {
                         </div>)}
                 </Droppable>
             </DragDropContext>
-            {isCardModal && <div ref={cardModalRef} style={{ left: `${x}px`, top: `155px` }} className="card-modal">
-                <div className="card-title-modal">
-                    <p>{cardModal.title}</p>
-                    <button onClick={() => closeModal()}>x</button>
+            {
+                isCardModal && <div ref={cardModalRef} style={{ left: `${x}px`, top: `155px` }} className="card-modal">
+                    <div className="card-title-modal">
+                        <p>{cardModal.title}</p>
+                        <button onClick={() => closeModal()}>x</button>
+                    </div>
+                    <div className="card-modal-btns">
+                        <button onClick={deleteCard}>Delete This Card</button>
+                    </div>
                 </div>
-                <div className="card-modal-btns">
-                    <button onClick={deleteCard}>Delete This Card</button>
-                </div>
-            </div>}
-            {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
-        </div>
+            }
+            { currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
+            <Notification notifyOp={notifyOp} />
+        </div >
     )
 }
