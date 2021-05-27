@@ -105,7 +105,6 @@ export function BoardDetails(props) {
     const updateCardTitleForSockets = card => {
         const cardToUpdate = currBoard.cards.find(c => c._id === card._id)
         cardToUpdate.title = card.title
-        console.log('cardToUpdate:', cardToUpdate)
         dispatch(setCurrBoard(currBoard._id))
     }
 
@@ -204,7 +203,6 @@ export function BoardDetails(props) {
         if (!currTask.labels.length) currTask.labels.push(label)
         else {
             if (currTask.labels.some((currLabel) => currLabel.color === label.color)) {
-                //member is already in the Task
                 const labelToRemove = currTask.labels.findIndex(currLabel => currLabel.color === label.color)
                 currTask.labels.splice(labelToRemove, 1)
             } else {
@@ -214,7 +212,7 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-        addActivity('Aviv Zohar', 'added', 'labal')
+        addActivity('Aviv Zohar', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
@@ -244,16 +242,29 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
-        if (!currTask.members.length) currTask.members.push(member)
-        else if (currTask.members.some((currMember) => currMember._id === member._id)) { // member is already in the Task
+        if (!currTask.members.length) {
+            updateTaskToMember(member, currTask._id)
+            currTask.members.push(member)
+            addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
+        }
+        else if (currTask.members.some((currMember) => currMember._id === member._id)) {
+            updateTaskToMember(member, currTask._id)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
-        } else currTask.members.push(member)
+            addActivity('Aviv Zohar', 'removed', member.name, currTask.title)
+        } else {
+            updateTaskToMember(member, currTask._id)
+            currTask.members.push(member)
+            addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
+        }
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
-        addActivity('Aviv Zohar', 'Attached', member, currTask.title)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
+    }
+
+    const updateTaskToMember = (member, task) => {
+        member.tasks.push(task)
     }
 
     const addNewCard = (data) => {
@@ -265,7 +276,6 @@ export function BoardDetails(props) {
         setIsAddCard(!isAddCard)
         reset()
         addActivity('Aviv Zohar', 'added', 'card')
-        sendMsg('Aviv Zohar', 'added', 'card', newCard.title)
         socketService.emit('card to-add-card', newCard);
         newCard = boardService.getEmptyCard()
         data.newCardTitle = ''
@@ -343,16 +353,18 @@ export function BoardDetails(props) {
         const newActivity = { _id: utilService.makeId(), member, type, desc, card, createdAt: Date.now() }
         currBoard.activity.unshift(newActivity)
         socketService.emit('board to-add-activity', newActivity)
+        sendMsg(member, type, desc, card)
         dispatch(saveBoard(currBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
 
-    const sendMsg = (member, action, what, name, type) => {
-        setMsg({ member, action, what, name, type })
+    const sendMsg = (member, type, desc, card = 'board') => {
+        setMsg({ member, type, desc, card })
         setIsMsg(true)
         setTimeout(() => {
             setIsMsg(false)
         }, 3000)
+        dispatch(setCurrBoard(currBoard._id))
     }
 
     if (!currBoard || !draggedCards || !draggedCards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Avatar from 'react-avatar'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,6 +9,7 @@ import './BoardMenu.scss'
 import { faChevronLeft, faPalette, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utilService } from '../../services/utilService'
+import { Doughnut } from 'react-chartjs-2';
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
@@ -97,6 +98,22 @@ export function BoardMenu({ boardMenuOp }) {
 
     if (!cloudImgs || !currBoard) return (<div className="loader-container">Loading</div>)
 
+    const labels = currBoard.members.map(m => m.name);
+
+    const dataForChart = {
+        labels: labels,
+        datasets: [{
+            label: 'My First Dataset',
+            data: currBoard.members.map(m => m.tasks.length),
+            backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)'
+            ],
+            hoverOffset: 4
+        }]
+    };
+
     return (
         <section className="board-menu flex" style={boardMenuOp.isMenu ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
             <article className="menu-main">
@@ -105,7 +122,7 @@ export function BoardMenu({ boardMenuOp }) {
                     <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="flex">
-                    <p onClick={() => setIsAbout(!isAbout)}>About this board</p>
+                    <p onClick={() => setIsAbout(!isAbout)}>About & Statistics</p>
                     <p onClick={() => setIsBackground(!isBackground)}>Background</p>
                     <p onClick={() => setIsFilter(!isFilter)}>Search cards</p>
                     <p onClick={() => setIsLabels(!isLabels)}>Labels</p>
@@ -113,16 +130,10 @@ export function BoardMenu({ boardMenuOp }) {
                 <div className="hide-overflow flex">
                     <h3>Activity</h3>
                     <ul>
-                        {currBoard.activity.length && currBoard.activity.map(activity => <li key={activity._id}>
-                            {activity.type !== 'Attached' ? <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span>{activity.card === 'board' ? '' : ' card'}.</p>
-                                : <p><span>{activity.member}</span> {activity.type} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span> task.</p>}
+                        {!currBoard.activity.length ? null : currBoard.activity.map(activity => <li key={activity._id}>
+                            {(activity.type !== 'attached' && activity.type !== 'removed') ? <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span>{activity.card === 'board' ? '' : ' card'}.</p>
+                                : <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'removed' ? 'from' : 'to'} <span>{activity.card}</span> task.</p>}
                             <small><Moment fromNow>{activity.createdAt}</Moment></small>
-                            {/* 
-                            {activity.desc} ------- is sometimes an object, therefore makes errors
-                            
-                            {activity.type !== 'Attached' ? <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span>{activity.card === 'board' ? '' : ' card'}.</p>
-                                : <p><span>{activity.member}</span> {activity.type} ------{activity.desc}------ {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span> task.</p>}
-                            <small><Moment fromNow>{activity.createdAt}</Moment></small> */}
                         </li>)}
                         {!currBoard.activity.length && <li><h1>No activity here...</h1></li>}
                     </ul>
@@ -131,7 +142,7 @@ export function BoardMenu({ boardMenuOp }) {
             <article className="menu-about sub-menu" style={isAbout ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
                     <p onClick={() => setIsAbout(!isAbout)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
-                    <h3>About this board</h3>
+                    <h3>About & Statistics</h3>
                     <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="flex">
@@ -144,6 +155,7 @@ export function BoardMenu({ boardMenuOp }) {
                 </div>
                 <div className="flex">
                     <h3>Statistics</h3>
+                    <Doughnut data={dataForChart} />
                 </div>
             </article>
             <article className="menu-background sub-menu" style={isBackground ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>

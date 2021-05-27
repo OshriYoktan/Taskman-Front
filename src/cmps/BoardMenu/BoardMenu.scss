@@ -91,6 +91,7 @@
 
 .menu-about {
     > :nth-child(2) {
+        // Members
         padding: 10px 13px;
         margin: 5px;
         flex-direction: column;
@@ -107,15 +108,24 @@
         }
     }
     > :nth-child(3) {
+        // Description
         padding: 10px 13px;
         margin: 5px;
         justify-content: space-between;
         flex-direction: column;
         min-height: 130px;
     }
-    > :nth-child(4) {
+    > :last-child {
+        // Statistics
+        flex-direction: column;
         padding: 10px 13px;
         margin: 5px;
+        > :first-child {
+            margin-bottom: 20px;
+        }
+        canvas {
+            width: 100% !important;
+        }
     }
 }
 

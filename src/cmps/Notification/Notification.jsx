@@ -5,16 +5,16 @@ import './Notification.scss'
 export function Notification({ notifyOp }) {
     const { isMsg, msg } = notifyOp
 
-    if (!msg) return (<div>Loadiv</div>)
+    if (!msg) return (<div></div>)
     return (
         <section className="notification-container" style={isMsg ? { maxWidth: '100%' } : { maxWidth: '0' }}>
             <div>
-                {!msg.type && <FontAwesomeIcon className="fa" icon={faCheckCircle}></FontAwesomeIcon>}
+                <FontAwesomeIcon className="fa" icon={faCheckCircle}></FontAwesomeIcon>
                 {msg.type === 'warning' && <FontAwesomeIcon className="fa" icon={faExclamationCircle}></FontAwesomeIcon>}
             </div>
             <div>
-                <p>{msg.type ? 'Warning' : 'Success'}!</p>
-                <p><span>{msg.member}</span> {msg.action} {msg.what}: "{msg.name}" {msg.action === 'added' ? 'to board' : 'from board'}.</p>
+                {(msg.type !== 'attached' && msg.type !== 'removed') ? <p><span>{msg.member}</span> {msg.type} {msg.desc} {msg.type === 'deleted' ? 'from' : 'to'} <span>{msg.card}</span>{msg.card === 'board' ? '' : ' card'}.</p>
+                    : <p><span>{msg.member}</span> {msg.type} {msg.desc} {msg.type === 'removed' ? 'from' : 'to'} <span>{msg.card}</span> task.</p>}
             </div>
         </section>
     )
