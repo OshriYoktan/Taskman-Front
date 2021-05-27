@@ -256,18 +256,16 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
+        member.tasks.push(currTask._id)
         if (!currTask.members.length) {
-            updateTaskToMember(member, currTask._id)
             currTask.members.push(member)
             addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
         }
         else if (currTask.members.some((currMember) => currMember._id === member._id)) {
-            updateTaskToMember(member, currTask._id)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
             addActivity('Aviv Zohar', 'removed', member.name, currTask.title)
         } else {
-            updateTaskToMember(member, currTask._id)
             currTask.members.push(member)
             addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
         }
@@ -275,10 +273,6 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-    }
-
-    const updateTaskToMember = (member, task) => {
-        member.tasks.push(task)
     }
 
     const addNewCard = (data) => {
@@ -418,7 +412,7 @@ export function BoardDetails(props) {
         isMsg: isMsg,
         msg: msg,
     }
-    
+
 
     return (
         <div className="board-details sub-container">
@@ -526,7 +520,7 @@ export function BoardDetails(props) {
                     </div>
                 </div>
             }
-            { currTask && <div ref={ref}><TaskModal  taskModalOp={taskModalOp}></TaskModal></div>}
+            { currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
             <Notification notifyOp={notifyOp} />
         </div >
     )

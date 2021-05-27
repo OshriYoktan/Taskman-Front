@@ -38,6 +38,8 @@ export function CardPreview(props) {
         if (!task.doneAt) task.doneAt = Date.now()
         else task.doneAt = ''
         socketService.emit('task to-update-task', { card, task })
+        const newBoard = boardService.updateCard(task, card, currBoard)
+        dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
 
