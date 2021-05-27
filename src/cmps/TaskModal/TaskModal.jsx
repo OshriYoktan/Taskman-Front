@@ -262,7 +262,7 @@ export function TaskModal({ taskModalOp }) {
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
-                            {attNameModal && <div style={{ transform: `translate(-565px,${client.clientY + 400}px)` }} className="att-edit">
+                            {attNameModal && <div style={{ transform: `translate(-540px,${client.clientY - 190}px)` }} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>
