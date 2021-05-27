@@ -67,7 +67,7 @@ export function TaskModal({ taskModalOp }) {
 
     const [dueDateModal, setDueDateModal] = useState(false)
     const dueDateRef = useRef()
-    // useOnClickOutside(dueDateRef, () => setDueDateModal(false));
+    useOnClickOutside(dueDateRef, () => setDueDateModal(false));
     //--------------------------------------------------\\
 
     var descValue;
@@ -165,11 +165,12 @@ export function TaskModal({ taskModalOp }) {
     const testLog = (ev) => {
         setClient(ev)
     }
+    
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     return (
-        <div className="task-modal hide-overflow">
+        <div  className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> : <div className="cover-section" style={{ backgroundImage: `url(${currTask.cover}),url(https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60)` }} />}
                 <div className="task-header">
@@ -205,7 +206,7 @@ export function TaskModal({ taskModalOp }) {
                     </div>
                     <form onChange={handleSubmit(res => onSubmitDesc(res))}>
                         <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
-                        {isDesc && <div className="saveDesc">
+                        {isDesc && <div className="save-desc">
                             <button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }}>Save</button>
                             <button onClick={() => setIsDesc(false)}>x</button> </div>}
                     </form>
@@ -252,7 +253,7 @@ export function TaskModal({ taskModalOp }) {
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
-                            {attNameModal && <div style={{ transform: `translate(-565px,${client.clientY + 400}px)` }} className="att-edit">
+                            {attNameModal && <div style={{ transform: `translate(-540px,${client.clientY - 190}px)` }} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>

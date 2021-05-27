@@ -1,6 +1,6 @@
 .board-card {
     height: 100%;
-    width: 355px;
+    width: 280px;
     margin: 0 4px;
     padding: 10px;
     > :first-child {
@@ -38,6 +38,7 @@
                 cursor: pointer;
                 box-shadow: 0 1px 0 0 rgba(128, 128, 128, 0.5);
                 transition: 0.3s;
+                font-size: 14px;
 
                 &:hover {
                     filter: brightness(90%);
@@ -140,11 +141,10 @@
     }
     .avatar-card-preview {
         display: flex;
-        margin-top: 5px;
-        margin-left: 79%;
+        justify-content: flex-end;
 
         > * {
-            margin-left: -10%;
+            margin-left: -4%;
         }
     }
 }
