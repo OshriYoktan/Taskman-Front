@@ -142,6 +142,7 @@ export function BoardDetails(props) {
 
     const addActivityForSockets = activity => {
         currBoard.activity.unshift(activity)
+        sendMsg(activity.member, activity.type, activity.desc, activity.card)
         dispatch(setCurrBoard(currBoard._id))
     }
 
