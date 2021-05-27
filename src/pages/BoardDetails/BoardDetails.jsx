@@ -13,8 +13,8 @@ import { faBars, faCheckCircle, faPlus, faTimes } from '@fortawesome/free-solid-
 import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
-import './BoardDetails.scss'
 import { Notification } from '../../cmps/Notification/Notification'
+import './BoardDetails.scss'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
