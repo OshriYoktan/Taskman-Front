@@ -489,13 +489,13 @@ export function BoardDetails(props) {
                                     </Draggable>{provided.placeholder}</div>
                                 })}
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
-                                {isAddCard && <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
+                                {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
                                     <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
                                     <div className="flex">
                                         <button>Add Card</button>
                                         <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
                                     </div>
-                                </form>}
+                                </form></div>}
                             </div>
                         </div>)}
                 </Droppable>
