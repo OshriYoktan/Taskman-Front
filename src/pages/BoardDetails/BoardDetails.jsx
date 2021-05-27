@@ -418,6 +418,7 @@ export function BoardDetails(props) {
         isMsg: isMsg,
         msg: msg,
     }
+    
 
     return (
         <div className="board-details sub-container">
@@ -525,7 +526,7 @@ export function BoardDetails(props) {
                     </div>
                 </div>
             }
-            { currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
+            { currTask && <div ref={ref}><TaskModal  taskModalOp={taskModalOp}></TaskModal></div>}
             <Notification notifyOp={notifyOp} />
         </div >
     )

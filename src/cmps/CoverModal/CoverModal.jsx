@@ -20,16 +20,17 @@ export function CoverModal(props) {
                 <div className="cover-color-container">
                     {coverColors.map((color, idx) => <span className="cover-color" key={idx} onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
                 </div>
-                <h4>ATTACHMENTS:</h4>
-                <div className="cover-attachments-container">
-                    {console.log('props.currTask.attachments:', props.currTask.attachments)}
-                    {props.currTask.attachments.map((attach) => {
-                        console.log('attach:', attach)
-                        return <img className="cover-attach" key={attach._id} onClick={() => props.addCover(attach.src)} src={attach.src} alt={attach.title}/>
-                    })}
-                </div>
-                <h4>hahahahha</h4>
-                <h4>i made another component matherfuckers</h4>
+                {!props.currTask.attachments.length ? <div>
+                    <button className="add-attachment-cover-btn" onClick={props.onButtonClick}>Add Photo From My Computer</button>
+                    <input id="file" type="file" accept="image/*" onChange={props.onAttChange} ref={props.inputFile} name="name" style={{ display: 'none' }} />
+                </div> : <div>
+                    <h4>ATTACHMENTS:</h4>
+                    <div className="cover-attachments-container">
+                        {props.currTask.attachments.map((attach) => {
+                            return <img className="cover-attach" key={attach._id} onClick={() => props.addCover(attach.src)} src={attach.src} alt={attach.title} />
+                        })}
+                    </div></div>}
+                {props.currTask.cover && <button className="remove-cover-btn" onClick={() => props.addCover('')}>Remove cover</button>}
             </section>
         </div>
     )

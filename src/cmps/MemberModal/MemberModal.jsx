@@ -54,7 +54,7 @@ export function MemberModal(props) {
                         <Avatar key={member._id} name={member.name} size="30" round={true} />
                     </div>
                     <span>{member.name}</span>
-                    <span >{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span>
+                    <span className="member-icon" >{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span>
                 </li> :
                     <li key={member._id}><span>{member.name}</span></li>
                 )}
