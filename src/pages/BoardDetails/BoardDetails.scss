@@ -50,7 +50,11 @@
             align-items: center;
             .open-menu-btn {
                 cursor: pointer;
+                display: flex;
+                align-items: center;
                 color: black;
+                width: 35px;
+                height: 46.84px;
                 background-color: hsla(0, 0%, 100%, 0.24);
                 padding: 10px;
                 border-radius: 7px;
@@ -156,7 +160,6 @@
     }
     .add-task-container {
         display: flex;
-        padding: 10px;
         align-items: center;
         flex-direction: column;
         height: 100%;
@@ -179,17 +182,20 @@
             }
         }
         p {
+            width: 20px;
             position: relative;
             top: -25px;
             right: -110px;
             cursor: pointer;
+            color: black;
+                background-color: hsla(0, 0%, 100%, 0.24);
+                opacity: 0.7;
+                &:hover {
+                    opacity: 1;
+                }
         }
     }
-    .test {
-        background-color: red;
-        height: 1px
-
-    }
+    
     .add-card-container {
         width: 260px;
         display: flex;

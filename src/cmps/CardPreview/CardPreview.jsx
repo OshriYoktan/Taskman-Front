@@ -131,11 +131,14 @@ export function CardPreview(props) {
                     </Droppable>
                 </DragDropContext>
                 {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
-                {isAddTask && <div className="add-task-container"><form onSubmit={handleSubmit(addTask)}>
-                    <textarea type="text" id="title" name="title" {...register("newTask")} placeholder="Task name" defaultValue={newTask.title} />
-                    <button>Add Task</button>
-                </form>
-                    <p onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                {isAddTask && <div className="add-task-container">
+                    <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
+                        <textarea type="text" id="title" name="title" {...register("newTask")} placeholder="Task name" defaultValue={newTask.title} />
+                        <div className="add-task-btns">
+                            <button>Add Task</button>
+                            <p onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                        </div>
+                    </form>
                 </div>
                 }
             </div>
