@@ -145,11 +145,6 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
-    // const addActivityForSockets = (member, type, desc, card = 'board') => {
-    //     const newActivity = { _id: utilService.makeId(), member, type, desc, card, createdAt: Date.now() }
-    //     currBoard.activity.unshift(newActivity)
-    // }
-
     ////////////////////////////////////////////////////////////////////
 
     useOnClickOutside(ref, () => setCurrTask(false));
