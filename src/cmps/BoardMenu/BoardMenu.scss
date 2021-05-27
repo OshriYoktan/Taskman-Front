@@ -90,6 +90,7 @@
 }
 
 .menu-about {
+    overflow: auto !important;
     > :nth-child(2) {
         // Members
         padding: 10px 13px;
@@ -125,6 +126,7 @@
         }
         canvas {
             width: 100% !important;
+            margin: 20px 0;
         }
     }
 }

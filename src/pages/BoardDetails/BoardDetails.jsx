@@ -190,7 +190,21 @@ export function BoardDetails(props) {
     }
 
     const setBoardTitle = data => {
-        dispatch(saveBoard({ ...currBoard, title: data.boardTitle }))
+        var title = data.boardTitle
+        // title.slice(2)
+        // var match = /'/.exec(title);
+        // const removeChars = []
+        // var re = /'/g,
+        //     str = title;
+        // while ((match = re.exec(str)) != null) {
+        //     removeChars.push(match.index)
+        // }
+        // removeChars.forEach(idx => {
+        //     title.slice(2)
+        // })
+        // console.log('title:', title)
+        // console.log('removeChars:', removeChars)
+        dispatch(saveBoard({ ...currBoard, title }))
     }
 
     const addMemberToBoard = data => {
@@ -409,7 +423,7 @@ export function BoardDetails(props) {
         <div className="board-details sub-container">
             <div className="board-header flex">
                 <div className="flex ">
-                    <form onChange={handleSubmit(setBoardTitle)}>
+                    <form onBlur={handleSubmit(setBoardTitle)}>
                         <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} />
                     </form>
                     <div className="flex">
