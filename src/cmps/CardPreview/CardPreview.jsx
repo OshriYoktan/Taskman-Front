@@ -71,7 +71,7 @@ export function CardPreview(props) {
     }
 
     const backgroundColorDueDate = (task) => {
-        return task.doneAt ? 'green' : ((task.dueDate > Date.now()) ? '#F4F5F7' : '#EB5A46')
+        return task.doneAt ? '#61BD4F' : ((task.dueDate > Date.now()) ? '#F4F5F7' : '#ec9488')
     }
 
     const colorDueDate = (task) => {
@@ -97,7 +97,7 @@ export function CardPreview(props) {
                                         <Draggable key={task._id} draggableId={task._id} index={idx}>
                                             {(provided) => (
                                                 <li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} className="card-task">
-                                                    {(!task.cover) ? null : (task.cover.includes('#')) ? <div className="task-cover-color" style={{ backgroundColor: `${task.cover}` }} ></div> : <div className="task-cover-img" style={{ backgroundImage: `url(${task.cover})` }}></div>}
+                                                    {(!task.cover) ? null : (task.cover.includes('#')) ? <div className="task-cover-color" style={{ backgroundColor: `${task.cover}` }} ></div> : <div className="task-cover-img" style={{ backgroundImage: `url(${task.cover}) ,url(https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60)` }}></div>}
                                                     <div className="label-color-to-preview-container">
                                                         {!cardPreviewOp.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, true)}></label>)}
                                                         {cardPreviewOp.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, false)}>{label.desc}</label>)}
@@ -106,13 +106,13 @@ export function CardPreview(props) {
                                                     <section className="buttom-preview-info">
                                                         {!task.dueDate ? null : !task.doneAt ?
                                                             <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
-                                                                <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
-                                                                <FontAwesomeIcon className="font-awesome-home" icon={faSquare} />
+                                                                <FontAwesomeIcon className="icon font-awesome-clock" icon={faClock} />
+                                                                <FontAwesomeIcon className="icon font-awesome-home" icon={faSquare} />
                                                                 <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div> :
                                                             <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
-                                                                <FontAwesomeIcon className="font-awesome-clock" icon={faClock} />
-                                                                <FontAwesomeIcon className="font-awesome-check-square" icon={faCheckSquare} />
+                                                                <FontAwesomeIcon className="icon font-awesome-clock" icon={faClock} />
+                                                                <FontAwesomeIcon className="icon font-awesome-check-square" icon={faCheckSquare} />
                                                                 <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div>}
                                                         {!task.attachments.length ? null : <div><FontAwesomeIcon icon={faPaperclip} /> {task.attachments.length} </div>}

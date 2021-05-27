@@ -138,7 +138,7 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const backgroundColorDueDate = (task) => {
-        return task.doneAt ? 'green' : ((task.dueDate > Date.now()) ? 'inherite' : 'red')
+        return task.doneAt ? '#61BD4F' : ((task.dueDate > Date.now()) ? 'inherite' : '#ec9488')
     }
 
     const onAttChange = (ev) => {
@@ -157,22 +157,11 @@ export function TaskModal({ taskModalOp }) {
         updateBoard(currTask)
     }
 
-    const defVal = (attac, idx) => {
-        console.log('idx:', idx)
-        // console.log('idx:', idx)
-        console.log('attac:', attac)
-        var found = currTask.attachments.find((currAttach) => {
-            return currAttach._id === attac._id
-        })
-        return idx
-        // console.log('found:', found)
-        // const input = Object.keys(attac).find(str => {
-        // console.log('str:', str)
-        // return str === ('attItem' + idx)
-        // })
-        // return input
+    const setTaskTitle = data => {
+        currTask.title = data.taskTitle
+        updateBoard(currTask)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
-
     const testLog = (ev) => {
         setClient(ev)
     }
@@ -183,16 +172,18 @@ export function TaskModal({ taskModalOp }) {
     return (
         <div  className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
-                {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> : <div className="cover-section" style={{ backgroundImage: `url(${currTask.cover})` }} />}
+                {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> : <div className="cover-section" style={{ backgroundImage: `url(${currTask.cover}),url(https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60)` }} />}
                 <div className="task-header">
                     <div className="task-title">
-                        <h3>{currTask.title}</h3>
+                        <form onChange={handleSubmit(setTaskTitle)}>
+                            <input type="text" {...register("taskTitle")} defaultValue={currTask.title} placeholder="Task name" />
+                        </form>
                         <p>In list: {currCard.title}</p>
                     </div>
                 </div>
                 <div className="task-description-modal">
                     {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}>
-                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
+                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
                         </span> </section>}
                     {!currTask.labels.length ? null : <section className="labels-section"><p>Lables:</p>
                         {currTask.labels.map((label, idx) =>
@@ -262,7 +253,7 @@ export function TaskModal({ taskModalOp }) {
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
-                            {attNameModal && <div style={{ transform: `translate(-565px,${client.clientY + 400}px)` }} className="att-edit">
+                            {attNameModal && <div style={{ transform: `translate(-540px,${client.clientY - 190}px)` }} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>

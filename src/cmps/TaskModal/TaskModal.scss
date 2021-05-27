@@ -170,7 +170,13 @@
         display: flex;
         justify-content: space-between;
         overflow: hidden;
-        padding-bottom: 60px;
+        padding-bottom: 80px;
+        .task-title {
+            width: 100%;
+            input{
+                margin-left: 2px;
+            }
+        }
     }
 
     .label-in-modal {

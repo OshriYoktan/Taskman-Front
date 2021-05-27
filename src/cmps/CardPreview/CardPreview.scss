@@ -107,10 +107,15 @@
         align-items: center;
         color: #8b95a7;
         .due-date-to-preview {
-            // background-color: #ec9488;
             border-radius: 3px;
             padding: 2px 3px;
             width: 80px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            .icon {
+                font-size: 15px;
+            }
             .font-awesome-clock {
                 display: inline-block;
             }
@@ -121,6 +126,7 @@
                 display: none;
             }
             &:hover {
+                background-color: #eb5a46 !important;
                 .font-awesome-clock {
                     display: none;
                 }

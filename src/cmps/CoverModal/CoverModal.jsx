@@ -21,7 +21,7 @@ export function CoverModal(props) {
                     {coverColors.map((color, idx) => <span className="cover-color" key={idx} onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
                 </div>
                 {!props.currTask.attachments.length ? <div>
-                    <button className="add-attachment-cover-btn" onClick={props.onButtonClick}>Add Photo From My Computer</button>
+                    <button className="add-attachment-cover-btn" onClick={props.onButtonClick}>Add Photo</button>
                     <input id="file" type="file" accept="image/*" onChange={props.onAttChange} ref={props.inputFile} name="name" style={{ display: 'none' }} />
                 </div> : <div>
                     <h4>ATTACHMENTS:</h4>
