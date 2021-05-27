@@ -47,6 +47,10 @@ const cloudUrls = [
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621018122/taskman/vlad-kutepov-WYJ9c7uSdnU-unsplash_c2g6gy.jpg',
 ]
 
+// const newBoard = getEmptyBoard()
+// newBoard.title = 'Taskman board'
+// saveBoard(newBoard)
+
 const gUsers = [{ _id: 'u101', name: 'Aviv Zohar', tasks: [] }, { _id: 'u102', name: 'Hadar Marom', tasks: [] }, { _id: 'u103', name: 'Oshri Yoktan', tasks: [] }]
 const gCoverColors = ['#7bc86c', '#f5dd29', '#ffaf3f', '#ef7564', '#cd8de5', '#5ba4cf', '#29cce5', '#6deca9', '#ff8ed4', '#172b4d']
 
@@ -124,7 +128,7 @@ function getCoverColors() {
 function getEmptyBoard() {
     return {
         title: '',
-        members: [],
+        members: [...gUsers],
         cards: [{ _id: utilService.makeId(), title: 'Your first card!', tasks: [] }],
         activity: [],
         background: [],
