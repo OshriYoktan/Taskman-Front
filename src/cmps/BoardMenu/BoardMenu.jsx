@@ -9,7 +9,7 @@ import './BoardMenu.scss'
 import { faChevronLeft, faPalette, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utilService } from '../../services/utilService'
-import { Doughnut } from 'react-chartjs-2';
+import { PolarArea, Bar } from 'react-chartjs-2';
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
@@ -98,19 +98,49 @@ export function BoardMenu({ boardMenuOp }) {
 
     if (!cloudImgs || !currBoard) return (<div className="loader-container">Loading</div>)
 
-    const labels = currBoard.members.map(m => m.name);
+    const inProgress = []
+    const overdue = []
+    const completed = []
+    currBoard.cards.forEach(card => {
+        card.tasks.forEach(task => {
+            if (task.doneAt) completed.push(task)
+            else if (!task.dueDate) inProgress.push(task)
+            else task.dueDate > Date.now() ? inProgress.push(task) : overdue.push(task)
+        })
+    })
 
-    const dataForChart = {
-        labels: labels,
+    const dataForMembersChart = {
+        labels: currBoard.members.map(m => m.name),
         datasets: [{
-            label: 'My First Dataset',
+            label: 'Members',
             data: currBoard.members.map(m => m.tasks.length),
             backgroundColor: [
-                'rgb(255, 99, 132)',
-                'rgb(54, 162, 235)',
-                'rgb(255, 205, 86)'
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(255, 205, 86, 0.7)',
+                'rgba(201, 203, 207, 0.7)',
+                'rgba(54, 162, 235, 0.7)'
             ],
             hoverOffset: 4
+        }]
+    };
+
+    const dataForChart = {
+        labels: ['Completed', 'In progress', 'Overdue'],
+        datasets: [{
+            label: 'Status',
+            data: [completed.length, inProgress.length, overdue.length],
+            backgroundColor: [
+                'rgba(29, 185, 84, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+            ],
+            borderColor: [
+                'rgba(29, 185, 84)',
+                'rgba(255, 159, 64)',
+                'rgba(255, 99, 132)',
+            ],
+            borderWidth: 1,
         }]
     };
 
@@ -145,17 +175,23 @@ export function BoardMenu({ boardMenuOp }) {
                     <h3>About & Statistics</h3>
                     <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
-                <div className="flex">
-                    <h3>Members</h3>
-                    <div>{boardMenuOp.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}</div>
-                </div>
-                <div className="flex">
-                    <h3>Description</h3>
-                    <textarea placeholder="Type here a description" />
-                </div>
-                <div className="flex">
-                    <h3>Statistics</h3>
-                    <Doughnut data={dataForChart} />
+                <div className="flex hide-overflow">
+                    <div className="flex">
+                        <h3>Members</h3>
+                        <div>{boardMenuOp.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}</div>
+                        <p>Total: {boardMenuOp.members.length}</p>
+                    </div>
+                    <div className="flex">
+                        <h3>Description</h3>
+                        <textarea placeholder="Type here a description" />
+                    </div>
+                    <div className="flex">
+                        <h3>Statistics</h3>
+                        <h4>Tasks per member</h4>
+                        <PolarArea data={dataForMembersChart} />
+                        <h4>Tasks status</h4>
+                        <Bar height="200" data={dataForChart} />
+                    </div>
                 </div>
             </article>
             <article className="menu-background sub-menu" style={isBackground ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>

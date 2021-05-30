@@ -142,13 +142,9 @@ export function BoardDetails(props) {
 
     const addActivityForSockets = activity => {
         currBoard.activity.unshift(activity)
+        sendMsg(activity.member, activity.type, activity.desc, activity.card)
         dispatch(setCurrBoard(currBoard._id))
     }
-
-    // const addActivityForSockets = (member, type, desc, card = 'board') => {
-    //     const newActivity = { _id: utilService.makeId(), member, type, desc, card, createdAt: Date.now() }
-    //     currBoard.activity.unshift(newActivity)
-    // }
 
     ////////////////////////////////////////////////////////////////////
 
@@ -190,7 +186,21 @@ export function BoardDetails(props) {
     }
 
     const setBoardTitle = data => {
-        dispatch(saveBoard({ ...currBoard, title: data.boardTitle }))
+        var title = data.boardTitle
+        // title.slice(2)
+        // var match = /'/.exec(title);
+        // const removeChars = []
+        // var re = /'/g,
+        //     str = title;
+        // while ((match = re.exec(str)) != null) {
+        //     removeChars.push(match.index)
+        // }
+        // removeChars.forEach(idx => {
+        //     title.slice(2)
+        // })
+        // console.log('title:', title)
+        // console.log('removeChars:', removeChars)
+        dispatch(saveBoard({ ...currBoard, title }))
     }
 
     const addMemberToBoard = data => {
@@ -242,18 +252,16 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
+        member.tasks.push(currTask._id)
         if (!currTask.members.length) {
-            updateTaskToMember(member, currTask._id)
             currTask.members.push(member)
             addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
         }
         else if (currTask.members.some((currMember) => currMember._id === member._id)) {
-            updateTaskToMember(member, currTask._id)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
             addActivity('Aviv Zohar', 'removed', member.name, currTask.title)
         } else {
-            updateTaskToMember(member, currTask._id)
             currTask.members.push(member)
             addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
         }
@@ -261,10 +269,6 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-    }
-
-    const updateTaskToMember = (member, task) => {
-        member.tasks.push(task)
     }
 
     const addNewCard = (data) => {
@@ -404,13 +408,13 @@ export function BoardDetails(props) {
         isMsg: isMsg,
         msg: msg,
     }
-    
+
 
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
                 <div className="flex ">
-                    <form onChange={handleSubmit(setBoardTitle)}>
+                    <form onBlur={handleSubmit(setBoardTitle)}>
                         <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} />
                     </form>
                     <div className="flex">
@@ -512,7 +516,7 @@ export function BoardDetails(props) {
                     </div>
                 </div>
             }
-            { currTask && <div ref={ref}><TaskModal  taskModalOp={taskModalOp}></TaskModal></div>}
+            { currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
             <Notification notifyOp={notifyOp} />
         </div >
     )
