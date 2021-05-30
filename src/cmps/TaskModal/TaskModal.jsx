@@ -101,6 +101,10 @@ export function TaskModal({ taskModalOp }) {
         currTask.attachments[idx].title = data[input];
     }
 
+    const onSumbitActivity = data => {
+        console.log(currTask);
+    }
+
     const changeCheckBox = (item) => {
         item.isChecked = !item.isChecked
         updateBoard(currTask)
@@ -271,7 +275,9 @@ export function TaskModal({ taskModalOp }) {
                 </section>}
                 <div className="task-comment">
                     <p>Post a Comment:</p>
+                    <form onSubmit={handleSubmit(onSumbitActivity)}>
                     <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("activity")} defaultValue={currTask.activity} />
+                    </form>
                 </div>
             </div>
             <div className="add-to-task" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
