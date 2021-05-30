@@ -139,6 +139,16 @@
             }
         }
     }
+    .add-task-container {
+        input,textarea {
+            background-color: #fff;
+            width: 100%;
+            border: 1px black solid !important;
+            font-size: 14px;
+            font-weight: 300;
+            color: #172b4d;
+        }
+    }
     .avatar-card-preview {
         display: flex;
         justify-content: flex-end;

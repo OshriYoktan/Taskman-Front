@@ -1,5 +1,5 @@
 .task-modal {
-    h3{
+    h3 {
         font-weight: 400;
         color: #172b4d;
     }
@@ -28,7 +28,6 @@
     z-index: 30;
     transform: translate(-50%, -50%);
     border-radius: 2px;
-    border: 1px solid rgba(207, 191, 191, 0.6);
     background-color: #f4f5f7;
     button {
         border-radius: 3px;
@@ -45,8 +44,11 @@
         padding: 8px 10px;
         height: 45px;
         background-color: rgba(9, 30, 66, 0.04);
+        margin-left: 25px;
+        border-radius: 0;
         &::placeholder {
-            color: black;
+            color: #172b4d;
+            font-size: 14px;
         }
         &:focus-visible {
             outline: solid 2px #0079bf;
@@ -57,6 +59,7 @@
     }
     .member-list {
         display: flex;
+        margin-left: 25px;
         button {
             display: flex;
             align-items: center;
@@ -68,13 +71,26 @@
     }
     .checklist-in-modal {
         margin-bottom: 10px;
+        input[type="text"] {
+            margin-left: 25px;
+        }
+        .add-an-item-btn {
+            margin-left: 25px;
+        }
+        span {
+            font-size: 11px;
+            color: #5e6c84;
+        }
         .demo-range-container {
-            width: 100%;
             height: 8px;
             background: rgba(9, 30, 66, 0.08);
             border-radius: 4px;
-            width: 90%;
+            width: 87%;
+            display: inline-block;
+            transition: 0.3s;
+
             .demo-range-checked {
+                transition: 0.3s;
                 background-color: #0079bf;
                 height: 8px;
                 border-radius: 4px;
@@ -122,10 +138,12 @@
             .right-task-btn {
                 display: flex;
                 align-items: center;
-                padding: 10px;
-                border-radius: 10px;
+                padding: 5px 10px;
+                border-radius: 3px;
                 font-weight: 400;
-                background-color: rgba(0, 0, 0, 0.07);
+                font-size: 14px;
+                background-color: rgba(0, 0, 0, 0.04);
+                color: #172b4d;
                 transition: 0.3s;
                 cursor: pointer;
                 &:hover {
@@ -133,6 +151,7 @@
                     color: white;
                 }
                 & > :first-child {
+                    opacity: 0.7;
                     margin-right: 10px;
                 }
             }
@@ -145,14 +164,14 @@
             width: 20px;
             height: 15px;
         }
-        & * {
-            margin-left: 10px;
+        & label {
+            margin-left: 7px;
         }
     }
     .checklist-svg {
         display: flex;
         align-items: center;
-        width: 90%;
+        width: 95%;
         justify-content: space-between;
         margin-bottom: 15px;
         > :first-child {
@@ -173,8 +192,14 @@
         padding-bottom: 80px;
         .task-title {
             width: 100%;
-            input{
+            input {
+                border-radius: 0;
+                background-color: inherit;
                 margin-left: 2px;
+                cursor: text;
+                &:focus-visible {
+                    background-color: #fff;
+                }
             }
         }
     }
@@ -236,8 +261,8 @@
         padding: 0 12px;
         width: auto;
     }
-    .save-desc{
-         :not(:first-child) {
+    .save-desc {
+        :not(:first-child) {
             margin-left: 10px;
         }
     }
@@ -245,15 +270,26 @@
         display: flex;
         flex-direction: column;
         margin-bottom: 12px;
+        h3 {
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
         .labels-section {
+            margin-left: 25px;
             p {
                 margin-bottom: 15px;
+                font-size: 12px;
+                color: #fff;
             }
             button {
                 display: flex;
                 align-items: center;
                 border-radius: 3px;
                 height: 32px;
+                :first-child {
+                    opacity: 0.7;
+                    font-size: 12px;
+                }
             }
         }
         .members-section {
@@ -266,14 +302,15 @@
         //     height: 50px;
         // }
         .due-date-moment-section {
+            margin-left: 25px;
             cursor: pointer;
             .due-date-moment {
                 color: black;
                 background-color: #e2e4e9;
-                padding: 8px 15px;
-                border-radius: 10px;
+                padding: 4px 15px;
+                border-radius: 3px;
                 font-size: 14px;
-                small{
+                small {
                     font-size: 12px;
                     padding: 0 4px;
                     margin: 0 6px;
@@ -350,13 +387,34 @@
                     background-color: rgba(9, 30, 66, 0.04);
                 }
             }
+            form {
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+                input {
+                    margin-top: 0;
+                    width: 100%;
+                }
+            }
         }
     }
     .attachments-container {
         display: flex;
         height: 80px;
         margin-bottom: 15px;
-
+        margin-left: 25px;
+        width: 90%;
+        .att-src {
+            .attachment-img {
+                background-position: 50%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                border-radius: 3px;
+                background-color: dimgray;
+                width: 110px;
+                height: 80px;
+            }
+        }
         &:hover {
             background-color: rgba(9, 30, 66, 0.04);
         }
@@ -377,6 +435,15 @@
                         margin-left: 5px;
                     }
                 }
+            }
+            p {
+                font-weight: 300;
+                font-size: 14px;
+                color: #5e6c84;
+            }
+            p:first-of-type {
+                color: #172b4d;
+                font-weight: 700;
             }
         }
         .att-edit {

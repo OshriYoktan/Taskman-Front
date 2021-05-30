@@ -67,7 +67,11 @@
             padding: 4px 0;
             overflow-x: hidden;
             .cover-attach {
-                background-color: rgb(109, 128, 149);
+                background-position: 50%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                border-radius: 3px;
+                background-color: rgb(253, 177, 78);;
                 height: 48px;
                 max-width: 89px;
                 border-radius: 3px;
