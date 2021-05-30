@@ -37,7 +37,7 @@
         width: 70%;
     }
     textarea {
-        font-size: 16px;
+        font-size: 14px;
         width: 90%;
         border: none;
         cursor: pointer;
@@ -73,6 +73,16 @@
         margin-bottom: 10px;
         input[type="text"] {
             margin-left: 25px;
+            font-size: 14px;
+            background-color: rgba(9, 30, 66, 0.04);
+            border-radius: 0;
+            &::placeholder {
+                color: #172b4d;
+            }
+            &:focus-visible {
+                cursor: text;
+                background-color: #fff;
+            }
         }
         .add-an-item-btn {
             margin-left: 25px;
