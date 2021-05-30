@@ -101,13 +101,10 @@ export function TaskModal({ taskModalOp }) {
         currTask.attachments[idx].title = data[input];
     }
     const onSumbitComment = data => {
-        console.log(currTask);
         const newComment = { _id: utilService.makeId(), member: 'oshri', timeStamp: Date.now(), title: data.comment }
         currTask.comments.push(newComment)
         updateBoard(currTask)
-        console.log(currTask.comments);
     }
-
     const onRemoveComment = (id) => {
         const idx = currTask.comments.findIndex(comment => { return comment._id === id })
         currTask.comments.splice(idx, 1)
@@ -289,7 +286,7 @@ export function TaskModal({ taskModalOp }) {
                     <form onSubmit={handleSubmit(onSumbitComment)}>
                         <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("comment")} />
                     </form>
-                    {currTask.comments.length && currTask.comments.map(comment => <div key={comment._id} className="comment-container">
+                    {!currTask.comments.length ? null : currTask.comments.map(comment => <div key={comment._id} className="comment-container">
                         <div className="comment-avatar">
                             <Avatar key={comment._id} name={comment.member} size="30" round={true} />
                         </div>
