@@ -14,7 +14,7 @@ import { socketService } from '../../services/socketService';
 export function CardPreview(props) {
     const { card, cardPreviewOp } = props
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [tasks, setTasks] = useState(card.tasks)
     const [isAddTask, setIsAddTask] = useState(null)
@@ -55,7 +55,7 @@ export function CardPreview(props) {
         socketService.emit('task to-add-task', forSocket);
         cardPreviewOp.addActivity('Aviv Zohar', 'added', 'task', card.title)
         newTask = boardService.getEmptyTask()
-        data.newTask = ''
+        reset({ newTask: '' })
     }
 
     const handleOnDragEnd = async (result) => {
@@ -80,7 +80,6 @@ export function CardPreview(props) {
 
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
-
             <div className="hide-overflow">
                 <div className="title">
                     <form onChange={handleSubmit(setCardTitle)}>
@@ -106,14 +105,10 @@ export function CardPreview(props) {
                                                     <section className="buttom-preview-info">
                                                         {!task.dueDate ? null : !task.doneAt ?
                                                             <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
-                                                                <FontAwesomeIcon className="icon font-awesome-clock" icon={faClock} />
-                                                                <FontAwesomeIcon className="icon font-awesome-home" icon={faSquare} />
-                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
+                                                                <FontAwesomeIcon className="icon font-awesome-clock" icon={faClock} /><FontAwesomeIcon className="icon font-awesome-home" icon={faSquare} /><Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div> :
                                                             <div className="due-date-to-preview" style={{ color: colorDueDate(task), backgroundColor: backgroundColorDueDate(task) }} onClick={(ev) => doneAtToggle(ev, task)}>
-                                                                <FontAwesomeIcon className="icon font-awesome-clock" icon={faClock} />
-                                                                <FontAwesomeIcon className="icon font-awesome-check-square" icon={faCheckSquare} />
-                                                                <Moment format="MMM D" withTitle>{task.dueDate}</Moment>
+                                                                <FontAwesomeIcon className="icon font-awesome-clock" icon={faClock} /><FontAwesomeIcon className="icon font-awesome-check-square" icon={faCheckSquare} /><Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div>}
                                                         {!task.attachments.length ? null : <div><FontAwesomeIcon icon={faPaperclip} /> {task.attachments.length} </div>}
                                                         {!task.checklists.length ? null :
@@ -133,16 +128,14 @@ export function CardPreview(props) {
                     </Droppable>
                 </DragDropContext>
                 {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
-                {isAddTask && <div className="add-task-container">
-                    <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
-                        <textarea type="text" id="title" name="title" {...register("newTask")} placeholder="Task name" defaultValue={newTask.title} />
-                        <div className="add-task-btns">
-                            <button>Add Task</button>
-                            <p onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
-                        </div>
-                    </form>
-                </div>
-                }
+                {isAddTask && <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
+                    {/* <input type="text" id="title" name="title" {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} /> */}
+                    <textarea type="text" id="title" name="title" {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} />
+                    <div className="add-task-btns">
+                        <button>Add Task</button>
+                        <p onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    </div>
+                </form>}
             </div>
         </div >
 

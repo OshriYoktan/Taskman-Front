@@ -1,6 +1,5 @@
 import { httpService } from "./http.service"
 import { utilService } from "./utilService"
-
 const KEY = 'board/'
 
 export default {

@@ -3,7 +3,7 @@ import { faTimes, faPencilAlt, faCheckCircle } from '@fortawesome/free-solid-svg
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import boardService from '../../services/boardService'
-
+import Color from 'color-thief-react';
 import './CoverModal.scss'
 
 export function CoverModal(props) {
@@ -21,15 +21,20 @@ export function CoverModal(props) {
                     {coverColors.map((color, idx) => <span className="cover-color" key={idx} onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
                 </div>
                 {!props.currTask.attachments.length ? <div>
-                    <button className="add-attachment-cover-btn" onClick={props.onButtonClick}>Add Photo</button>
+                    <button className="add-attachment-cover-btn" onClick={props.onButtonClick}>Upload a cover image</button>
                     <input id="file" type="file" accept="image/*" onChange={props.onAttChange} ref={props.inputFile} name="name" style={{ display: 'none' }} />
                 </div> : <div>
                     <h4>ATTACHMENTS:</h4>
                     <div className="cover-attachments-container">
                         {props.currTask.attachments.map((attach) => {
-                            return <img className="cover-attach" key={attach._id} onClick={() => props.addCover(attach.src)} src={attach.src} alt={attach.title} />
+                            return <Color src={attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
+                                {({ data, loading, error }) => {
+                                    console.log('data:', data)
+                                    return (<div className="cover-attach" key={attach._id} style={{ backgroundColor: data, backgroundImage: `url(${attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} onClick={() => props.addCover(attach.src)} />)
+                                }}</Color>
                         })}
-                    </div></div>}
+                    </div>
+                </div>}
                 {props.currTask.cover && <button className="remove-cover-btn" onClick={() => props.addCover('')}>Remove cover</button>}
             </section>
         </div>

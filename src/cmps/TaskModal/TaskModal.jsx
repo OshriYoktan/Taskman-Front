@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faThermometerEmpty, faSquare, faPaperclip, faClipboard } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faThermometerEmpty, faSquare, faPaperclip, faClipboard, faPlus } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -16,6 +16,9 @@ import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
 import { socketService } from '../../services/socketService.js';
+import { LocalFlorist } from '@material-ui/icons';
+import Color from 'color-thief-react';
+import { green } from '@material-ui/core/colors';
 
 
 export function TaskModal({ taskModalOp }) {
@@ -23,7 +26,10 @@ export function TaskModal({ taskModalOp }) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
-    //----------onClickOutside----------\\
+    const [urlImg, setUrlImg] = useState(false)
+
+
+    //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
     const useOnClickOutside = (ref, handler) => {
         useEffect(
@@ -44,7 +50,6 @@ export function TaskModal({ taskModalOp }) {
             [ref, handler]
         );
     }
-
     const [attModal, setAttModal] = useState(false)
     const attRef = useRef()
     useOnClickOutside(attRef, () => setAttModal(false));
@@ -68,7 +73,7 @@ export function TaskModal({ taskModalOp }) {
     const [dueDateModal, setDueDateModal] = useState(false)
     const dueDateRef = useRef()
     useOnClickOutside(dueDateRef, () => setDueDateModal(false));
-    //--------------------------------------------------\\
+    //--------------------------------------------------------------------\\
 
     var descValue;
     const [isDesc, setIsDesc] = useState(false)
@@ -79,7 +84,6 @@ export function TaskModal({ taskModalOp }) {
             return t._id === currTask._id
         })
     })
-
     const onSubmitDesc = data => {
         currTask.desc = data.desc
         updateBoard(currTask)
@@ -90,9 +94,7 @@ export function TaskModal({ taskModalOp }) {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
         currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
         setRange(currTask.checklists[idxInList])
-        reset({ inputItem0: '' })
-        reset({ inputItem1: '' })
-        reset({ inputItem2: '' })
+        reset({ inputItem0: '', inputItem1: '', inputItem2: '', inputItem3: '', inputItem4: '' })
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
@@ -141,13 +143,18 @@ export function TaskModal({ taskModalOp }) {
         return task.doneAt ? '#61BD4F' : ((task.dueDate > Date.now()) ? 'inherite' : '#ec9488')
     }
 
-    const onAttChange = (ev) => {
-        if (ev.target.files.length) {
-            const newAtt = { _id: utilService.makeId(), title: ev.target.files[0].name, src: URL.createObjectURL(ev.target.files[0]) }
-            currTask.attachments.push(newAtt)
-            socketService.emit('task to-update-task', { card: currCard, task: currTask })
-            updateBoard(currTask)
+    const onAttChange = (res) => {
+        var newAtt
+        if (res.imgUrl) {
+            (!res.imgUrl.includes('//')) ? newAtt = { _id: utilService.makeId(), title: res.imgName, src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAS1BMVEX////Nzc2RkZH19fWJiYno6OiOjo78/PyHh4f5+fmjo6OYmJi1tbXu7u6UlJSdnZ3a2tqurq7ExMSoqKi8vLzKysrY2Njg4ODT09OWIyW3AAAEFklEQVR4nO3byXKjMABFUZtBhHkwMfz/lzYI4jJTOi+LFl3cuyRZUKeEEFjc7vTjbvcb/TCwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhM6FFefhqjx2fU5vnQkrCpvEBItM2YSR6/N6dSKsqEsC460yQdKdRutEWHmyobJcSe76zL46EdY92LPyvOA8Z3garLjcHVjD0Cp91+c2dx6s7mBgDUOrc31uc+fByg4G1jC0MtfnNucay3+2j8RWHFl5XjH9x6N9up3r3WLF97TwzNSxled9/UeR3l0uUp1i+fVfkHbQaoezvUus6PNwTj8u+HS3RnWJFf7CatAKnZ2wQ6yo+RWWaZwNLYdYcX20CjXfzfmmdjbHO8TyD6jSR2Z7pAdczqZ4l1h7V6Epsz6311mU99nuE9AHWBOVVz/fLrK4qr0tV3BJrI+NVdGuluh5W2y0rom1GVlFs3Hwm81jEFi2bGKI8qppqmnmuvkZWLctlkkmhTBLSs8rk2xaffrrF6hgDaW9Pdwnw4rBjJN9Mh9IwVpP8Ka0R/v0NZDMzLdaQFwTazmyimY8mL8v601tb47N8o54TazFyDLpCLN6Xgzsc2C+vA6viRUssUYXf/ly2WRWEKz1ZZiOx8Llrc8k9o4I1nqCt1jVaglaVONRsDZz1nisKxcuprS/gi2xrvkgvcKyc/nyHdd0O4zA2lyGo0vcLu+G7fgOgrvhdp1lV6DV+wrUlHbK6guw1o879Xgwat6svOl1e80Kfo1lSrtMGFZas40x01uIMAVr+4pm2tLg92kwPEmbIO0nlfU7GrDsrDWdSpQ/2zRtn/MLrfvqpcNF74ZrrHk+H4ri+OvHwapc/ddFR9b2HfxL61W1/YEHrFnL+1z8ghp/8uvO1O7vhsGj8+crMPK7x+6/gPUaXEHZdGGeh11Tbnd6XxYr3t/KPa4apg8GDv6cXHGvQ9RIG9leWJfcRXOrfrc/a3PH/Ge5xPKP9hx9O7Ac7pN0uqc0PPpO4Bur0t3GP7dYUVcfTeP7UibIXH725HgffN6366/mjjNJ2zvdCO/6o4HI33yPeVzuu/2azjXWfxVYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQgMW/bg/ZKUntG1o504AAAAASUVORK5CYII=' } : newAtt = { _id: utilService.makeId(), title: res.imgName, src: res.imgUrl }
+            setUrlImg(false)
+            reset({ imgUrl: '', imgName: '' })
+        } else if (res.target.files.length) {
+            newAtt = { _id: utilService.makeId(), title: res.target.files[0].name, src: URL.createObjectURL(res.target.files[0]) }
         }
+        currTask.attachments.push(newAtt)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
+        updateBoard(currTask)
     }
 
     const onAttRemove = (id) => {
@@ -165,33 +172,36 @@ export function TaskModal({ taskModalOp }) {
     const testLog = (ev) => {
         setClient(ev)
     }
-    
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     return (
-        <div  className="task-modal hide-overflow">
+        <div className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
-                {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> : <div className="cover-section" style={{ backgroundImage: `url(${currTask.cover}),url(https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60)` }} />}
+                {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
+                    <Color src={currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
+                        {({ data, loading, error }) => (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} />)}
+                    </Color>
+                }
                 <div className="task-header">
                     <div className="task-title">
                         <form onChange={handleSubmit(setTaskTitle)}>
-                            <input type="text" {...register("taskTitle")} defaultValue={currTask.title} placeholder="Task name" />
+                            <FontAwesomeIcon icon={faWindowMaximize} /> <input type="text" {...register("taskTitle")} defaultValue={currTask.title} placeholder="Task name" />
                         </form>
                         <p>In list: {currCard.title}</p>
                     </div>
                 </div>
                 <div className="task-description-modal">
-                    {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}>
-                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
-                        </span> </section>}
-                    {!currTask.labels.length ? null : <section className="labels-section"><p>Lables:</p>
+                    {!currTask.labels.length ? null : <section className="labels-section"><h3>LABELS:</h3>
                         {currTask.labels.map((label, idx) =>
                             <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
                                 <p>{label.desc}</p>
                             </div>)}
-                        <button onClick={() => setLabelModal(true)}>+</button>
+                        <button onClick={() => setLabelModal(true)}><FontAwesomeIcon icon={faPlus} /></button>
                     </section>}
+                    {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}><h3>DUE DATE:</h3>
+                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
+                        </span> </section>}
                     {!currTask.members.length ? null : <section className="members-section"><p>Members:</p>
                         <div className="member-list">
                             {currTask.members.map((member, idx) =>
@@ -217,10 +227,10 @@ export function TaskModal({ taskModalOp }) {
                             <div className="checklist-svg"> <div className="flex"> <FontAwesomeIcon icon={faList} ></FontAwesomeIcon> <p>{checklist.title}:</p></div>
                                 <button onClick={() => taskModalOp.addChecklist(listIdx)}>Delete list</button>
                             </div>
-                            {!checklist.list.length ? null : <div className="demo-range-container">
-                                <div className="demo-range-checked" style={{ width: checklist.range + '%' }}></div>
-                            </div>}
                             {!checklist.list.length ? null : <span>{checklist.range}%</span>}
+                            {!checklist.list.length ? null : <div className="demo-range-container">
+                                {checklist.range === 100 ? <div className="demo-range-checked" style={{ backgroundColor: '#61bd4f', width: checklist.range + '%' }}></div> :
+                                    <div className="demo-range-checked" style={{ width: checklist.range + '%' }}></div>}</div>}
                             {!checklist.list.length ? null : checklist.list.map((item, idx) => {
                                 return <div className="checklist-items" key={idx}>
                                     <input type="checkbox" id={'checklist-item-' + idx} checked={item.isChecked} onChange={() => {
@@ -232,7 +242,7 @@ export function TaskModal({ taskModalOp }) {
                             })}
                             <form onSubmit={handleSubmit(res => onSubmitItemInList(res, listIdx))}>
                                 <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="Add an item"  {...register('inputItem' + listIdx)} />
-                                <button >Add An Item</button>
+                                <button className="add-an-item-btn">Add An Item</button>
                             </form>
                         </div>)}
                 </section>}
@@ -243,10 +253,12 @@ export function TaskModal({ taskModalOp }) {
                     {currTask.attachments.map((attac, attIdx) =>
                         <div key={attIdx} className="attachments-container">
                             <div className="att-src">
-                                <img src={attac.src} alt="photo" />
+                                <Color src={attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
+                                    {({ data, loading, error }) => (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} alt="photo" />)}
+                                </Color>
                             </div>
                             <div className="att-details">
-                                <p>{attac.title}</p>
+                                <p>{attac.title || 'Photo'}</p>
                                 <p>Added Right now!</p>
                                 <div className="att-btns">
                                     <button onClick={(ev) => { setAttNameModal(!attNameModal); testLog(ev) }}>Edit</button>
@@ -311,20 +323,25 @@ export function TaskModal({ taskModalOp }) {
             {(!checklistModal) ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
             {(!dueDateModal) ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
             {(!coverModal) ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} onAttChange={onAttChange} inputFile={inputFile}></CoverModal></div>}
-            {(!attModal) ? null :
-                <div ref={attRef}>
-                    <div className="att-modal" >
-                        <div className="att-modal-header">
-                            <h3>Attach from..</h3>
-                            <button onClick={() => setAttModal(false)}>x</button>
-                        </div>
-                        <div className="att-buttons">
-                            <button onClick={onButtonClick}>Computer</button>
-                            <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
-                        </div>
+            {(!attModal) ? null : <div ref={attRef}>
+                <div className="att-modal" >
+                    <div className="att-modal-header">
+                        <h3>Attach from..</h3>
+                        <button onClick={() => setAttModal(false)}>x</button>
+                    </div>
+                    <div className="att-buttons">
+                        <button onClick={onButtonClick}>Import Image From Computer</button>
+                        <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
+                        <hr style={{ width: "95%" }} />
+                        {!urlImg && <button onClick={() => setUrlImg(true)}>Import Image By Url</button>}
+                        {urlImg && <form onSubmit={handleSubmit(onAttChange)} >
+                            <input type="text" placeholder="Name Photo here" {...register("imgName")} />
+                            <input type="text" placeholder="Place URL here" {...register("imgUrl")} required />
+                            <button >Save</button>
+                        </form>}
                     </div>
                 </div>
-            }
+            </div>}
         </div >
     )
 }
