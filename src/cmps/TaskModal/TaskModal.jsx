@@ -101,9 +101,17 @@ export function TaskModal({ taskModalOp }) {
         currTask.attachments[idx].title = data[input];
     }
     const onSumbitComment = data => {
+        console.log(currTask);
         const newComment = { _id: utilService.makeId(), member: 'oshri', timeStamp: Date.now(), title: data.comment }
         currTask.comments.push(newComment)
-        reset()
+        updateBoard(currTask)
+        console.log(currTask.comments);
+    }
+
+    const onRemoveComment = (id) => {
+        const idx = currTask.comments.findIndex(comment => { return comment._id === id })
+        currTask.comments.splice(idx, 1)
+        // socketService.emit('task to-update-task', { card: currCard, task: currTask })
         updateBoard(currTask)
     }
 
@@ -172,6 +180,7 @@ export function TaskModal({ taskModalOp }) {
         setClient(ev)
     }
 
+   
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
@@ -291,7 +300,7 @@ export function TaskModal({ taskModalOp }) {
                             <div className="comment-title"><p>{comment.title}</p></div>
                             <div className="comment-btns">
                                 <button>Edit</button>
-                                <button>Delete</button>
+                                <button onClick={onRemoveComment(comment._id)}>Delete</button>
                             </div>
                         </div>
                     </div>
