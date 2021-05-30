@@ -158,6 +158,7 @@ function getEmptyTask() {
         cover: '',
         checklists: [],
         doneAt: '',
-        attachments: []
+        attachments: [],
+        comments:[]
     }
 }
