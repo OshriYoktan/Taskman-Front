@@ -140,10 +140,11 @@
         }
     }
     .add-task-container {
-        input,textarea {
+        input,
+        textarea {
             background-color: #fff;
             width: 100%;
-            border: 1px black solid !important;
+            // border: 1px black solid !important;
             font-size: 14px;
             font-weight: 300;
             color: #172b4d;
@@ -222,7 +223,7 @@
 
 .add-task-btns {
     display: flex;
-   
+    align-items: center;
     
 }
 

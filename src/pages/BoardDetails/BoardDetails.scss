@@ -184,13 +184,17 @@
     }
 
     .add-task-container {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
         height: 100%;
         width: 100%;
         input {
             border: none;
+        }
+        textarea {
+            border: none;
+            &:focus-visible {
+                outline: solid 2px #0079bf;
+                cursor: text;
+            }
         }
         form {
             width: 100%;
@@ -207,7 +211,6 @@
             }
         }
         p {
-            position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -233,6 +236,7 @@
         margin-top: 10px;
         padding: 10px;
         input {
+            border: none;
             width: 100%;
             margin-bottom: 5px;
         }

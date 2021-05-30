@@ -27,6 +27,7 @@ export function TaskModal({ taskModalOp }) {
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
+    const [isComment,setIsComment] = useState(null)
 
 
     //-------------------------onClickOutside----------------------------\\
@@ -106,11 +107,20 @@ export function TaskModal({ taskModalOp }) {
         const newComment = { _id: utilService.makeId(), member: 'oshri', timeStamp: Date.now(), title: data.comment }
         currTask.comments.push(newComment)
         updateBoard(currTask)
+        reset({ comment: '', })
     }
     const onRemoveComment = (id) => {
         const idx = currTask.comments.findIndex(comment => { return comment._id === id })
         currTask.comments.splice(idx, 1)
         // socketService.emit('task to-update-task', { card: currCard, task: currTask })
+        updateBoard(currTask)
+    }
+
+    
+
+    const onEditComment = (data,idx) => {
+        const input = Object.keys(data).find(str => str === ('editComment' + idx))
+        currTask.comments[idx].title = data[input];
         updateBoard(currTask)
     }
 
@@ -297,7 +307,7 @@ export function TaskModal({ taskModalOp }) {
                     <form onSubmit={handleSubmit(onSumbitComment)}>
                         <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("comment")} />
                     </form>
-                    {!currTask.comments.length ? null : currTask.comments.map(comment => <div key={comment._id} className="comment-container">
+                    {!currTask.comments.length ? null : currTask.comments.map((comment,idx) => <div key={comment._id} className="comment-container">
                         <div className="comment-avatar">
                             <Avatar key={comment._id} name={comment.member} size="30" round={true} />
                         </div>
@@ -305,10 +315,11 @@ export function TaskModal({ taskModalOp }) {
                             <div className="comment-header">
                                 <p className="comment-member">{comment.member}</p> <p><Moment fromNow>{comment.timeStamp}</Moment></p>
                             </div>
-                            <div className="comment-title"><p>{comment.title}</p></div>
+                            <form onChange={handleSubmit(res => onEditComment(res,idx))} className="comment-title">
+                                <input type="text" autoComplete="off" id={"comment-edit" + idx} defaultValue={comment.title} {...register("editComment" + idx)} />
+                                </form>
                             <div className="comment-btns">
-                                <button>Edit</button>
-                                <button onClick={onRemoveComment(comment._id)}>Delete</button>
+                                <button onClick={() => onRemoveComment(comment._id)}>Delete</button>
                             </div>
                         </div>
                     </div>
