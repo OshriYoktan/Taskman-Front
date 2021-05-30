@@ -308,7 +308,7 @@ export function TaskModal({ taskModalOp }) {
                             <div className="comment-title"><p>{comment.title}</p></div>
                             <div className="comment-btns">
                                 <button>Edit</button>
-                                <button onClick={onRemoveComment(comment._id)}>Delete</button>
+                                <button onClick={() => onRemoveComment(comment._id)}>Delete</button>
                             </div>
                         </div>
                     </div>

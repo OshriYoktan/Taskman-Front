@@ -140,13 +140,18 @@
         }
     }
     .add-task-container {
-        input,textarea {
-            background-color: #fff;
+        input,
+        textarea {
             width: 100%;
-            border: 1px black solid !important;
             font-size: 14px;
-            font-weight: 300;
+            font-weight: 400;
+            border-radius: 3px;
             color: #172b4d;
+            margin-bottom: 10px;
+            &:focus-visible {
+                outline: none;
+                background-color: #fff;
+            }
         }
     }
     .avatar-card-preview {
@@ -222,8 +227,6 @@
 
 .add-task-btns {
     display: flex;
-   
-    
 }
 
 .add-task-btn {
