@@ -100,9 +100,11 @@ export function TaskModal({ taskModalOp }) {
         const input = Object.keys(data).find(str => str === ('attItem' + idx))
         currTask.attachments[idx].title = data[input];
     }
-
-    const onSumbitActivity = data => {
-        console.log(currTask);
+    const onSumbitComment = data => {
+        const newComment = { _id: utilService.makeId(), member: 'oshri', timeStamp: Date.now(), title: data.comment }
+        currTask.comments.push(newComment)
+        reset()
+        updateBoard(currTask)
     }
 
     const changeCheckBox = (item) => {
@@ -169,12 +171,12 @@ export function TaskModal({ taskModalOp }) {
     const testLog = (ev) => {
         setClient(ev)
     }
-    
+
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     return (
-        <div  className="task-modal hide-overflow">
+        <div className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> : <div className="cover-section" style={{ backgroundImage: `url(${currTask.cover}),url(https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60)` }} />}
                 <div className="task-header">
@@ -275,9 +277,25 @@ export function TaskModal({ taskModalOp }) {
                 </section>}
                 <div className="task-comment">
                     <p>Post a Comment:</p>
-                    <form onSubmit={handleSubmit(onSumbitActivity)}>
-                    <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("activity")} defaultValue={currTask.activity} />
+                    <form onSubmit={handleSubmit(onSumbitComment)}>
+                        <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("comment")} />
                     </form>
+                    {currTask.comments.length && currTask.comments.map(comment => <div key={comment._id} className="comment-container">
+                        <div className="comment-avatar">
+                            <Avatar key={comment._id} name={comment.member} size="30" round={true} />
+                        </div>
+                        <div className="comment-details">
+                            <div className="comment-header">
+                                <p className="comment-member">{comment.member}</p> <p><Moment fromNow>{comment.timeStamp}</Moment></p>
+                            </div>
+                            <div className="comment-title"><p>{comment.title}</p></div>
+                            <div className="comment-btns">
+                                <button>Edit</button>
+                                <button>Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                    )}
                 </div>
             </div>
             <div className="add-to-task" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
