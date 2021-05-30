@@ -214,6 +214,50 @@
         }
     }
 
+    .task-comment {
+        .comment-container {
+            display: flex;
+            margin-top: 10px;
+        }
+        .comment-details {
+            margin-left: 5px;
+             
+            .comment-header {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                :not(:first-child) {
+                    margin-left: 5px;
+                    margin-top: 0;
+                }
+            }
+            .comment-member {
+                font-weight: 600;
+            }
+            .comment-title {
+                display: flex;
+                align-items: center;
+                padding: 8px 12px;
+                border-radius: 3px;
+                box-sizing: border-box;
+                
+            }
+            .comment-btns {
+                display: flex;
+                align-items: center;
+                :not(:first-child) {
+                    margin-left: 5px;
+                }
+                button {
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    
+                }
+            }
+        }
+    }
+
     .label-in-modal {
         border-radius: 3px;
         box-sizing: border-box;
