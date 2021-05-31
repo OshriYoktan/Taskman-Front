@@ -155,6 +155,9 @@ export function BoardDetails(props) {
     const [cardModal, setCardModal] = useState(null)
     const cardModalRef = useRef()
     useOnClickOutside(cardModalRef, () => setIsCardModal(false));
+
+    const inviteRef = useRef()
+    useOnClickOutside(inviteRef, () => setIsInvite(false));
     const [isAddCard, setIsAddCard] = useState(null)
     const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
     const [isInvite, setIsInvite] = useState(null)
@@ -204,11 +207,11 @@ export function BoardDetails(props) {
     }
 
     const addMemberToBoard = data => {
-        var userToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
-        if (data.member === '') userToAdd = null
-        // setMembersToBoard(userToAdd)
-    }
+        var usersToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
+        setMembersToBoard(usersToAdd)
 
+
+    }
     const addLabel = (label) => {
         if (!currTask.labels.length) currTask.labels.push(label)
         else {
@@ -422,54 +425,40 @@ export function BoardDetails(props) {
                             {currBoard.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
                         </div>
                         <button onClick={() => setIsInvite(!isInvite)}>Invite</button>
-                        {isInvite && <div className="invite-members-modal">
+                        {isInvite && <div ref={inviteRef} className="invite-members-modal">
                             <form onChange={handleSubmit(addMemberToBoard)} >
-                                <button onClick={() => setIsInvite(!isInvite)}>x</button>
                                 <div className="invite-title">
-                                    <p>Invite to board:</p>
+                                    <div className="close-btn">
+                                        <p>Invite to board:</p>
+                                        <button  onClick={() => setIsInvite(!isInvite)}>x</button>
+                                    </div>
                                     <input type="text" autoComplete="off" placeholder="Search Taskman Members.." id="member" name="member"  {...register("member")} />
                                 </div>
                             </form>
                             {addMembersToBoard && <div className="exist-members">
                                 <ul>
+                                    <p>Add members:</p>
                                     {addMembersToBoard.map((member, idx) => {
-                                        if (!member.boards.includes(currBoard._id)) return (
-                                            <li key={member._id}>
-                                                <p>Add members:</p>
-                                                <button className="suggested-user">
-                                                    <Avatar key={idx} name={member} size="30" round={true} />
-                                                    <p>{member}</p>
-                                                    <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
-                                                </button>
-                                            </li>
-                                        )
+
+                                        return <li key={member._id}>
+                                            <button className="suggested-user">
+                                                <Avatar key={idx} name={member.name} size="30" round={true} />
+                                                <p>{member.name}</p>
+                                                <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
+                                            </button>
+                                        </li>
+
                                     })}
                                 </ul>
                             </div>}
                             <div className="exist-members">
-                                <div className="suggested-title">
-                                    <p>Suggested Users:</p>
-                                </div>
-                                {users.map((user, idx) => {
-                                    if (!user.boards.includes(currBoard._id)) return (
-                                        <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
-                                            <Avatar key={idx} name={user.name} size="30" round={true} />
-                                            <p>{user.name}</p>
-                                            <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
-                                        </button>
-
-                                    )
-                                })}
-                            </div>
-                            <div className="exist-members">
                                 <p>In This Board:</p>
                                 {users.map((user, idx) => {
-                                    if (user.boards.includes(currBoard._id)) return (
-                                        <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
-                                            <Avatar key={idx} name={user.name} size="30" round={true} />
-                                            <p>{user.name}</p>
-                                            <p><FontAwesomeIcon icon={faCheckCircle} /></p>
-                                        </button>)
+                                    return <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
+                                        <Avatar key={idx} name={user.name} size="30" round={true} />
+                                        <p>{user.name}</p>
+                                        <p><FontAwesomeIcon icon={faCheckCircle} /></p>
+                                    </button>
                                 })}
                             </div>
                         </div>}
