@@ -1,4 +1,18 @@
+@import "../../mixins";
+
 .task-modal {
+    display: flex;
+    width: 700px;
+    height: 96vh;
+    padding: 20px;
+    position: fixed;
+    left: 50%;
+    top: 53%;
+    overflow-y: auto;
+    z-index: 30;
+    transform: translate(-50%, -50%);
+    border-radius: 2px;
+    background-color: #f4f5f7;
     h3 {
         font-weight: 400;
         color: #172b4d;
@@ -15,19 +29,6 @@
         background-size: contain;
         background-position: center;
     }
-
-    display: flex;
-    width: 700px;
-    height: 96vh;
-    padding: 20px;
-    position: fixed;
-    left: 50%;
-    top: 53%;
-    overflow-y: auto;
-    z-index: 30;
-    transform: translate(-50%, -50%);
-    border-radius: 2px;
-    background-color: #f4f5f7;
     button {
         border-radius: 3px;
         padding: 10px;
@@ -85,15 +86,18 @@
         .add-an-item-btn {
             margin-left: 25px;
         }
-        span {
-            font-size: 11px;
+        h6 {
+            min-width: 27px;
+            display: inline-block;
+            font-weight: normal;
+            font-size: 9px;
             color: #5e6c84;
         }
         .demo-range-container {
             height: 8px;
             background: rgba(9, 30, 66, 0.08);
             border-radius: 4px;
-            width: 87%;
+            width: 90%;
             display: inline-block;
             transition: 0.3s;
 
@@ -268,11 +272,7 @@
         padding: 0 12px;
         width: auto;
     }
-    .save-desc {
-        :not(:first-child) {
-            margin-left: 10px;
-        }
-    }
+
     .task-description-modal {
         display: flex;
         flex-direction: row;
@@ -306,7 +306,7 @@
         .due-date-moment-section {
             margin-left: 25px;
             cursor: pointer;
-            h3{
+            h3 {
                 margin-bottom: 10px;
             }
             .due-date-moment {
@@ -331,6 +331,12 @@
                 margin-bottom: 15px;
                 > :first-child {
                     margin-right: 12px;
+                }
+            }
+            .save-desc {
+                margin-left: 25px;
+                > :first-child {
+                    margin-right: 10px;
                 }
             }
         }
@@ -483,5 +489,11 @@
                 }
             }
         }
+    }
+}
+
+@include narrow {
+    .task-modal {
+        width: 100vw;
     }
 }

@@ -27,7 +27,7 @@ export function TaskModal({ taskModalOp }) {
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
-    const [isComment,setIsComment] = useState(null)
+    const [isComment, setIsComment] = useState(null)
 
 
     //-------------------------onClickOutside----------------------------\\
@@ -116,9 +116,9 @@ export function TaskModal({ taskModalOp }) {
         updateBoard(currTask)
     }
 
-    
 
-    const onEditComment = (data,idx) => {
+
+    const onEditComment = (data, idx) => {
         const input = Object.keys(data).find(str => str === ('editComment' + idx))
         currTask.comments[idx].title = data[input];
         updateBoard(currTask)
@@ -240,7 +240,7 @@ export function TaskModal({ taskModalOp }) {
                             <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
                             {isDesc && <div className="save-desc">
                                 <button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }}>Save</button>
-                                <button onClick={() => setIsDesc(false)}>x</button> </div>}
+                                <button onClick={() => setIsDesc(false)}><FontAwesomeIcon icon={faTimes} ></FontAwesomeIcon></button> </div>}
                         </form>
                     </section>
                 </div>
@@ -250,7 +250,7 @@ export function TaskModal({ taskModalOp }) {
                             <div className="checklist-svg"> <div className="flex"> <FontAwesomeIcon icon={faList} ></FontAwesomeIcon> <p>{checklist.title}:</p></div>
                                 <button onClick={() => taskModalOp.addChecklist(listIdx)}>Delete list</button>
                             </div>
-                            {!checklist.list.length ? null : <span>{checklist.range}%</span>}
+                            {!checklist.list.length ? null : <h6>{checklist.range}%</h6>}
                             {!checklist.list.length ? null : <div className="demo-range-container">
                                 {checklist.range === 100 ? <div className="demo-range-checked" style={{ backgroundColor: '#61bd4f', width: checklist.range + '%' }}></div> :
                                     <div className="demo-range-checked" style={{ width: checklist.range + '%' }}></div>}</div>}
@@ -309,7 +309,7 @@ export function TaskModal({ taskModalOp }) {
                     <form onSubmit={handleSubmit(onSumbitComment)}>
                         <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("comment")} />
                     </form>
-                    {!currTask.comments.length ? null : currTask.comments.map((comment,idx) => <div key={comment._id} className="comment-container">
+                    {!currTask.comments.length ? null : currTask.comments.map((comment, idx) => <div key={comment._id} className="comment-container">
                         <div className="comment-avatar">
                             <Avatar key={comment._id} name={comment.member} size="30" round={true} />
                         </div>
@@ -317,9 +317,9 @@ export function TaskModal({ taskModalOp }) {
                             <div className="comment-header">
                                 <p className="comment-member">{comment.member}</p> <p><Moment fromNow>{comment.timeStamp}</Moment></p>
                             </div>
-                            <form onChange={handleSubmit(res => onEditComment(res,idx))} className="comment-title">
+                            <form onChange={handleSubmit(res => onEditComment(res, idx))} className="comment-title">
                                 <input type="text" autoComplete="off" id={"comment-edit" + idx} defaultValue={comment.title} {...register("editComment" + idx)} />
-                                </form>
+                            </form>
                             <div className="comment-btns">
                                 <button onClick={() => onRemoveComment(comment._id)}>Delete</button>
                             </div>
