@@ -223,7 +223,6 @@
             .comment-header {
                 display: flex;
                 align-items: center;
-                justify-content: center;
                 :not(:first-child) {
                     margin-left: 5px;
                     margin-top: 0;
@@ -235,7 +234,6 @@
             .comment-title {
                 display: flex;
                 align-items: center;
-                padding: 8px 12px;
                 border-radius: 3px;
                 box-sizing: border-box;
             }
