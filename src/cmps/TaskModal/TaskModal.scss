@@ -236,6 +236,9 @@
                 align-items: center;
                 border-radius: 3px;
                 box-sizing: border-box;
+                input {
+                    background-color: #f4f5f7;
+                }
             }
             .comment-btns {
                 display: flex;

@@ -77,6 +77,16 @@
             background-color: #f4f5f7;
             height: 350px;
             z-index: 50;
+            .close-btn {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                :first-child{
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+                
+            }
             .invite-title {
                 margin-top: 15px;
             }
@@ -104,15 +114,17 @@
             & > :last-child {
                 border-bottom: none;
             }
-            button {
-                display: flex;
-                align-items: center;
-                margin-bottom: 5px;
-                border-radius: 3px;
-                width: 90%;
-                margin-left: 10px;
-                height: 35px;
-                padding: 0;
+            .exist-members {
+                button {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 5px;
+                    border-radius: 3px;
+                    width: 90%;
+                    margin-left: 10px;
+                    height: 35px;
+                    padding: 0;
+                }
             }
         }
         .suggested-user {
