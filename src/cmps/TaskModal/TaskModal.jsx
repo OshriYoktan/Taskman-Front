@@ -203,6 +203,15 @@ export function TaskModal({ taskModalOp }) {
                     </div>
                 </div>
                 <div className="task-description-modal">
+                    {!currTask.members.length ? null : <section className="members-section"><h3>MEMBERS:</h3>
+                        <div className="member-list">
+                            {currTask.members.map((member, idx) =>
+                                <div className="member-in-modal" key={idx}>
+                                    <Avatar key={idx} name={member.name} size="30" round={true} />
+                                </div>)}
+                            <button onClick={() => setMemberModal(true)}>+</button>
+                        </div>
+                    </section>}
                     {!currTask.labels.length ? null : <section className="labels-section"><h3>LABELS:</h3>
                         {currTask.labels.map((label, idx) =>
                             <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
@@ -213,24 +222,17 @@ export function TaskModal({ taskModalOp }) {
                     {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}><h3>DUE DATE:</h3>
                         <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
                         </span> </section>}
-                    {!currTask.members.length ? null : <section className="members-section"><p>Members:</p>
-                        <div className="member-list">
-                            {currTask.members.map((member, idx) =>
-                                <div className="member-in-modal" key={idx}>
-                                    <Avatar key={idx} name={member.name} size="30" round={true} />
-                                </div>)}
-                            <button onClick={() => setMemberModal(true)}>+</button>
+                    <section className="desc-section">
+                        <div className="desc-svg"><FontAwesomeIcon icon={faAlignLeft} />
+                            <p>Description:</p>
                         </div>
-                    </section>}
-                    <div className="desc-svg"><FontAwesomeIcon icon={faAlignLeft} />
-                        <p>Description:</p>
-                    </div>
-                    <form onChange={handleSubmit(res => onSubmitDesc(res))}>
-                        <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
-                        {isDesc && <div className="save-desc">
-                            <button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }}>Save</button>
-                            <button onClick={() => setIsDesc(false)}>x</button> </div>}
-                    </form>
+                        <form onChange={handleSubmit(res => onSubmitDesc(res))}>
+                            <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
+                            {isDesc && <div className="save-desc">
+                                <button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }}>Save</button>
+                                <button onClick={() => setIsDesc(false)}>x</button> </div>}
+                        </form>
+                    </section>
                 </div>
                 {!currTask.checklists.length ? null : <section >
                     {currTask.checklists.map((checklist, listIdx) =>
