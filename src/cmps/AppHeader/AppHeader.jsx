@@ -10,9 +10,9 @@ export function AppHeader() {
 
     return (
         <nav className="app-header sub-container">
-            <Link className="link" to="/"><FontAwesomeIcon icon={faHome} /></Link>
-            <Link className="link" to="/">Taskman</Link>
-            <Link className="link" to="/"><FontAwesomeIcon icon={faUserCircle} /></Link>
+            <Link className="link" to="/boards"><FontAwesomeIcon icon={faHome} /></Link>
+            <Link className="link" to="/boards">Taskman</Link>
+            <Link className="link" to="/boards"><FontAwesomeIcon icon={faUserCircle} /></Link>
         </nav>
     )
 }

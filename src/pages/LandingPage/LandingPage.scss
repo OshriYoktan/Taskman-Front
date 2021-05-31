@@ -1,8 +1,10 @@
+@import '../../mixins';
+
 .landing-page-container {
     background-color: #fef8f2;
     position: absolute;
     top: 0;
-    width: 100vw;
+    width: 100%;
     * {
         user-select: none;
     }
@@ -21,14 +23,15 @@
                     color: #eb342d;
                 }
             }
-            p {
+            a {
                 font-size: 19px;
                 line-height: 1.7rem;
+                color: black;
                 span {
                     color: #eb342d;
                 }
             }
-            > p:last-of-type {
+            > p {
                 margin-top: 7px;
                 font-weight: 600;
                 font-size: 20px;
@@ -37,16 +40,37 @@
     }
 }
 
+.landing-page-header {
+    position: fixed;
+    top: 10px;
+    a {
+        font-weight: 400;
+        font-size: 35px;
+        letter-spacing: 2px;
+        span {
+            color: #eb342d;
+        }
+    }
+}
+
 .try-btn {
     position: fixed;
-    bottom: 7vh;
-    right: 8vw;
+    bottom: 2vh;
+    right: 10vw;
     background-color: #eb342d;
-    padding: 1em;
     font-size: 17px;
     border-radius: 7px;
     color: white;
     font-weight: 600;
+    transition: 0.3s;
+    a {
+        padding: 0.7em 0.5em;
+        width: 100%;
+        height: 100%;
+    }
+    &:hover {
+        transform: translateY(-10%);
+    }
 }
 
 .landing-page-section {
@@ -54,7 +78,7 @@
     justify-content: space-around;
     align-items: center;
     width: 100%;
-    height: 500px;
+    height: 450px;
     div {
         height: 60%;
         display: flex;
@@ -75,4 +99,8 @@
     img {
         width: 500px;
     }
+}
+
+@include normal {
+
 }

@@ -18,7 +18,7 @@ export function LandingPage() {
                     <h3>T<span>a</span>skm<span>a</span>n</h3>
                     <p>Taskman helps teams move work forward.
                     Collaborate, manage projects, and reach new productivity peaks. From high rises to the home office, the way your team works is unique-accomplish it all with Trello.</p>
-                    <p>Join now<span>.</span></p>
+                    <Link to="/profile">Join now<span>.</span></Link>
                 </div>
                 <img src="https://cdn.dribbble.com/users/2851002/screenshots/9667092/media/09648e273e248e7cfd22ade4010b2a6e.gif" alt="" />
             </div>
@@ -42,7 +42,9 @@ export function LandingPage() {
             <div className="flex try-btn">
                 <Link to="/boards" className="link">Try Taskman!</Link>
             </div>
-            {/* <img src="https://cdn.dribbble.com/users/2851002/screenshots/9689190/media/c119e428ff356a4146c7c9d58f5c6e3f.gif" alt="" /> */}
+            <div className="landing-page-header">
+                <Link to="/boards" className="link">T<span>a</span>skm<span>a</span>n</Link>
+            </div>
         </section>
     )
 }

@@ -1,5 +1,6 @@
 $break-mobile: 400px;
 $break-narrow: 720px;
+$break-normal: 1020px;
 
 @mixin mobile {
     @media (max-width: $break-mobile) {
@@ -9,6 +10,12 @@ $break-narrow: 720px;
 
 @mixin narrow {
     @media (max-width: $break-narrow) {
+        @content;
+    }
+}
+
+@mixin normal {
+    @media (max-width: $break-normal) {
         @content;
     }
 }
