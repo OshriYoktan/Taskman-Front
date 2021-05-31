@@ -86,15 +86,18 @@
         .add-an-item-btn {
             margin-left: 25px;
         }
-        span {
-            font-size: 11px;
+        h6 {
+            min-width: 27px;
+            display: inline-block;
+            font-weight: normal;
+            font-size: 9px;
             color: #5e6c84;
         }
         .demo-range-container {
             height: 8px;
             background: rgba(9, 30, 66, 0.08);
             border-radius: 4px;
-            width: 87%;
+            width: 90%;
             display: inline-block;
             transition: 0.3s;
 
@@ -266,11 +269,7 @@
         padding: 0 12px;
         width: auto;
     }
-    .save-desc {
-        :not(:first-child) {
-            margin-left: 10px;
-        }
-    }
+
     .task-description-modal {
         display: flex;
         flex-direction: row;
@@ -329,6 +328,12 @@
                 margin-bottom: 15px;
                 > :first-child {
                     margin-right: 12px;
+                }
+            }
+            .save-desc {
+                margin-left: 25px;
+                > :first-child {
+                    margin-right: 10px;
                 }
             }
         }
