@@ -22,7 +22,7 @@ export function LabelEditModal(props) {
         <div className="label-edit-modal">
             <div className="labels-edit-modal-header">
                 <button onClick={() => props.setLabelEditModal(false)}><FontAwesomeIcon icon={faChevronLeft} /></button>
-                <h3>Edit Label:</h3>
+                <h3>Edit Label</h3>
                 <p className="btn-close-icon" onClick={() => props.setLabelModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </div>
             <div className="label-edit-details">

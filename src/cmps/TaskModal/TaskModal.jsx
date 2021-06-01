@@ -370,7 +370,7 @@ export function TaskModal({ taskModalOp }) {
                             <div className="att-modal" >
                                 <div className="att-modal-header">
                                     <h3>Attach from..</h3>
-                                    <button onClick={() => setAttModal(false)}>x</button>
+                                    <button onClick={() => setAttModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></button>
                                 </div>
                                 <div className="att-buttons">
                                     <button onClick={onButtonClick}>Import Image From Computer</button>
