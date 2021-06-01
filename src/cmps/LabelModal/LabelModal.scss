@@ -65,6 +65,10 @@
         .edit-label-btn {
             width: 20%;
             background-color: inherit;
+            padding: 10px 0 10px 20px;
+            &:hover {
+                color: red;
+            }
         }
     }
 }

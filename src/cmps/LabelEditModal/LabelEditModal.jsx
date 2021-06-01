@@ -15,8 +15,8 @@ export function LabelEditModal(props) {
         labelEditModal.desc = data.labelName
         labelEditModal.color = data.labelColor
         props.setLabelModal(labelEditModal)
-        dispatch(saveBoard({ ...currBoard}))
-        
+        dispatch(saveBoard({ ...currBoard }))
+
     }
     return (
         <div className="label-edit-modal">
@@ -28,9 +28,9 @@ export function LabelEditModal(props) {
             <div className="label-edit-details">
                 <form onChange={handleSubmit(res => onChangeEditLabel(res))}>
                     <p>Name:</p>
-                    <input type="text" name="edit-name" autoComplete="off"  defaultValue={labelEditModal.desc} {...register('labelName')} />
+                    <input type="text" name="edit-name" autoComplete="off" defaultValue={labelEditModal.desc} {...register('labelName')} />
                     <p>Color:</p>
-                    <input type="color" name="edit-color"  defaultValue={labelEditModal.color} {...register('labelColor')}/>
+                    <input type="color" name="edit-color" className="edit-color" defaultValue={labelEditModal.color} {...register('labelColor')} />
                 </form>
             </div>
         </div>
