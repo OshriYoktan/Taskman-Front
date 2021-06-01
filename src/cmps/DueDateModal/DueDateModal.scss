@@ -1,44 +1,47 @@
 .due-date-modal {
-    background-color: #f4f5f7;
-    position: absolute;
-    left: 100%;
-    top: 15%;
-    transform: translate(-100%, 0);
-    border-radius: 2px;
-    border: 1px solid  rgba(207, 191, 191, 0.6);
-    width: 50%;
-    padding: 0 0 10px 0;
-    // max-width: 0;
-    white-space: nowrap;
-    overflow: auto;
-    transition: 0.6s;
+  background-color: #f4f5f7;
+  position: relative;
+  left: 100%;
+  transform: translate(-25.7%, 0);
+  border-radius: 2px;
+  border: 1px solid rgba(207, 191, 191, 0.6);
+  width: 280px;
+  white-space: nowrap;
+  overflow: auto;
+  transition: 0.6s;
+  z-index: 10;
+  top: 123px;
+  color: #172b4d;
+  min-height: 180px;
 
-    .due-date-modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 1px solid black;
-        height: 60px;
-        > :first-child{
-          margin-left: auto;
-          margin-right: auto;
-      }
-        button {
-            background-color: inherit;
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 60px;
-            height: 60px;
-        }
-      }
-      form{
-        margin: 0 10px 0 10px;
-
-          display: flex;
-          flex-direction: column;
-      }
+  .due-date-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid black;
+    height: 60px;
+    > :first-child {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    button {
+      background-color: inherit;
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 60px;
+      height: 60px;
+    }
+  }
+  form {
+    margin: 0 10px 0 10px;
+    display: flex;
+    flex-direction: column;
+    button {
+      margin-bottom: 4px;
+    }
+  }
 }

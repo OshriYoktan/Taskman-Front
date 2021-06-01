@@ -1,27 +1,25 @@
 .label-modal {
-    
-    background-color: #F4F5F7;
-    position: absolute;
+    background-color: #f4f5f7;
+    position: relative;
     left: 100%;
-    top: 15%;
-    transform: translate(-100%, 0);
+    transform: translate(-25.7%, 0);
     border-radius: 2px;
-    border: 1px solid  rgba(207, 191, 191, 0.6);
-
-    width: 50%;
-    max-width: 0;
+    border: 1px solid rgba(207, 191, 191, 0.6);
+    width: 280px;
     white-space: nowrap;
     overflow: auto;
-    transition: 0.6s;
-    
+    z-index: 10;
+    top: 175px;
+    color: #172b4d;
+
     .labels-modal-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
         border-bottom: 1px solid black;
-        margin:0  10px 0 10px ;
+        margin: 0 10px 0 10px;
         height: 60px;
-         > :first-child{
+        > :first-child {
             margin-left: auto;
             margin-right: auto;
         }
@@ -43,15 +41,15 @@
             height: 12%;
             padding: 0 12px;
             position: relative;
-            color : white;
+            color: white;
         }
-        li{
+        li {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            .label-to-show{
+            .label-to-show {
                 display: flex;
                 justify-content: space-between;
                 border-radius: 3px;
@@ -60,13 +58,13 @@
                 min-height: 20px;
                 padding: 6px 12px;
                 position: relative;
-                transition: padding 85ms,margin 85ms,box-shadow 85ms;
+                transition: padding 85ms, margin 85ms, box-shadow 85ms;
                 width: 80%;
             }
         }
-        .edit-label-btn{
+        .edit-label-btn {
             width: 20%;
-            background-color:inherit;
+            background-color: inherit;
         }
     }
 }

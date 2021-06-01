@@ -162,7 +162,8 @@ export function BoardDetails(props) {
     const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
     const [isInvite, setIsInvite] = useState(null)
     const [isCardModal, setIsCardModal] = useState(null)
-    const [x, setX] = useState(null)
+    const [xPosEl, setXPosEl] = useState(null)
+    const [yPosEl, setYPosEl] = useState(null)
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
     
@@ -179,7 +180,8 @@ export function BoardDetails(props) {
 
     // Card modal
     const openCardModal = (ev, card) => {
-        setX(ev.clientX)
+        setXPosEl(ev.clientX)
+        setYPosEl(ev.clientY)
         setIsCardModal(true)
         setCardModal(card)
     }
@@ -500,7 +502,7 @@ export function BoardDetails(props) {
                 </Droppable>
             </DragDropContext>
             {
-                isCardModal && <div ref={cardModalRef} style={{ left: `${x}px`, top: `155px` }} className="card-modal">
+                isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
                     <div className="card-title-modal">
                         <p>{cardModal.title}</p>
                         <button onClick={() => closeModal()}>x</button>

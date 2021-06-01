@@ -28,7 +28,6 @@ export function TaskModal({ taskModalOp }) {
     const [client, setClient] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
     const [isComment, setIsComment] = useState(null)
-
     //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
     const useOnClickOutside = (ref, handler) => {
@@ -57,6 +56,10 @@ export function TaskModal({ taskModalOp }) {
     const [labelModal, setLabelModal] = useState(false)
     const labelRef = useRef()
     useOnClickOutside(labelRef, () => setLabelModal(false));
+
+    const [labelEditModal, setLabelEditModal] = useState(false)
+    const labelEditRef = useRef()
+    useOnClickOutside(labelEditRef, () => setLabelEditModal(false));
 
     const [coverModal, setCoverModal] = useState(false)
     const coverRef = useRef()
@@ -334,56 +337,57 @@ export function TaskModal({ taskModalOp }) {
                     <p onClick={() => taskModalOp.setCurrTask(null)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="right-task-modal-btns">
-                    <div onClick={() => setLabelModal(true)} className="right-task-btn">
+                    <div onClick={() => { setLabelModal(true) }} className="right-task-btn">
                         <FontAwesomeIcon icon={faTag}></FontAwesomeIcon>
                         <p> Labels </p>
+                        {(!labelModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={labelRef}> <LabelModal labelEditRef={labelEditRef} setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
                     </div>
                     <div onClick={() => setMemberModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>
                         <p> Members </p>
+                        {(!memberModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
                     </div>
                     <div onClick={() => setChecklistModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faList}></FontAwesomeIcon>
                         <p> Checklist </p>
+                        {(!checklistModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
                     </div>
                     <div onClick={() => setDueDateModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
                         <p> Due Date </p>
+                        {(!dueDateModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
+
                     </div>
                     <div onClick={() => setAttModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
                         <p> Attachment </p>
+                        {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} onAttChange={onAttChange} inputFile={inputFile}></CoverModal></div>}
                     </div>
                     <div onClick={() => setCoverModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
                         <p> Cover </p>
+                        {(!attModal) ? null : <div ref={attRef} onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }}>
+                            <div className="att-modal" >
+                                <div className="att-modal-header">
+                                    <h3>Attach from..</h3>
+                                    <button onClick={() => setAttModal(false)}>x</button>
+                                </div>
+                                <div className="att-buttons">
+                                    <button onClick={onButtonClick}>Import Image From Computer</button>
+                                    <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
+                                    <hr style={{ width: "95%" }} />
+                                    {!urlImg && <button onClick={() => setUrlImg(true)}>Import Image By Url</button>}
+                                    {urlImg && <form onSubmit={handleSubmit(onAttChange)} >
+                                        <input type="text" placeholder="Name Photo here" {...register("imgName")} />
+                                        <input type="text" placeholder="Place URL here" {...register("imgUrl")} required />
+                                        <button >Save</button>
+                                    </form>}
+                                </div>
+                            </div>
+                        </div>}
                     </div>
                 </div>
             </div>
-            {(!labelModal) ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
-            {(!memberModal) ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
-            {(!checklistModal) ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
-            {(!dueDateModal) ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
-            {(!coverModal) ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} onAttChange={onAttChange} inputFile={inputFile}></CoverModal></div>}
-            {(!attModal) ? null : <div ref={attRef}>
-                <div className="att-modal" >
-                    <div className="att-modal-header">
-                        <h3>Attach from..</h3>
-                        <button onClick={() => setAttModal(false)}>x</button>
-                    </div>
-                    <div className="att-buttons">
-                        <button onClick={onButtonClick}>Import Image From Computer</button>
-                        <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
-                        <hr style={{ width: "95%" }} />
-                        {!urlImg && <button onClick={() => setUrlImg(true)}>Import Image By Url</button>}
-                        {urlImg && <form onSubmit={handleSubmit(onAttChange)} >
-                            <input type="text" placeholder="Name Photo here" {...register("imgName")} />
-                            <input type="text" placeholder="Place URL here" {...register("imgUrl")} required />
-                            <button >Save</button>
-                        </form>}
-                    </div>
-                </div>
-            </div>}
         </div >
     )
 }

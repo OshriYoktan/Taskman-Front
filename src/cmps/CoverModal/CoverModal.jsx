@@ -10,7 +10,7 @@ export function CoverModal(props) {
     const [coverColors, setCoverColors] = useState(boardService.getCoverColors())
 
     return (
-        <div className="cover-modal">
+        <div className="cover-modal" style={!props.currTask.cover ? { top: '175px' } : null}>
             <section className="cover-modal-header">
                 <h3>Cover</h3>
                 <p className="btn-close-icon" onClick={() => props.setCoverModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
