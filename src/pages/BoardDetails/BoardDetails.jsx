@@ -275,6 +275,7 @@ export function BoardDetails(props) {
     }
 
     const addNewCard = (data) => {
+        newCard = boardService.getEmptyCard()
         newCard.title = data.newCardTitle
         currBoard.cards.push(newCard)
         setDraggedCards(currBoard.cards)
@@ -284,8 +285,7 @@ export function BoardDetails(props) {
         reset()
         addActivity('Aviv Zohar', 'added', 'card')
         socketService.emit('card to-add-card', newCard);
-        newCard = boardService.getEmptyCard()
-        data.newCardTitle = ''
+        // data.newCardTitle = ''
     }
 
     const deleteCard = () => {
@@ -293,6 +293,7 @@ export function BoardDetails(props) {
         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
         socketService.emit('card to-delete-card', cardIdx);
         addActivity('Aviv Zohar', 'deleted', 'card')
+        setDraggedCards(currBoard.cards)
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(boardToSave._id))
         closeModal()
@@ -501,7 +502,7 @@ export function BoardDetails(props) {
                         <button onClick={() => closeModal()}>x</button>
                     </div>
                     <div className="card-modal-btns">
-                        <button onClick={deleteCard}>Delete This Card</button>
+                        <button onClick={() => deleteCard()}>Delete This Card</button>
                     </div>
                 </div>
             }

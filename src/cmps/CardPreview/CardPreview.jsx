@@ -78,6 +78,9 @@ export function CardPreview(props) {
         return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
     }
 
+
+    
+
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
@@ -128,9 +131,8 @@ export function CardPreview(props) {
                     </Droppable>
                 </DragDropContext>
                 {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
-                {isAddTask && <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
-                    {/* <input type="text" id="title" name="title" {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} /> */}
-                    <textarea type="text" id="title" name="title" {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} />
+                {isAddTask && <form className="add-task-container"  onSubmit={handleSubmit(addTask)}>
+                    <input   type="text" id="title" name="title" {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} />
                     <div className="add-task-btns">
                         <button>Add Task</button>
                         <p onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>

@@ -194,6 +194,7 @@ export function TaskModal({ taskModalOp }) {
         setClient(ev)
     }
 
+
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     return (
@@ -209,7 +210,7 @@ export function TaskModal({ taskModalOp }) {
                         <form onChange={handleSubmit(setTaskTitle)}>
                             <FontAwesomeIcon icon={faWindowMaximize} /> <input type="text" {...register("taskTitle")} defaultValue={currTask.title} placeholder="Task name" />
                         </form>
-                        <p>In list: {currCard.title}</p>
+                        <p className="card-title">In list: {currCard.title}</p>
                     </div>
                 </div>
                 <div className="task-description-modal">
