@@ -440,7 +440,6 @@ export function BoardDetails(props) {
                                 <ul>
                                     <p>Add members:</p>
                                     {addMembersToBoard.map((member, idx) => {
-
                                         return <li key={member._id}>
                                             <button className="suggested-user">
                                                 <Avatar key={idx} name={member.name} size="30" round={true} />

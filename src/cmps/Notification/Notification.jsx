@@ -13,8 +13,8 @@ export function Notification({ notifyOp }) {
                 {msg.type === 'warning' && <FontAwesomeIcon className="fa" icon={faExclamationCircle}></FontAwesomeIcon>}
             </div>
             <div>
-                {(msg.type !== 'attached' && msg.type !== 'removed') ? <p><span>{msg.member}</span> {msg.type} {msg.desc} {msg.type === 'deleted' ? 'from' : 'to'} <span>{msg.card}</span>{msg.card === 'board' ? '' : ' card'}.</p>
-                    : <p><span>{msg.member}</span> {msg.type} {msg.desc} {msg.type === 'removed' ? 'from' : 'to'} <span>{msg.card}</span> task.</p>}
+                {(msg.type !== 'attached' && msg.type !== 'removed') ? <p><span>{msg.member}:<br /></span> {msg.type} {msg.desc} {msg.type === 'deleted' ? 'from' : 'to'} <span>{msg.card}</span>{msg.card === 'board' ? '' : ' card'}.</p>
+                    : <p><span>{msg.member}:</span><br /> {msg.type} {msg.desc} {msg.type === 'removed' ? 'from' : 'to'} <span>{msg.card}</span> task.</p>}
             </div>
         </section>
     )
