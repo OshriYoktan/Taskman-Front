@@ -166,7 +166,7 @@ export function BoardDetails(props) {
     const [yPosEl, setYPosEl] = useState(null)
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
-    
+
 
     //Card Drag
     const handleOnDragEnd = (result) => {
@@ -212,13 +212,28 @@ export function BoardDetails(props) {
     const addMemberToBoard = data => {
         const membersInBoard = []
         currBoard.members.map(member => membersInBoard.push(member._id))
-        var usersToAdd = users.filter(user => {
-            if(!membersInBoard.includes(user._id))return user.name.toLowerCase().includes(data.member.toLowerCase())
+        const usersToAdd = users.filter(user => {
+            if (data.member === '') return
+            if (!membersInBoard.includes(user._id)) return user.name.toLowerCase().includes(data.member.toLowerCase())
         })
         setMembersToBoard(usersToAdd)
-
-
+        
     }
+
+    const onAddMember = (member) => {
+        currBoard.members.push(member)
+        dispatch(saveBoard(currBoard))
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const removeUserFromBoard = (id) => {
+        const idx = currBoard.members.findIndex(member => member._id === id)
+        currBoard.members.splice(idx, 1)
+        dispatch(saveBoard(currBoard))
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+
     const addLabel = (label) => {
         if (!currTask.labels.length) currTask.labels.push(label)
         else {
@@ -318,18 +333,7 @@ export function BoardDetails(props) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
     }
 
-    const removeUserFromBoard = (user) => {
-        if (user.boards.includes(currBoard._id)) {
-            //עד שלא נעשה יוזר לא נוכל לרנדר את היוזרים
-            // -ה USER.BOARD 
-            // שלהם קבוע, כלומר כל פעם הוא יהיה אותו דבר
-            // Why in hebrew?!
-            const boardIdx = user.boards.findIndex(board => board._id === currBoard._id)
-            user.boards.splice(boardIdx, 1)
-        } else {
-            user.boards.push(currBoard._id)
-        }
-    }
+
 
     const filterTasks = (filterBy) => {
         if (filterBy.task || filterBy.labels.length) {
@@ -445,10 +449,11 @@ export function BoardDetails(props) {
                             </form>
                             {addMembersToBoard && <div className="exist-members">
                                 <ul>
-                                    <p>Add members:</p>
+
                                     {addMembersToBoard.map((member, idx) => {
                                         return <li key={member._id}>
-                                            <button className="suggested-user">
+                                            <p>Add members:</p>
+                                            <button onClick={() => onAddMember(member)} className="suggested-user">
                                                 <Avatar key={idx} name={member.name} size="30" round={true} />
                                                 <p>{member.name}</p>
                                                 <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
@@ -461,7 +466,7 @@ export function BoardDetails(props) {
                             <div className="exist-members">
                                 <p>In This Board:</p>
                                 {currBoard.members.map((user, idx) => {
-                                    return <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
+                                    return <button key={user._id} onClick={() => removeUserFromBoard(user._id)} className="suggested-user">
                                         <Avatar key={idx} name={user.name} size="30" round={true} />
                                         <p>{user.name}</p>
                                         <p><FontAwesomeIcon icon={faCheckCircle} /></p>
