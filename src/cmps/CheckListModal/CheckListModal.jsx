@@ -12,6 +12,7 @@ export function CheckListModal(props) {
         props.addChecklist(newChecklistToSend)
         props.setChecklistModal(false)
     }
+    console.log('props.currTask.cover:', props.currTask.cover)
     return (
         <div className="checklist-modal" >
             <section className="checklist-modal-header">

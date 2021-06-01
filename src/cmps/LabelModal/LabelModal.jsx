@@ -24,7 +24,7 @@ export function LabelModal(props) {
 
     return (
         <section >
-            {  <div className="label-modal" style={!labelEditModal ? { maxWidth: 100 + '%' } : { maxWidth: 0, visibility: 'visible' }}>
+            {  <div className="label-modal" style={!labelEditModal ? { maxWidth: '280px' } : { maxWidth: 0, border: 'none', visibility: 'visible' }}>
                 <div className="labels-modal-header">
                     <h3>Labels</h3>
                     <p className="btn-close-icon" onClick={() => props.setLabelModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
@@ -41,7 +41,7 @@ export function LabelModal(props) {
                     })}
                 </ul>
             </div>}
-            { labelEditModal && <LabelEditModal setLabelModal={props.setLabelModal} currBoard={currBoard} labelEditModal={labelEditModal} setLabelEditModal={setLabelEditModal} addLabel={props.addLabel}></LabelEditModal>}
+            { labelEditModal && <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={props.LabelEditRef}><LabelEditModal setLabelModal={props.setLabelModal} currBoard={currBoard} labelEditModal={labelEditModal} setLabelEditModal={setLabelEditModal} addLabel={props.addLabel}></LabelEditModal></div>}
         </section >
     )
 }
