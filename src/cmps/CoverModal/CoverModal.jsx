@@ -27,11 +27,9 @@ export function CoverModal(props) {
                     <h4>ATTACHMENTS:</h4>
                     <div className="cover-attachments-container">
                         {props.currTask.attachments.map((attach) => {
-                            return <Color src={attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                                {({ data, loading, error }) => {
-                                    console.log('data:', data)
-                                    return (<div className="cover-attach" key={attach._id} style={{ backgroundColor: data, backgroundImage: `url(${attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} onClick={() => props.addCover(attach.src)} />)
-                                }}</Color>
+                            return <Color key={attach._id} src={attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
+                                {({ data, loading, error }) => (<div className="cover-attach" style={{ backgroundColor: data, backgroundImage: `url(${attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} onClick={() => props.addCover(attach.src)} />)}
+                            </Color>
                         })}
                     </div>
                 </div>}
