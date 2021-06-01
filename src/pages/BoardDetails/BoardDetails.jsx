@@ -20,7 +20,7 @@ export function BoardDetails(props) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm()
     var newCard = boardService.getEmptyCard()
-    const [users, setUsers] = useState(boardService.getUsers())
+    const users = boardService.getUsers()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
@@ -165,6 +165,7 @@ export function BoardDetails(props) {
     const [x, setX] = useState(null)
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
+    
 
     //Card Drag
     const handleOnDragEnd = (result) => {
@@ -207,7 +208,11 @@ export function BoardDetails(props) {
     }
 
     const addMemberToBoard = data => {
-        var usersToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
+        const membersInBoard = []
+        currBoard.members.map(member => membersInBoard.push(member._id))
+        var usersToAdd = users.filter(user => {
+            if(!membersInBoard.includes(user._id))return user.name.toLowerCase().includes(data.member.toLowerCase())
+        })
         setMembersToBoard(usersToAdd)
 
 
@@ -431,7 +436,7 @@ export function BoardDetails(props) {
                                 <div className="invite-title">
                                     <div className="close-btn">
                                         <p>Invite to board:</p>
-                                        <button  onClick={() => setIsInvite(!isInvite)}>x</button>
+                                        <button onClick={() => setIsInvite(!isInvite)}>x</button>
                                     </div>
                                     <input type="text" autoComplete="off" placeholder="Search Taskman Members.." id="member" name="member"  {...register("member")} />
                                 </div>
@@ -453,7 +458,7 @@ export function BoardDetails(props) {
                             </div>}
                             <div className="exist-members">
                                 <p>In This Board:</p>
-                                {users.map((user, idx) => {
+                                {currBoard.members.map((user, idx) => {
                                     return <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
                                         <Avatar key={idx} name={user.name} size="30" round={true} />
                                         <p>{user.name}</p>
