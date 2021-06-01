@@ -29,7 +29,6 @@ export function TaskModal({ taskModalOp }) {
     const [urlImg, setUrlImg] = useState(false)
     const [isComment, setIsComment] = useState(null)
 
-
     //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
     const useOnClickOutside = (ref, handler) => {

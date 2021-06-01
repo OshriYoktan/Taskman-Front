@@ -7,7 +7,7 @@
     position: fixed;
     top: 5vh;
     right: -1px;
-    width: auto;
+    width: 300px;
     z-index: 40;
     border-radius: 10px 0 0 10px;
     border: 1px solid rgba(128, 128, 128, 0.3);
@@ -34,7 +34,7 @@
         flex-direction: column;
         > :first-child {
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 500;
         }
         > :nth-child(2) {
             font-size: 14px;
