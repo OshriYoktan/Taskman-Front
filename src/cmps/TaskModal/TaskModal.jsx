@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faThermometerEmpty, faSquare, faPaperclip, faClipboard, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faThermometerEmpty, faSquare, faPaperclip, faClipboard, faPlus, faComment } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -27,6 +27,7 @@ export function TaskModal({ taskModalOp }) {
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
+
     const [isComment, setIsComment] = useState(null)
     //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
@@ -95,6 +96,7 @@ export function TaskModal({ taskModalOp }) {
 
     const onSubmitItemInList = (data, idxInList) => {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
+        if (!data[input]) return
         currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
         setRange(currTask.checklists[idxInList])
         reset({ inputItem0: '', inputItem1: '', inputItem2: '', inputItem3: '', inputItem4: '' })
@@ -219,15 +221,15 @@ export function TaskModal({ taskModalOp }) {
                     {!currTask.members.length ? null : <section className="members-section"><h3>MEMBERS:</h3>
                         <div className="member-list">
                             {currTask.members.map((member, idx) =>
-                                <div className="member-in-modal" key={idx}>
+                                <div className="member-in-modal" onClick={() => setMemberModal(true)} key={idx}>
                                     <Avatar key={idx} name={member.name} size="30" round={true} />
                                 </div>)}
-                            <button onClick={() => setMemberModal(true)}>+</button>
+                            <button onClick={() => setMemberModal(true)}><FontAwesomeIcon icon={faPlus} /></button>
                         </div>
                     </section>}
                     {!currTask.labels.length ? null : <section className="labels-section"><h3>LABELS:</h3>
                         {currTask.labels.map((label, idx) =>
-                            <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
+                            <div className="label-in-modal" key={idx} onClick={() => setLabelModal(true)} style={{ backgroundColor: label.color }}>
                                 <p>{label.desc}</p>
                             </div>)}
                         <button onClick={() => setLabelModal(true)}><FontAwesomeIcon icon={faPlus} /></button>
@@ -268,7 +270,7 @@ export function TaskModal({ taskModalOp }) {
                             })}
                             <form onSubmit={handleSubmit(res => onSubmitItemInList(res, listIdx))}>
                                 <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="Add an item"  {...register('inputItem' + listIdx)} />
-                                <button className="add-an-item-btn">Add An Item</button>
+                                <button className="add-an-item-btn">Add</button>
                             </form>
                         </div>)}
                 </section>}
@@ -307,10 +309,12 @@ export function TaskModal({ taskModalOp }) {
                         </div>
                     )}
                 </section>}
+                <div className="att-svg"><FontAwesomeIcon icon={faComment} />
+                    <p>Comments:</p>
+                </div>
                 <div className="task-comment">
-                    <p>Post a Comment:</p>
                     <form onSubmit={handleSubmit(onSumbitComment)}>
-                        <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("comment")} />
+                        <input className="post-comment-input" type="text" autoComplete="off" id="comment" name="comment" placeholder="Post a Comment..."  {...register("comment")} />
                     </form>
                     {!currTask.comments.length ? null : currTask.comments.map((comment, idx) => <div key={comment._id} className="comment-container">
                         <div className="comment-avatar">
@@ -320,8 +324,9 @@ export function TaskModal({ taskModalOp }) {
                             <div className="comment-header">
                                 <p className="comment-member">{comment.member}</p> <p><Moment fromNow>{comment.timeStamp}</Moment></p>
                             </div>
-                            <form onChange={handleSubmit(res => onEditComment(res, idx))} className="comment-title">
+                            <form onChange={handleSubmit((res) => onEditComment(res, idx))} className="comment-title">
                                 <input type="text" autoComplete="off" id={"comment-edit" + idx} defaultValue={comment.title} {...register("editComment" + idx)} />
+                                <button style={{display:'none'}} onClick={(ev) => ev.preventDefault()}></button>
                             </form>
                             <div className="comment-btns">
                                 <button onClick={() => onRemoveComment(comment._id)}>Delete</button>
