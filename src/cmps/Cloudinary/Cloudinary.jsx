@@ -19,14 +19,15 @@ export function Cloudinary() {
                 resourceType={'image'}
                 cloudName={'dtu0lzwpw'}
                 uploadPreset={'aywupxtw'}
-                buttonText={'Upload files'}
+                buttonText={'Attachments'}
                 style={{
-                    color: 'black',
+                    color: 'inherit',
                     border: 'none',
                     width: '100%',
                     height: '100%',
                     backgroundColor: 'inherit',
                     borderRadius: '4px',
+                    padding: 0
                 }}
                 folder={'taskman'}
                 onSuccess={successCallBack}
