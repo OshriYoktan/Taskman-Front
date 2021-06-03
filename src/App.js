@@ -1,3 +1,4 @@
+import { WidgetLoader } from 'react-cloudinary-upload-widget';
 import { useSelector } from 'react-redux';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.scss';
@@ -14,6 +15,7 @@ function App() {
     <Router>
       <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBoard.background.color } : { backgroundImage: currBoard.background.img ? `url(${currBoard.background.img})` : '' } : { backgroundColor: 'white' } : { backgroundColor: 'white' }}>
         <AppHeader />
+        <WidgetLoader />
         <Switch>
           <Route component={BoardDetails} path='/board/:id?' />
           <Route component={TaskmanApp} path='/boards' />

@@ -150,6 +150,7 @@ export function TaskModal({ taskModalOp }) {
 
     const updateBoard = task => {
         const updatedBoard = boardService.updateCard(task, currCard, currBoard)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(updatedBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
@@ -164,20 +165,6 @@ export function TaskModal({ taskModalOp }) {
 
     const backgroundColorDueDate = (task) => {
         return task.doneAt ? '#61BD4F' : ((task.dueDate > Date.now()) ? 'inherite' : '#ec9488')
-    }
-
-    const onAttChange = async (res) => {
-        if (!res) return
-        var newAtt;
-        if (res.imgUrl) {
-            console.log('res.imgUrl:', res.imgUrl)
-            !res.imgUrl.includes('//') ? newAtt = { _id: utilService.makeId(), title: res.imgName, src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAS1BMVEX////Nzc2RkZH19fWJiYno6OiOjo78/PyHh4f5+fmjo6OYmJi1tbXu7u6UlJSdnZ3a2tqurq7ExMSoqKi8vLzKysrY2Njg4ODT09OWIyW3AAAEFklEQVR4nO3byXKjMABFUZtBhHkwMfz/lzYI4jJTOi+LFl3cuyRZUKeEEFjc7vTjbvcb/TCwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhM6FFefhqjx2fU5vnQkrCpvEBItM2YSR6/N6dSKsqEsC460yQdKdRutEWHmyobJcSe76zL46EdY92LPyvOA8Z3garLjcHVjD0Cp91+c2dx6s7mBgDUOrc31uc+fByg4G1jC0MtfnNucay3+2j8RWHFl5XjH9x6N9up3r3WLF97TwzNSxled9/UeR3l0uUp1i+fVfkHbQaoezvUus6PNwTj8u+HS3RnWJFf7CatAKnZ2wQ6yo+RWWaZwNLYdYcX20CjXfzfmmdjbHO8TyD6jSR2Z7pAdczqZ4l1h7V6Epsz6311mU99nuE9AHWBOVVz/fLrK4qr0tV3BJrI+NVdGuluh5W2y0rom1GVlFs3Hwm81jEFi2bGKI8qppqmnmuvkZWLctlkkmhTBLSs8rk2xaffrrF6hgDaW9Pdwnw4rBjJN9Mh9IwVpP8Ka0R/v0NZDMzLdaQFwTazmyimY8mL8v601tb47N8o54TazFyDLpCLN6Xgzsc2C+vA6viRUssUYXf/ly2WRWEKz1ZZiOx8Llrc8k9o4I1nqCt1jVaglaVONRsDZz1nisKxcuprS/gi2xrvkgvcKyc/nyHdd0O4zA2lyGo0vcLu+G7fgOgrvhdp1lV6DV+wrUlHbK6guw1o879Xgwat6svOl1e80Kfo1lSrtMGFZas40x01uIMAVr+4pm2tLg92kwPEmbIO0nlfU7GrDsrDWdSpQ/2zRtn/MLrfvqpcNF74ZrrHk+H4ri+OvHwapc/ddFR9b2HfxL61W1/YEHrFnL+1z8ghp/8uvO1O7vhsGj8+crMPK7x+6/gPUaXEHZdGGeh11Tbnd6XxYr3t/KPa4apg8GDv6cXHGvQ9RIG9leWJfcRXOrfrc/a3PH/Ge5xPKP9hx9O7Ac7pN0uqc0PPpO4Bur0t3GP7dYUVcfTeP7UibIXH725HgffN6366/mjjNJ2zvdCO/6o4HI33yPeVzuu/2azjXWfxVYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQgMW/bg/ZKUntG1o504AAAAASUVORK5CYII=' } : newAtt = { _id: utilService.makeId(), title: res.imgName, src: res.imgUrl }
-            setUrlImg(false)
-            reset({ imgUrl: '', imgName: '' })
-            currTask.attachments.push(newAtt)
-            socketService.emit('task to-update-task', { card: currCard, task: currTask })
-            updateBoard(currTask)
-        }
     }
 
     const onAttRemove = (id) => {
@@ -200,12 +187,16 @@ export function TaskModal({ taskModalOp }) {
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
+    const cloudOp = {
+        updateBoard
+    }
+
     return (
         <section className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
                     <Color src={currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                        {({ data, loading, error }) => (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} />)}
+                        {({ data }) => (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} />)}
                     </Color>
                 }
                 <div className="task-header">
@@ -331,8 +322,7 @@ export function TaskModal({ taskModalOp }) {
                                 <button onClick={() => onRemoveComment(comment._id)}>Delete</button>
                             </div>
                         </div>
-                    </div>
-                    )}
+                    </div>)}
                 </div>
             </div>
             <div className="add-to-task" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
@@ -362,23 +352,19 @@ export function TaskModal({ taskModalOp }) {
                         {(!dueDateModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
 
                     </div>
-                    <div className="right-task-btn">
-                        <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
-                        <Cloudinary />
-                        {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} onAttChange={onAttChange} inputFile={inputFile}></CoverModal></div>}
-                    </div>
+                    <Cloudinary currTask={currTask} cloudOp={cloudOp} txt={<div className="right-task-btn"><FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon><p>Attachments</p></div>} />
+                    {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile}></CoverModal></div>}
                     <div onClick={() => setCoverModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
                         <p> Cover </p>
                     </div>
                 </div>
             </div>
-            {(!labelModal) ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
-            {(!memberModal) ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
-            {(!checklistModal) ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
-            {(!dueDateModal) ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
-            {(!coverModal) ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} onAttChange={onAttChange} inputFile={inputFile}></CoverModal></div>}
+            {!labelModal ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
+            {!memberModal ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
+            {!checklistModal ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
+            {!dueDateModal ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
+            {!coverModal ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile} ></CoverModal></div>}
         </section >
     )
 }
-
