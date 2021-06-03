@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faThermometerEmpty, faSquare, faPaperclip, faClipboard, faPlus } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
@@ -16,10 +16,8 @@ import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
 import { socketService } from '../../services/socketService.js';
-import { LocalFlorist } from '@material-ui/icons';
 import Color from 'color-thief-react';
-import { green } from '@material-ui/core/colors';
-
+import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
 
 export function TaskModal({ taskModalOp }) {
     const { currTask, currBoard } = taskModalOp
@@ -50,6 +48,7 @@ export function TaskModal({ taskModalOp }) {
             [ref, handler]
         );
     }
+
     const [attModal, setAttModal] = useState(false)
     const attRef = useRef()
     useOnClickOutside(attRef, () => setAttModal(false));
@@ -102,20 +101,20 @@ export function TaskModal({ taskModalOp }) {
         const input = Object.keys(data).find(str => str === ('attItem' + idx))
         currTask.attachments[idx].title = data[input];
     }
+
     const onSumbitComment = data => {
         const newComment = { _id: utilService.makeId(), member: 'oshri', timeStamp: Date.now(), title: data.comment }
         currTask.comments.push(newComment)
         updateBoard(currTask)
         reset({ comment: '', })
     }
+
     const onRemoveComment = (id) => {
         const idx = currTask.comments.findIndex(comment => { return comment._id === id })
         currTask.comments.splice(idx, 1)
         // socketService.emit('task to-update-task', { card: currCard, task: currTask })
         updateBoard(currTask)
     }
-
-
 
     const onEditComment = (data, idx) => {
         const input = Object.keys(data).find(str => str === ('editComment' + idx))
@@ -128,6 +127,7 @@ export function TaskModal({ taskModalOp }) {
         updateBoard(currTask)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
+
     const toggleTaskDone = () => {
         if (!currTask.doneAt) currTask.doneAt = Date.now()
         else currTask.doneAt = ''
@@ -163,18 +163,19 @@ export function TaskModal({ taskModalOp }) {
         return task.doneAt ? '#61BD4F' : ((task.dueDate > Date.now()) ? 'inherite' : '#ec9488')
     }
 
-    const onAttChange = (res) => {
-        var newAtt
+    const onAttChange = async (res) => {
+        if (!res) return
+        var newAtt;
         if (res.imgUrl) {
-            (!res.imgUrl.includes('//')) ? newAtt = { _id: utilService.makeId(), title: res.imgName, src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAS1BMVEX////Nzc2RkZH19fWJiYno6OiOjo78/PyHh4f5+fmjo6OYmJi1tbXu7u6UlJSdnZ3a2tqurq7ExMSoqKi8vLzKysrY2Njg4ODT09OWIyW3AAAEFklEQVR4nO3byXKjMABFUZtBhHkwMfz/lzYI4jJTOi+LFl3cuyRZUKeEEFjc7vTjbvcb/TCwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhM6FFefhqjx2fU5vnQkrCpvEBItM2YSR6/N6dSKsqEsC460yQdKdRutEWHmyobJcSe76zL46EdY92LPyvOA8Z3garLjcHVjD0Cp91+c2dx6s7mBgDUOrc31uc+fByg4G1jC0MtfnNucay3+2j8RWHFl5XjH9x6N9up3r3WLF97TwzNSxled9/UeR3l0uUp1i+fVfkHbQaoezvUus6PNwTj8u+HS3RnWJFf7CatAKnZ2wQ6yo+RWWaZwNLYdYcX20CjXfzfmmdjbHO8TyD6jSR2Z7pAdczqZ4l1h7V6Epsz6311mU99nuE9AHWBOVVz/fLrK4qr0tV3BJrI+NVdGuluh5W2y0rom1GVlFs3Hwm81jEFi2bGKI8qppqmnmuvkZWLctlkkmhTBLSs8rk2xaffrrF6hgDaW9Pdwnw4rBjJN9Mh9IwVpP8Ka0R/v0NZDMzLdaQFwTazmyimY8mL8v601tb47N8o54TazFyDLpCLN6Xgzsc2C+vA6viRUssUYXf/ly2WRWEKz1ZZiOx8Llrc8k9o4I1nqCt1jVaglaVONRsDZz1nisKxcuprS/gi2xrvkgvcKyc/nyHdd0O4zA2lyGo0vcLu+G7fgOgrvhdp1lV6DV+wrUlHbK6guw1o879Xgwat6svOl1e80Kfo1lSrtMGFZas40x01uIMAVr+4pm2tLg92kwPEmbIO0nlfU7GrDsrDWdSpQ/2zRtn/MLrfvqpcNF74ZrrHk+H4ri+OvHwapc/ddFR9b2HfxL61W1/YEHrFnL+1z8ghp/8uvO1O7vhsGj8+crMPK7x+6/gPUaXEHZdGGeh11Tbnd6XxYr3t/KPa4apg8GDv6cXHGvQ9RIG9leWJfcRXOrfrc/a3PH/Ge5xPKP9hx9O7Ac7pN0uqc0PPpO4Bur0t3GP7dYUVcfTeP7UibIXH725HgffN6366/mjjNJ2zvdCO/6o4HI33yPeVzuu/2azjXWfxVYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQgMW/bg/ZKUntG1o504AAAAASUVORK5CYII=' } : newAtt = { _id: utilService.makeId(), title: res.imgName, src: res.imgUrl }
+            console.log('res.imgUrl:', res.imgUrl)
+            !res.imgUrl.includes('//') ? newAtt = { _id: utilService.makeId(), title: res.imgName, src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAS1BMVEX////Nzc2RkZH19fWJiYno6OiOjo78/PyHh4f5+fmjo6OYmJi1tbXu7u6UlJSdnZ3a2tqurq7ExMSoqKi8vLzKysrY2Njg4ODT09OWIyW3AAAEFklEQVR4nO3byXKjMABFUZtBhHkwMfz/lzYI4jJTOi+LFl3cuyRZUKeEEFjc7vTjbvcb/TCwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhM6FFefhqjx2fU5vnQkrCpvEBItM2YSR6/N6dSKsqEsC460yQdKdRutEWHmyobJcSe76zL46EdY92LPyvOA8Z3garLjcHVjD0Cp91+c2dx6s7mBgDUOrc31uc+fByg4G1jC0MtfnNucay3+2j8RWHFl5XjH9x6N9up3r3WLF97TwzNSxled9/UeR3l0uUp1i+fVfkHbQaoezvUus6PNwTj8u+HS3RnWJFf7CatAKnZ2wQ6yo+RWWaZwNLYdYcX20CjXfzfmmdjbHO8TyD6jSR2Z7pAdczqZ4l1h7V6Epsz6311mU99nuE9AHWBOVVz/fLrK4qr0tV3BJrI+NVdGuluh5W2y0rom1GVlFs3Hwm81jEFi2bGKI8qppqmnmuvkZWLctlkkmhTBLSs8rk2xaffrrF6hgDaW9Pdwnw4rBjJN9Mh9IwVpP8Ka0R/v0NZDMzLdaQFwTazmyimY8mL8v601tb47N8o54TazFyDLpCLN6Xgzsc2C+vA6viRUssUYXf/ly2WRWEKz1ZZiOx8Llrc8k9o4I1nqCt1jVaglaVONRsDZz1nisKxcuprS/gi2xrvkgvcKyc/nyHdd0O4zA2lyGo0vcLu+G7fgOgrvhdp1lV6DV+wrUlHbK6guw1o879Xgwat6svOl1e80Kfo1lSrtMGFZas40x01uIMAVr+4pm2tLg92kwPEmbIO0nlfU7GrDsrDWdSpQ/2zRtn/MLrfvqpcNF74ZrrHk+H4ri+OvHwapc/ddFR9b2HfxL61W1/YEHrFnL+1z8ghp/8uvO1O7vhsGj8+crMPK7x+6/gPUaXEHZdGGeh11Tbnd6XxYr3t/KPa4apg8GDv6cXHGvQ9RIG9leWJfcRXOrfrc/a3PH/Ge5xPKP9hx9O7Ac7pN0uqc0PPpO4Bur0t3GP7dYUVcfTeP7UibIXH725HgffN6366/mjjNJ2zvdCO/6o4HI33yPeVzuu/2azjXWfxVYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQgMW/bg/ZKUntG1o504AAAAASUVORK5CYII=' } : newAtt = { _id: utilService.makeId(), title: res.imgName, src: res.imgUrl }
             setUrlImg(false)
             reset({ imgUrl: '', imgName: '' })
-        } else if (res.target.files.length) {
-            newAtt = { _id: utilService.makeId(), title: res.target.files[0].name, src: URL.createObjectURL(res.target.files[0]) }
+            setAttModal(false)
+            currTask.attachments.push(newAtt)
+            socketService.emit('task to-update-task', { card: currCard, task: currTask })
+            updateBoard(currTask)
         }
-        currTask.attachments.push(newAtt)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
-        updateBoard(currTask)
     }
 
     const onAttRemove = (id) => {
@@ -189,6 +190,7 @@ export function TaskModal({ taskModalOp }) {
         updateBoard(currTask)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
+
     const testLog = (ev) => {
         setClient(ev)
     }
@@ -371,7 +373,8 @@ export function TaskModal({ taskModalOp }) {
                         <button onClick={() => setAttModal(false)}>x</button>
                     </div>
                     <div className="att-buttons">
-                        <button onClick={onButtonClick}>Import Image From Computer</button>
+                        {/* <button onClick={onButtonClick}>Import Image From Computer</button> */}
+                        <Cloudinary />
                         <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
                         <hr style={{ width: "95%" }} />
                         {!urlImg && <button onClick={() => setUrlImg(true)}>Import Image By Url</button>}

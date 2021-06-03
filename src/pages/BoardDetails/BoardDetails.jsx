@@ -188,30 +188,16 @@ export function BoardDetails(props) {
         setIsCardModal(false)
     }
 
-    const setBoardTitle = data => {
-        var title = data.boardTitle
-        // title.slice(2)
-        // var match = /'/.exec(title);
-        // const removeChars = []
-        // var re = /'/g,
-        //     str = title;
-        // while ((match = re.exec(str)) != null) {
-        //     removeChars.push(match.index)
-        // }
-        // removeChars.forEach(idx => {
-        //     title.slice(2)
-        // })
-        // console.log('title:', title)
-        // console.log('removeChars:', removeChars)
+    const setBoardTitle = (data) => {
+        var title = data.boardTitle;
         dispatch(saveBoard({ ...currBoard, title }))
     }
 
-    const addMemberToBoard = data => {
+    const addMemberToBoard = (data) => {
         var usersToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
         setMembersToBoard(usersToAdd)
-
-
     }
+
     const addLabel = (label) => {
         if (!currTask.labels.length) currTask.labels.push(label)
         else {
@@ -412,7 +398,6 @@ export function BoardDetails(props) {
         msg: msg,
     }
 
-
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
@@ -430,7 +415,7 @@ export function BoardDetails(props) {
                                 <div className="invite-title">
                                     <div className="close-btn">
                                         <p>Invite to board:</p>
-                                        <button  onClick={() => setIsInvite(!isInvite)}>x</button>
+                                        <button onClick={() => setIsInvite(!isInvite)}>x</button>
                                     </div>
                                     <input type="text" autoComplete="off" placeholder="Search Taskman Members.." id="member" name="member"  {...register("member")} />
                                 </div>
@@ -447,7 +432,6 @@ export function BoardDetails(props) {
                                                 <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
                                             </button>
                                         </li>
-
                                     })}
                                 </ul>
                             </div>}

@@ -42,7 +42,12 @@
 
 .landing-page-header {
     position: fixed;
-    top: 10px;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fef8f2;
     a {
         font-weight: 400;
         font-size: 35px;
