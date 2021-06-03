@@ -9,7 +9,6 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 
 export function DueDateModal(props) {
     
-
     const timeStemp = Date.now() + 604800000 //the default is next week
     const defaultNextWeek = new Date(Date.now() + 604800000);
     const [selectedDate, setSelectedDate] = React.useState(timeStemp);
@@ -19,12 +18,8 @@ export function DueDateModal(props) {
         props.addDueDate(selectedDateStr)
         props.setDueDateModal(false)
     }
-
-
-
-
     return (
-            <div  className="due-date-modal">
+            <div className="due-date-modal">
                 <section className="due-date-modal-header">
                     <h3>Due Date</h3>
                     <p className="btn-close-icon" onClick={() => props.setDueDateModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
@@ -33,7 +28,7 @@ export function DueDateModal(props) {
                     <MuiPickersUtilsProvider utils={DateFnsUtils}>
                         <KeyboardDatePicker
                             disableToolbar
-                            variant="inline"
+                            variant="static"
                             format="dd/MM/yyyy"
                             margin="normal"
                             id="date-picker-inline"

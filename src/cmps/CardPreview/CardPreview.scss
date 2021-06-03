@@ -152,8 +152,8 @@
             color: #172b4d;
             margin-bottom: 10px;
             &:focus-visible {
-                outline: none;
-                background-color: #fff;
+                outline: solid 2px #0079bf;
+                cursor: text;
             }
         }
     }
@@ -231,7 +231,13 @@
 .add-task-btns {
     display: flex;
     align-items: center;
-    
+    justify-content: space-between;
+    button {
+        background-color: #0079bf;
+        color: #fff;
+        border-radius: 3px;
+
+    }
 }
 
 .add-task-btn {

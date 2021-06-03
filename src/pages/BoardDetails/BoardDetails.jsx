@@ -20,7 +20,7 @@ export function BoardDetails(props) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm()
     var newCard = boardService.getEmptyCard()
-    const [users, setUsers] = useState(boardService.getUsers())
+    const users = boardService.getUsers()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
@@ -162,9 +162,11 @@ export function BoardDetails(props) {
     const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
     const [isInvite, setIsInvite] = useState(null)
     const [isCardModal, setIsCardModal] = useState(null)
-    const [x, setX] = useState(null)
+    const [xPosEl, setXPosEl] = useState(null)
+    const [yPosEl, setYPosEl] = useState(null)
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
+
 
     //Card Drag
     const handleOnDragEnd = (result) => {
@@ -178,7 +180,8 @@ export function BoardDetails(props) {
 
     // Card modal
     const openCardModal = (ev, card) => {
-        setX(ev.clientX)
+        setXPosEl(ev.clientX)
+        setYPosEl(ev.clientY)
         setIsCardModal(true)
         setCardModal(card)
     }
@@ -193,9 +196,28 @@ export function BoardDetails(props) {
         dispatch(saveBoard({ ...currBoard, title }))
     }
 
-    const addMemberToBoard = (data) => {
-        var usersToAdd = users.filter(user => user.name.toLowerCase().includes(data.member.toLowerCase()))
+    const addMemberToBoard = data => {
+        const membersInBoard = []
+        currBoard.members.map(member => membersInBoard.push(member._id))
+        const usersToAdd = users.filter(user => {
+            if (data.member === '') return
+            if (!membersInBoard.includes(user._id)) return user.name.toLowerCase().includes(data.member.toLowerCase())
+        })
         setMembersToBoard(usersToAdd)
+
+    }
+
+    const onAddMember = (member) => {
+        currBoard.members.push(member)
+        dispatch(saveBoard(currBoard))
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const removeUserFromBoard = (id) => {
+        const idx = currBoard.members.findIndex(member => member._id === id)
+        currBoard.members.splice(idx, 1)
+        dispatch(saveBoard(currBoard))
+        dispatch(setCurrBoard(currBoard._id))
     }
 
     const addLabel = (label) => {
@@ -261,6 +283,7 @@ export function BoardDetails(props) {
     }
 
     const addNewCard = (data) => {
+        newCard = boardService.getEmptyCard()
         newCard.title = data.newCardTitle
         currBoard.cards.push(newCard)
         setDraggedCards(currBoard.cards)
@@ -270,8 +293,7 @@ export function BoardDetails(props) {
         reset()
         addActivity('Aviv Zohar', 'added', 'card')
         socketService.emit('card to-add-card', newCard);
-        newCard = boardService.getEmptyCard()
-        data.newCardTitle = ''
+        // data.newCardTitle = ''
     }
 
     const deleteCard = () => {
@@ -279,6 +301,7 @@ export function BoardDetails(props) {
         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
         socketService.emit('card to-delete-card', cardIdx);
         addActivity('Aviv Zohar', 'deleted', 'card')
+        setDraggedCards(currBoard.cards)
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(boardToSave._id))
         closeModal()
@@ -296,18 +319,7 @@ export function BoardDetails(props) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
     }
 
-    const removeUserFromBoard = (user) => {
-        if (user.boards.includes(currBoard._id)) {
-            //עד שלא נעשה יוזר לא נוכל לרנדר את היוזרים
-            // -ה USER.BOARD 
-            // שלהם קבוע, כלומר כל פעם הוא יהיה אותו דבר
-            // Why in hebrew?!
-            const boardIdx = user.boards.findIndex(board => board._id === currBoard._id)
-            user.boards.splice(boardIdx, 1)
-        } else {
-            user.boards.push(currBoard._id)
-        }
-    }
+
 
     const filterTasks = (filterBy) => {
         if (filterBy.task || filterBy.labels.length) {
@@ -422,11 +434,11 @@ export function BoardDetails(props) {
                             </form>
                             {addMembersToBoard && <div className="exist-members">
                                 <ul>
-                                    <p>Add members:</p>
-                                    {addMembersToBoard.map((member, idx) => {
 
+                                    {addMembersToBoard.map((member, idx) => {
                                         return <li key={member._id}>
-                                            <button className="suggested-user">
+                                            <p>Add members:</p>
+                                            <button onClick={() => onAddMember(member)} className="suggested-user">
                                                 <Avatar key={idx} name={member.name} size="30" round={true} />
                                                 <p>{member.name}</p>
                                                 <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
@@ -437,8 +449,8 @@ export function BoardDetails(props) {
                             </div>}
                             <div className="exist-members">
                                 <p>In This Board:</p>
-                                {users.map((user, idx) => {
-                                    return <button key={user._id} onClick={() => removeUserFromBoard(user)} className="suggested-user">
+                                {currBoard.members.map((user, idx) => {
+                                    return <button key={user._id} onClick={() => removeUserFromBoard(user._id)} className="suggested-user">
                                         <Avatar key={idx} name={user.name} size="30" round={true} />
                                         <p>{user.name}</p>
                                         <p><FontAwesomeIcon icon={faCheckCircle} /></p>
@@ -479,13 +491,13 @@ export function BoardDetails(props) {
                 </Droppable>
             </DragDropContext>
             {
-                isCardModal && <div ref={cardModalRef} style={{ left: `${x}px`, top: `155px` }} className="card-modal">
+                isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
                     <div className="card-title-modal">
                         <p>{cardModal.title}</p>
                         <button onClick={() => closeModal()}>x</button>
                     </div>
                     <div className="card-modal-btns">
-                        <button onClick={deleteCard}>Delete This Card</button>
+                        <button onClick={() => deleteCard()}>Delete This Card</button>
                     </div>
                 </div>
             }

@@ -76,6 +76,7 @@ export function BoardMenu({ boardMenuOp }) {
         const label = { desc: data.addBoardLabel, color: data.addBoardLabelColor }
         currBoard.labels.push(label)
         dispatch(saveBoard(currBoard))
+        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
         setIsAddLabel(!isAddLabel)
         boardMenuOp.addActivity('Aviv Zohar', 'added', 'label')
     }
@@ -86,7 +87,6 @@ export function BoardMenu({ boardMenuOp }) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
         boardMenuOp.addActivity('Aviv Zohar', 'deleted', 'label')
     }
-
     const closeMenu = () => {
         boardMenuOp.setIsMenu(false)
         setIsAbout(false)

@@ -39,7 +39,7 @@ export function MemberModal(props) {
     })
 
     return (
-        <div className="member-modal" style={true ? { maxWidth: 100 + '%' } : { maxWidth: 0, visibility: 'visible' }}>
+        <div className="member-modal" >
             <div className="member-modal-header">
                 <h3>Members</h3>
                 <p className="btn-close-icon" onClick={() => props.setMemberModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
@@ -49,14 +49,13 @@ export function MemberModal(props) {
                     <input autoComplete="off" {...register("searchMember")} type="text" placeholder="Search members..." />
                 </form>
                 <p>Members:</p>
-                {searchMembers.map(member => member._id !== 'failMember' ? <li onClick={() => chooseMember(member)} key={member._id}  >
+                {searchMembers.map(member => member._id !== 'failMember' ? <li onClick={() => chooseMember(member)} key={member._id} className="members-list" >
                     <div className="member-details">
                         <Avatar key={member._id} name={member.name} size="30" round={true} />
                     </div>
                     <span>{member.name}</span>
-                    <span className="member-icon" >{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span>
-                </li> :
-                    <li key={member._id}><span>{member.name}</span></li>
+                    <span className="member-icon" >{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span></li> :
+                    <li className="members-list" key={member._id}><span>{member.name}</span></li>
                 )}
             </ul>
         </div>
