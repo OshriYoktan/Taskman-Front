@@ -9,6 +9,10 @@ export function Cloudinary({ type, txt, currTask, cloudOp }) {
         if (type === 'cover') {
             // currTask.cover = res.info.secure_url
         }
+        else if (type === 'background') {
+            // currTask.backgrounds ??
+            // currTask.imgs ??
+        }
         else {
             var newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
             currTask.attachments.push(newAtt)

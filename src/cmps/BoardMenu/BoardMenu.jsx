@@ -10,6 +10,7 @@ import { faChevronLeft, faPalette, faTimes } from '@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utilService } from '../../services/utilService'
 import { PolarArea, Bar } from 'react-chartjs-2';
+import { Cloudinary } from '../Cloudinary/Cloudinary'
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
@@ -87,6 +88,7 @@ export function BoardMenu({ boardMenuOp }) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
         boardMenuOp.addActivity('Aviv Zohar', 'deleted', 'label')
     }
+
     const closeMenu = () => {
         boardMenuOp.setIsMenu(false)
         setIsAbout(false)
@@ -210,6 +212,7 @@ export function BoardMenu({ boardMenuOp }) {
                     <div className="flex">
                         <h4>Photos</h4>
                         <div className="flex">
+                            <Cloudinary txt="Upload photo" type="background" />
                             {cloudImgs.map((url, idx) => <img key={idx} onClick={() => boardMenuOp.changeBackground(url)} decoding="async" loading="lazy" src={url} alt={url} />)}
                         </div>
                     </div>

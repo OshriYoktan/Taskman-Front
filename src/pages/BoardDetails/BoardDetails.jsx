@@ -167,7 +167,6 @@ export function BoardDetails(props) {
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
 
-
     //Card Drag
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
@@ -204,7 +203,6 @@ export function BoardDetails(props) {
             if (!membersInBoard.includes(user._id)) return user.name.toLowerCase().includes(data.member.toLowerCase())
         })
         setMembersToBoard(usersToAdd)
-
     }
 
     const onAddMember = (member) => {
@@ -263,19 +261,23 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
-        member.tasks.push(currTask._id)
         if (!currTask.members.length) {
+            member.tasks.push(currTask._id)
             currTask.members.push(member)
             addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
         }
         else if (currTask.members.some((currMember) => currMember._id === member._id)) {
+            const taskIdx = member.tasks.findIndex(t => t === currTask._id)
+            member.tasks.splice(taskIdx, 1)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
             addActivity('Aviv Zohar', 'removed', member.name, currTask.title)
         } else {
+            member.tasks.push(currTask._id)
             currTask.members.push(member)
             addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
         }
+        console.log('member', member);
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
