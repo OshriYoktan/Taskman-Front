@@ -18,13 +18,24 @@ export function CardPreview(props) {
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [tasks, setTasks] = useState(card.tasks)
     const [isAddTask, setIsAddTask] = useState(null)
+    const [isEditTitle, setIsEditTitle] = useState(false)
     var newTask = boardService.getEmptyTask()
+
+    useEffect(() => {
+        console.log(card)
+        setIsEditTitle(!isEditTitle)
+        // socketService.on('card update-card-title', data => {
+        // })
+    }, [currBoard])
 
     const setCardTitle = data => {
         card.title = data.cardTitle
         const boardToUpdate = boardService.updateBoard(card, currBoard)
         socketService.emit('card to-update-card', card)
+        socketService.emit('card to-update-card-title', card)
+        setIsEditTitle(false)
         dispatch(saveBoard(boardToUpdate))
+        dispatch(setCurrBoard(currBoard._id))
     }
 
     const labelsDescToggle = (ev, bool) => {
@@ -78,15 +89,12 @@ export function CardPreview(props) {
         return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
     }
 
-
-    
-
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
                 <div className="title">
                     <form onChange={handleSubmit(setCardTitle)}>
-                        <input type="text" {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" />
+                        <input type="text" {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
                     </form>
                     <div onClick={(ev) => cardPreviewOp.openCardModal(ev, card)} className="manage-card"><p>⋮</p></div>
                 </div>
@@ -131,15 +139,14 @@ export function CardPreview(props) {
                     </Droppable>
                 </DragDropContext>
                 {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
-                {isAddTask && <form className="add-task-container"  onSubmit={handleSubmit(addTask)}>
-                    <input   type="text" id="title" name="title" required {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} />
+                {isAddTask && <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
+                    <input type="text" id="title" name="title" required {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} />
                     <div className="add-task-btns">
                         <button>Add Task</button>
                         <p onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                     </div>
                 </form>}
             </div>
-        </div >
-
+        </div>
     )
 }
