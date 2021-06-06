@@ -353,7 +353,7 @@ export function TaskModal({ taskModalOp }) {
 
                     </div>
                     <Cloudinary currTask={currTask} cloudOp={cloudOp} txt={<div className="right-task-btn"><FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon><p>Attachments</p></div>} />
-                    {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile}></CoverModal></div>}
+                    {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} currCard={currCard} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile}></CoverModal></div>}
                     <div onClick={() => setCoverModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
                         <p> Cover </p>

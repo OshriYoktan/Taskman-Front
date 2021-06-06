@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadBoards, saveBoard, setCurrBoard, updateBackground } from '../../store/actions/boardActions'
 import { CardPreview } from '../../cmps/CardPreview'
@@ -26,6 +26,7 @@ export function BoardDetails(props) {
     const [currTask, setCurrTask] = useState(null)
     const [isMsg, setIsMsg] = useState(false)
     const [msg, setMsg] = useState(null)
+    const [members, setMembers] = useState(null)
     const ref = useRef()
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -49,7 +50,6 @@ export function BoardDetails(props) {
         // ... but to optimize you can wrap handler in useCallback before ...
         // ... passing it into this hook.
     }
-    console.log(currBoard);
 
     useEffect(() => {
         dispatch(loadBoards())
@@ -83,6 +83,8 @@ export function BoardDetails(props) {
             socketService.on('board add-activity', activity => {
                 addActivityForSockets(activity)
             })
+            setMembers(currBoard.members)
+            preMembers()
         }
     }, [currBoard])
 
@@ -147,7 +149,6 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
-
     ////////////////////////////////////////////////////////////////////
 
     useOnClickOutside(ref, () => setCurrTask(false));
@@ -157,7 +158,6 @@ export function BoardDetails(props) {
     const [cardModal, setCardModal] = useState(null)
     const cardModalRef = useRef()
     useOnClickOutside(cardModalRef, () => setIsCardModal(false));
-
     const inviteRef = useRef()
     useOnClickOutside(inviteRef, () => setIsInvite(false));
     const [isAddCard, setIsAddCard] = useState(null)
@@ -197,23 +197,36 @@ export function BoardDetails(props) {
     }
 
     const addMemberToBoard = data => {
-        const membersInBoard = []
-        currBoard.members.map(member => membersInBoard.push(member._id))
+        const membersInBoard = members.map(member => member._id)
         const usersToAdd = users.filter(user => {
             if (!membersInBoard.includes(user._id)) return user.name.toLowerCase().includes(data.member.toLowerCase())
         })
         setMembersToBoard(usersToAdd)
+        dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const preMembers = () => {
+        const membersInBoard = currBoard.members.map(member => member._id)
+        const usersToAdd = users.filter(user => {
+            if (!membersInBoard.includes(user._id)) return user.name.toLowerCase()
+        })
+        setMembersToBoard(usersToAdd)
+        dispatch(setCurrBoard(currBoard._id))
     }
 
     const onAddMember = (member) => {
-        currBoard.members.push(member)
+        currBoard.members = [...members, member]
+        setMembers(currBoard.members)
         dispatch(saveBoard(currBoard))
         dispatch(setCurrBoard(currBoard._id))
+        preMembers()
     }
 
     const removeUserFromBoard = (id) => {
         const idx = currBoard.members.findIndex(member => member._id === id)
         currBoard.members.splice(idx, 1)
+        setMembers(currBoard.members)
+        preMembers()
         dispatch(saveBoard(currBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
@@ -321,8 +334,6 @@ export function BoardDetails(props) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
     }
 
-
-
     const filterTasks = (filterBy) => {
         if (filterBy.task || filterBy.labels.length) {
             var newCards = []
@@ -374,7 +385,7 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
-    if (!currBoard || !draggedCards || !draggedCards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+    if (!currBoard || !draggedCards || !draggedCards.length || !members.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
         openCardModal,
@@ -392,7 +403,6 @@ export function BoardDetails(props) {
         changeBackground,
         members: currBoard.members,
         filterTasks,
-        labels: currBoard.labels,
         addActivity
     }
 
@@ -412,6 +422,7 @@ export function BoardDetails(props) {
         msg: msg,
     }
 
+
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
@@ -421,7 +432,7 @@ export function BoardDetails(props) {
                     </form>
                     <div className="flex">
                         <div className="avatars">
-                            {currBoard.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
+                            {members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
                         </div>
                         <button onClick={() => setIsInvite(!isInvite)}>Invite</button>
                         {isInvite && <div ref={inviteRef} className="invite-members-modal">
@@ -436,7 +447,6 @@ export function BoardDetails(props) {
                             </form>
                             {addMembersToBoard && <div className="exist-members">
                                 <ul>
-
                                     <p>Suggested Members:</p>
                                     {addMembersToBoard.map((member, idx) => {
                                         return <li key={member._id}>
@@ -468,7 +478,7 @@ export function BoardDetails(props) {
                 </div>
             </div>
             <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable  droppableId="cards" type="CARD">
+                <Droppable droppableId="cards" type="CARD">
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
                             <div className="flex">

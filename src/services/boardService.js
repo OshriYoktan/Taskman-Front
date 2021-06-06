@@ -45,7 +45,7 @@ const cloudUrls = [
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621016533/taskman/carolyn-christine-D7bmnvGJA2Q-unsplash_oz27jz.jpg',
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621018122/taskman/vlad-kutepov-WYJ9c7uSdnU-unsplash_c2g6gy.jpg',
 ]
-
+const gLabels = [{ "desc": "Copy Request", "color": "#61BD4F" }, { "desc": "One more step", "color": "#F2D600" }, { "desc": "Design Team", "color": "#FF9F1A" }, { "desc": "Product Marketing", "color": "#EB5A46" }, { "desc": "Trello Tip", "color": "#C377E0" }, { "desc": "Help", "color": "#0079BF" }, { "desc": "Priority", "color": "#51E898" }]
 const gUsers = [{ _id: 'u101', name: 'Aviv Zohar', tasks: [] }, { _id: 'u102', name: 'Hadar Marom', tasks: [] }, { _id: 'u103', name: 'Oshri Yoktan', tasks: [] }, { _id: 'u104', name: 'gil shrager', tasks: [] }, { _id: 'u105', name: 'Ofek aharon', tasks: [] }]
 const gCoverColors = ['#7bc86c', '#f5dd29', '#ffaf3f', '#ef7564', '#cd8de5', '#5ba4cf', '#29cce5', '#6deca9', '#ff8ed4', '#172b4d']
 
@@ -129,7 +129,8 @@ function getEmptyBoard() {
         cards: [{ _id: utilService.makeId(), title: 'Your first card!', tasks: [] }],
         activity: [],
         background: [],
-        labels: [],
+        labels: gLabels,
+        images: cloudUrls
     }
 }
 

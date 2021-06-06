@@ -20,7 +20,7 @@ export function CoverModal(props) {
                     {coverColors.map((color, idx) => <span className="cover-color" key={idx} onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
                 </div>
                 {!props.currTask.attachments.length ? <div>
-                    <Cloudinary txt='Upload photo' type='cover' currTask={props.currTask} />
+                    <Cloudinary currCard={props.currCard} txt='Upload photo' type='cover' currTask={props.currTask} />
                 </div> : <div>
                     <h4>ATTACHMENTS:</h4>
                     <div className="cover-attachments-container">

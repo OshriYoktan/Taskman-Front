@@ -35,11 +35,11 @@ export function removeBoard(boardId) {
 }
 export function updateBackground(background) {
   return async dispatch => {
-    dispatch({ type: 'UPDATE_BACKGROUND', background })
+    await dispatch({ type: 'UPDATE_BACKGROUND', background })
   }
 }
 export function updateFilterBy(filterBy) {
   return async dispatch => {
-    dispatch({ type: 'UPDATE_FILTERBY', filterBy })
+    await dispatch({ type: 'UPDATE_FILTERBY', filterBy })
   }
 }

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import Avatar from 'react-avatar'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import boardService from '../../services/boardService'
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions'
 import Moment from 'react-moment';
 import './BoardMenu.scss'
@@ -20,13 +19,14 @@ export function BoardMenu({ boardMenuOp }) {
     const [isBackground, setIsBackground] = useState(false)
     const [isFilter, setIsFilter] = useState(false)
     const [isLabels, setIsLabels] = useState(false)
+    const [labels, setLabels] = useState(currBoard.labels)
     const [cloudImgs, setCloudImgs] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
     const colors = ['lightgreen', 'lightyellow', 'lightblue', 'orange', 'slateblue', 'lightpink', 'lightgray', 'white']
 
     useEffect(() => {
-        setCloudImgs(boardService.getCloudImages())
+        setCloudImgs(currBoard.images)
         sendFilter()
     }, [filterBy])
 
@@ -69,6 +69,7 @@ export function BoardMenu({ boardMenuOp }) {
         const labels = arr1.map((val, idx) => {
             return { desc: arr1[idx], color: arr2[idx] }
         })
+        setLabels(currBoard.labels)
         dispatch(saveBoard({ ...currBoard, labels: labels }))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
     }
@@ -84,6 +85,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     const deleteLabel = (idx) => {
         currBoard.labels.splice(idx, 1)
+        setLabels(currBoard.labels)
         dispatch(saveBoard(currBoard))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
         boardMenuOp.addActivity('Aviv Zohar', 'deleted', 'label')
@@ -98,7 +100,7 @@ export function BoardMenu({ boardMenuOp }) {
         onSearchTask('')
     }
 
-    if (!cloudImgs || !currBoard) return (<div className="loader-container">Loading</div>)
+    if (!cloudImgs || !currBoard || !labels) return (<div className="loader-container">Loading</div>)
 
     const inProgress = []
     const overdue = []
@@ -212,7 +214,7 @@ export function BoardMenu({ boardMenuOp }) {
                     <div className="flex">
                         <h4>Photos</h4>
                         <div className="flex">
-                            <Cloudinary txt="Upload photo" type="background" />
+                            <Cloudinary txt="Upload photo" type="background" setCloudImgs={setCloudImgs} />
                             {cloudImgs.map((url, idx) => <img key={idx} onClick={() => boardMenuOp.changeBackground(url)} decoding="async" loading="lazy" src={url} alt={url} />)}
                         </div>
                     </div>
@@ -232,7 +234,7 @@ export function BoardMenu({ boardMenuOp }) {
                 <div>
                     <h4>Search by label</h4>
                     <ul>
-                        {boardMenuOp.labels.map((label, idx) => <li key={idx} style={{ backgroundColor: filterBy.labels.includes(label.desc) ? 'gray' : 'inherit' }} onClick={() => onSearchLabel(idx)}>
+                        {labels.map((label, idx) => <li key={idx} style={{ backgroundColor: filterBy.labels.includes(label.desc) ? 'gray' : 'inherit' }} onClick={() => onSearchLabel(idx)}>
                             <div style={{ backgroundColor: label.color }}></div>
                             <p>{label.desc}</p>
                         </li>)}
@@ -247,7 +249,7 @@ export function BoardMenu({ boardMenuOp }) {
                 </div>
                 <div className="hide-overflow">
                     <ul>
-                        {boardMenuOp.labels.map((label, idx) => <li key={idx} style={{ backgroundColor: label.color }}>
+                        {labels.map((label, idx) => <li key={idx} style={{ backgroundColor: label.color }}>
                             <form onChange={handleSubmit(utilService.debounce(saveLabels, 800))}>
                                 <input type="text" defaultValue={label.desc} placeholder="Label name" required {...register("editBoardLabel" + idx)} />
                                 <label name="label-color"><FontAwesomeIcon className="fa" icon={faPalette} />

@@ -22,10 +22,7 @@ export function CardPreview(props) {
     var newTask = boardService.getEmptyTask()
 
     useEffect(() => {
-        console.log(card)
         setIsEditTitle(!isEditTitle)
-        // socketService.on('card update-card-title', data => {
-        // })
     }, [currBoard])
 
     const setCardTitle = data => {
