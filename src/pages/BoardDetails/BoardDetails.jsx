@@ -146,6 +146,7 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+
     ////////////////////////////////////////////////////////////////////
 
     useOnClickOutside(ref, () => setCurrTask(false));
@@ -171,10 +172,9 @@ export function BoardDetails(props) {
     //Card Drag
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
-        const items = draggedCards;
+        const items = Array.from(draggedCards);
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
-        // console.log('items:', items)
         setDraggedCards(items);
     }
 
@@ -213,7 +213,6 @@ export function BoardDetails(props) {
         const membersInBoard = []
         currBoard.members.map(member => membersInBoard.push(member._id))
         const usersToAdd = users.filter(user => {
-            if (data.member === '') return
             if (!membersInBoard.includes(user._id)) return user.name.toLowerCase().includes(data.member.toLowerCase())
         })
         setMembersToBoard(usersToAdd)
@@ -424,6 +423,7 @@ export function BoardDetails(props) {
         msg: msg,
     }
 
+    
 
     return (
         <div className="board-details sub-container">
@@ -450,9 +450,9 @@ export function BoardDetails(props) {
                             {addMembersToBoard && <div className="exist-members">
                                 <ul>
 
+                                    <p>Suggested Members:</p>
                                     {addMembersToBoard.map((member, idx) => {
                                         return <li key={member._id}>
-                                            <p>Add members:</p>
                                             <button onClick={() => onAddMember(member)} className="suggested-user">
                                                 <Avatar key={idx} name={member.name} size="30" round={true} />
                                                 <p>{member.name}</p>
@@ -482,7 +482,7 @@ export function BoardDetails(props) {
                 </div>
             </div>
             <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="cards" type="CARD">
+                <Droppable  droppableId="cards" type="CARD">
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
                             <div className="flex">
@@ -492,8 +492,9 @@ export function BoardDetails(props) {
                                         (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                             <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                         </div>)}
-                                    </Draggable>{provided.placeholder}</div>
+                                    </Draggable></div>
                                 })}
+                                {provided.placeholder}
                                 {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
                                 {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
                                     <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />

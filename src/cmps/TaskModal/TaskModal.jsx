@@ -106,7 +106,7 @@ export function TaskModal({ taskModalOp }) {
         currTask.attachments[idx].title = data[input];
     }
     const onSumbitComment = data => {
-        const newComment = { _id: utilService.makeId(), member: 'oshri', timeStamp: Date.now(), title: data.comment }
+        const newComment = { _id: utilService.makeId(), member: 'guest', timeStamp: Date.now(), title: data.comment }
         currTask.comments.push(newComment)
         updateBoard(currTask)
         reset({ comment: '', })
