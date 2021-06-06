@@ -334,7 +334,7 @@ export function TaskModal({ taskModalOp }) {
                     <div onClick={() => { setLabelModal(true) }} className="right-task-btn">
                         <FontAwesomeIcon icon={faTag}></FontAwesomeIcon>
                         <p> Labels </p>
-                        {(!labelModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={labelRef}> <LabelModal labelEditRef={labelEditRef} setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
+                        {(!labelModal) ? null : <div onClick={(ev) => ev.stopPropagation()} ref={labelRef}> <LabelModal labelEditRef={labelEditRef} setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
                     </div>
                     <div onClick={() => setMemberModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>
@@ -360,11 +360,11 @@ export function TaskModal({ taskModalOp }) {
                     </div>
                 </div>
             </div>
-            {!labelModal ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
-            {!memberModal ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
+            {/* {!labelModal ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>} */}
+            {/* {!memberModal ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
             {!checklistModal ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
             {!dueDateModal ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
-            {!coverModal ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile} ></CoverModal></div>}
+            {!coverModal ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile} ></CoverModal></div>} */}
         </section >
     )
 }

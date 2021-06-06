@@ -49,6 +49,7 @@ export function BoardDetails(props) {
         // ... but to optimize you can wrap handler in useCallback before ...
         // ... passing it into this hook.
     }
+    console.log(currBoard);
 
     useEffect(() => {
         dispatch(loadBoards())
