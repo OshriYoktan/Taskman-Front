@@ -6,6 +6,7 @@ import './TaskmanApp.scss'
 import boardService from '../../services/boardService.js'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService.js'
+
 export function TaskmanApp() {
     const dispatch = useDispatch()
     const boards = useSelector(state => state.boardReducer.boards)

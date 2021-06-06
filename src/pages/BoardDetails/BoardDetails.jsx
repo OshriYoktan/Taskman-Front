@@ -191,21 +191,8 @@ export function BoardDetails(props) {
         setIsCardModal(false)
     }
 
-    const setBoardTitle = data => {
-        var title = data.boardTitle
-        // title.slice(2)
-        // var match = /'/.exec(title);
-        // const removeChars = []
-        // var re = /'/g,
-        //     str = title;
-        // while ((match = re.exec(str)) != null) {
-        //     removeChars.push(match.index)
-        // }
-        // removeChars.forEach(idx => {
-        //     title.slice(2)
-        // })
-        // console.log('title:', title)
-        // console.log('removeChars:', removeChars)
+    const setBoardTitle = (data) => {
+        var title = data.boardTitle;
         dispatch(saveBoard({ ...currBoard, title }))
     }
 
@@ -216,7 +203,7 @@ export function BoardDetails(props) {
             if (!membersInBoard.includes(user._id)) return user.name.toLowerCase().includes(data.member.toLowerCase())
         })
         setMembersToBoard(usersToAdd)
-        
+
     }
 
     const onAddMember = (member) => {
@@ -231,7 +218,6 @@ export function BoardDetails(props) {
         dispatch(saveBoard(currBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
-
 
     const addLabel = (label) => {
         if (!currTask.labels.length) currTask.labels.push(label)
@@ -423,8 +409,6 @@ export function BoardDetails(props) {
         msg: msg,
     }
 
-    
-
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
@@ -459,7 +443,6 @@ export function BoardDetails(props) {
                                                 <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
                                             </button>
                                         </li>
-
                                     })}
                                 </ul>
                             </div>}

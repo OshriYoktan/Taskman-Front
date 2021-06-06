@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faThermometerEmpty, faSquare, faPaperclip, faClipboard, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faThermometerEmpty, faSquare, faPaperclip, faClipboard, faPlus, faComment } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -16,10 +16,8 @@ import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
 import { socketService } from '../../services/socketService.js';
-import { LocalFlorist } from '@material-ui/icons';
 import Color from 'color-thief-react';
-import { green } from '@material-ui/core/colors';
-
+import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
 
 export function TaskModal({ taskModalOp }) {
     const { currTask, currBoard } = taskModalOp
@@ -27,6 +25,7 @@ export function TaskModal({ taskModalOp }) {
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
+
     const [isComment, setIsComment] = useState(null)
     //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
@@ -49,9 +48,8 @@ export function TaskModal({ taskModalOp }) {
             [ref, handler]
         );
     }
-    const [attModal, setAttModal] = useState(false)
+
     const attRef = useRef()
-    useOnClickOutside(attRef, () => setAttModal(false));
 
     const [labelModal, setLabelModal] = useState(false)
     const labelRef = useRef()
@@ -95,6 +93,7 @@ export function TaskModal({ taskModalOp }) {
 
     const onSubmitItemInList = (data, idxInList) => {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
+        if (!data[input]) return
         currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
         setRange(currTask.checklists[idxInList])
         reset({ inputItem0: '', inputItem1: '', inputItem2: '', inputItem3: '', inputItem4: '' })
@@ -105,20 +104,20 @@ export function TaskModal({ taskModalOp }) {
         const input = Object.keys(data).find(str => str === ('attItem' + idx))
         currTask.attachments[idx].title = data[input];
     }
+
     const onSumbitComment = data => {
         const newComment = { _id: utilService.makeId(), member: 'guest', timeStamp: Date.now(), title: data.comment }
         currTask.comments.push(newComment)
         updateBoard(currTask)
         reset({ comment: '', })
     }
+
     const onRemoveComment = (id) => {
         const idx = currTask.comments.findIndex(comment => { return comment._id === id })
         currTask.comments.splice(idx, 1)
         // socketService.emit('task to-update-task', { card: currCard, task: currTask })
         updateBoard(currTask)
     }
-
-
 
     const onEditComment = (data, idx) => {
         const input = Object.keys(data).find(str => str === ('editComment' + idx))
@@ -131,6 +130,7 @@ export function TaskModal({ taskModalOp }) {
         updateBoard(currTask)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
+
     const toggleTaskDone = () => {
         if (!currTask.doneAt) currTask.doneAt = Date.now()
         else currTask.doneAt = ''
@@ -150,6 +150,7 @@ export function TaskModal({ taskModalOp }) {
 
     const updateBoard = task => {
         const updatedBoard = boardService.updateCard(task, currCard, currBoard)
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(updatedBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
@@ -166,20 +167,6 @@ export function TaskModal({ taskModalOp }) {
         return task.doneAt ? '#61BD4F' : ((task.dueDate > Date.now()) ? 'inherite' : '#ec9488')
     }
 
-    const onAttChange = async (res) => {
-        let newAtt
-        if (res.imgUrl) {
-            await (res.imgUrl.includes('//')) ? newAtt = { _id: utilService.makeId(), title: res.imgName, src: res.imgUrl } : newAtt = { _id: utilService.makeId(), title: res.imgName, src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAACoCAMAAABt9SM9AAAAS1BMVEX////Nzc2RkZH19fWJiYno6OiOjo78/PyHh4f5+fmjo6OYmJi1tbXu7u6UlJSdnZ3a2tqurq7ExMSoqKi8vLzKysrY2Njg4ODT09OWIyW3AAAEFklEQVR4nO3byXKjMABFUZtBhHkwMfz/lzYI4jJTOi+LFl3cuyRZUKeEEFjc7vTjbvcb/TCwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhMASAksILCGwhM6FFefhqjx2fU5vnQkrCpvEBItM2YSR6/N6dSKsqEsC460yQdKdRutEWHmyobJcSe76zL46EdY92LPyvOA8Z3garLjcHVjD0Cp91+c2dx6s7mBgDUOrc31uc+fByg4G1jC0MtfnNucay3+2j8RWHFl5XjH9x6N9up3r3WLF97TwzNSxled9/UeR3l0uUp1i+fVfkHbQaoezvUus6PNwTj8u+HS3RnWJFf7CatAKnZ2wQ6yo+RWWaZwNLYdYcX20CjXfzfmmdjbHO8TyD6jSR2Z7pAdczqZ4l1h7V6Epsz6311mU99nuE9AHWBOVVz/fLrK4qr0tV3BJrI+NVdGuluh5W2y0rom1GVlFs3Hwm81jEFi2bGKI8qppqmnmuvkZWLctlkkmhTBLSs8rk2xaffrrF6hgDaW9Pdwnw4rBjJN9Mh9IwVpP8Ka0R/v0NZDMzLdaQFwTazmyimY8mL8v601tb47N8o54TazFyDLpCLN6Xgzsc2C+vA6viRUssUYXf/ly2WRWEKz1ZZiOx8Llrc8k9o4I1nqCt1jVaglaVONRsDZz1nisKxcuprS/gi2xrvkgvcKyc/nyHdd0O4zA2lyGo0vcLu+G7fgOgrvhdp1lV6DV+wrUlHbK6guw1o879Xgwat6svOl1e80Kfo1lSrtMGFZas40x01uIMAVr+4pm2tLg92kwPEmbIO0nlfU7GrDsrDWdSpQ/2zRtn/MLrfvqpcNF74ZrrHk+H4ri+OvHwapc/ddFR9b2HfxL61W1/YEHrFnL+1z8ghp/8uvO1O7vhsGj8+crMPK7x+6/gPUaXEHZdGGeh11Tbnd6XxYr3t/KPa4apg8GDv6cXHGvQ9RIG9leWJfcRXOrfrc/a3PH/Ge5xPKP9hx9O7Ac7pN0uqc0PPpO4Bur0t3GP7dYUVcfTeP7UibIXH725HgffN6366/mjjNJ2zvdCO/6o4HI33yPeVzuu/2azjXWfxVYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQmAJgSUElhBYQgMW/bg/ZKUntG1o504AAAAASUVORK5CYII=' }
-            setUrlImg(false)
-            reset({ imgUrl: '', imgName: '' })
-        } else if (res.target.files.length) {
-            newAtt = { _id: utilService.makeId(), title: res.target.files[0].name, src: URL.createObjectURL(res.target.files[0]) }
-        }
-        currTask.attachments.push(newAtt)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
-        updateBoard(currTask)
-    }
-
     const onAttRemove = (id) => {
         const idx = currTask.attachments.findIndex(att => { return att._id === id })
         currTask.attachments.splice(idx, 1)
@@ -192,6 +179,7 @@ export function TaskModal({ taskModalOp }) {
         updateBoard(currTask)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
+
     const testLog = (ev) => {
         setClient(ev)
     }
@@ -199,12 +187,16 @@ export function TaskModal({ taskModalOp }) {
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
+    const cloudOp = {
+        updateBoard
+    }
+
     return (
-        <div className="task-modal hide-overflow">
+        <section className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
                     <Color src={currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                        {({ data, loading, error }) => (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} />)}
+                        {({ data }) => (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} />)}
                     </Color>
                 }
                 <div className="task-header">
@@ -219,15 +211,15 @@ export function TaskModal({ taskModalOp }) {
                     {!currTask.members.length ? null : <section className="members-section"><h3>MEMBERS:</h3>
                         <div className="member-list">
                             {currTask.members.map((member, idx) =>
-                                <div className="member-in-modal" key={idx}>
+                                <div className="member-in-modal" onClick={() => setMemberModal(true)} key={idx}>
                                     <Avatar key={idx} name={member.name} size="30" round={true} />
                                 </div>)}
-                            <button onClick={() => setMemberModal(true)}>+</button>
+                            <button onClick={() => setMemberModal(true)}><FontAwesomeIcon icon={faPlus} /></button>
                         </div>
                     </section>}
                     {!currTask.labels.length ? null : <section className="labels-section"><h3>LABELS:</h3>
                         {currTask.labels.map((label, idx) =>
-                            <div className="label-in-modal" key={idx} style={{ backgroundColor: label.color }}>
+                            <div className="label-in-modal" key={idx} onClick={() => setLabelModal(true)} style={{ backgroundColor: label.color }}>
                                 <p>{label.desc}</p>
                             </div>)}
                         <button onClick={() => setLabelModal(true)}><FontAwesomeIcon icon={faPlus} /></button>
@@ -268,7 +260,7 @@ export function TaskModal({ taskModalOp }) {
                             })}
                             <form onSubmit={handleSubmit(res => onSubmitItemInList(res, listIdx))}>
                                 <input type="text" autoComplete="off" id={'input-item-' + listIdx} name="item" placeholder="Add an item"  {...register('inputItem' + listIdx)} />
-                                <button className="add-an-item-btn">Add An Item</button>
+                                <button className="add-an-item-btn">Add</button>
                             </form>
                         </div>)}
                 </section>}
@@ -307,10 +299,12 @@ export function TaskModal({ taskModalOp }) {
                         </div>
                     )}
                 </section>}
+                <div className="att-svg"><FontAwesomeIcon icon={faComment} />
+                    <p>Comments:</p>
+                </div>
                 <div className="task-comment">
-                    <p>Post a Comment:</p>
                     <form onSubmit={handleSubmit(onSumbitComment)}>
-                        <input type="text" autoComplete="off" id="comment" name="comment" placeholder="Write a comment..."  {...register("comment")} />
+                        <input className="post-comment-input" type="text" autoComplete="off" id="comment" name="comment" placeholder="Post a Comment..."  {...register("comment")} />
                     </form>
                     {!currTask.comments.length ? null : currTask.comments.map((comment, idx) => <div key={comment._id} className="comment-container">
                         <div className="comment-avatar">
@@ -320,15 +314,15 @@ export function TaskModal({ taskModalOp }) {
                             <div className="comment-header">
                                 <p className="comment-member">{comment.member}</p> <p><Moment fromNow>{comment.timeStamp}</Moment></p>
                             </div>
-                            <form onChange={handleSubmit(res => onEditComment(res, idx))} className="comment-title">
+                            <form onChange={handleSubmit((res) => onEditComment(res, idx))} className="comment-title">
                                 <input type="text" autoComplete="off" id={"comment-edit" + idx} defaultValue={comment.title} {...register("editComment" + idx)} />
+                                <button style={{ display: 'none' }} onClick={(ev) => ev.preventDefault()}></button>
                             </form>
                             <div className="comment-btns">
                                 <button onClick={() => onRemoveComment(comment._id)}>Delete</button>
                             </div>
                         </div>
-                    </div>
-                    )}
+                    </div>)}
                 </div>
             </div>
             <div className="add-to-task" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
@@ -354,41 +348,23 @@ export function TaskModal({ taskModalOp }) {
                     </div>
                     <div onClick={() => setDueDateModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
-                        <p> Due Date </p>
+                        <p> Due date </p>
                         {(!dueDateModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
 
                     </div>
-                    <div onClick={() => setAttModal(true)} className="right-task-btn">
-                        <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
-                        <p> Attachment </p>
-                        {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} onAttChange={onAttChange} inputFile={inputFile}></CoverModal></div>}
-                    </div>
+                    <Cloudinary currTask={currTask} cloudOp={cloudOp} txt={<div className="right-task-btn"><FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon><p>Attachments</p></div>} />
+                    {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile}></CoverModal></div>}
                     <div onClick={() => setCoverModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
                         <p> Cover </p>
-                        {(!attModal) ? null : <div ref={attRef} onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }}>
-                            <div className="att-modal" >
-                                <div className="att-modal-header">
-                                    <h3>Attach from..</h3>
-                                    <button onClick={() => setAttModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></button>
-                                </div>
-                                <div className="att-buttons">
-                                    <button onClick={onButtonClick}>Import Image From Computer</button>
-                                    <input id="file" type="file" accept="image/*" onChange={onAttChange} ref={inputFile} name="name" style={{ display: 'none' }} />
-                                    <hr style={{ width: "95%" }} />
-                                    {!urlImg && <button onClick={() => setUrlImg(true)}>Import Image By Url</button>}
-                                    {urlImg && <form onSubmit={handleSubmit(onAttChange)} >
-                                        <input type="text" placeholder="Name Photo here" {...register("imgName")} />
-                                        <input type="text" placeholder="Place URL here" {...register("imgUrl")} required />
-                                        <button >Save</button>
-                                    </form>}
-                                </div>
-                            </div>
-                        </div>}
                     </div>
                 </div>
             </div>
-        </div >
+            {!labelModal ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>}
+            {!memberModal ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
+            {!checklistModal ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
+            {!dueDateModal ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
+            {!coverModal ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile} ></CoverModal></div>}
+        </section >
     )
 }
-
