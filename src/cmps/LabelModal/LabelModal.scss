@@ -1,15 +1,15 @@
 .label-modal {
     background-color: #f4f5f7;
-    position: relative;
-    left: 100%;
+    position: absolute;
     transform: translate(-25.7%, 0);
+    left: 0;
     border-radius: 2px;
     border: 1px solid rgba(207, 191, 191, 0.6);
     width: 280px;
     white-space: nowrap;
     overflow: auto;
     z-index: 10;
-    top: 175px;
+    top: 90px;
     color: #172b4d;
 
     .labels-modal-header {
