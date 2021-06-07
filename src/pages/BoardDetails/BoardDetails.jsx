@@ -88,6 +88,24 @@ export function BoardDetails(props) {
         }
     }, [currBoard])
 
+    useOnClickOutside(ref, () => setCurrTask(false));
+    const [isMenu, setIsMenu] = useState(false)
+    const menuRef = useRef()
+    useOnClickOutside(menuRef, () => setIsMenu(false));
+    const [cardModal, setCardModal] = useState(null)
+    const cardModalRef = useRef()
+    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
+    const inviteRef = useRef()
+    useOnClickOutside(inviteRef, () => setIsInvite(false));
+    const [isAddCard, setIsAddCard] = useState(null)
+    const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
+    const [isInvite, setIsInvite] = useState(null)
+    const [isCardModal, setIsCardModal] = useState(null)
+    const [xPosEl, setXPosEl] = useState(null)
+    const [yPosEl, setYPosEl] = useState(null)
+    const [addMembersToBoard, setMembersToBoard] = useState(null)
+    const [isDescShown, setIsDescShown] = useState(false)
+
     // Sockets /////////////////////////////////////////////////////////
 
     const updateCardForSockets = card => {
@@ -148,28 +166,8 @@ export function BoardDetails(props) {
         sendMsg(activity.member, activity.type, activity.desc, activity.card)
         dispatch(setCurrBoard(currBoard._id))
     }
-
     ////////////////////////////////////////////////////////////////////
 
-    useOnClickOutside(ref, () => setCurrTask(false));
-    const [isMenu, setIsMenu] = useState(false)
-    const menuRef = useRef()
-    useOnClickOutside(menuRef, () => setIsMenu(false));
-    const [cardModal, setCardModal] = useState(null)
-    const cardModalRef = useRef()
-    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
-    const inviteRef = useRef()
-    useOnClickOutside(inviteRef, () => setIsInvite(false));
-    const [isAddCard, setIsAddCard] = useState(null)
-    const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
-    const [isInvite, setIsInvite] = useState(null)
-    const [isCardModal, setIsCardModal] = useState(null)
-    const [xPosEl, setXPosEl] = useState(null)
-    const [yPosEl, setYPosEl] = useState(null)
-    const [addMembersToBoard, setMembersToBoard] = useState(null)
-    const [isDescShown, setIsDescShown] = useState(false)
-
-    //Card Drag
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
         const items = Array.from(draggedCards);
@@ -178,7 +176,6 @@ export function BoardDetails(props) {
         setDraggedCards(items);
     }
 
-    // Card modal
     const openCardModal = (ev, card) => {
         setXPosEl(ev.clientX)
         setYPosEl(ev.clientY)

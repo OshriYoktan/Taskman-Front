@@ -13,7 +13,7 @@ import { Cloudinary } from '../Cloudinary/Cloudinary'
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [isAbout, setIsAbout] = useState(false)
     const [isBackground, setIsBackground] = useState(false)
@@ -36,6 +36,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     useEffect(() => {
         setLabels(currBoard.labels)
+        console.log('labels effect:', labels);
     }, [currBoard])
 
     const onSearchTask = data => {
@@ -96,11 +97,12 @@ export function BoardMenu({ boardMenuOp }) {
 
     const onAddBoardLabel = (data) => {
         const label = { _id: utilService.makeId(), desc: data.addBoardLabel, color: data.addBoardLabelColor }
-        currBoard.labels.push(label)
-        setIsAddLabel(!isAddLabel)
+        currBoard.labels = [...currBoard.labels, label]
+        setLabels(currBoard.labels)
         boardMenuOp.addActivity('Guest', 'added', 'label')
+        setIsAddLabel(!isAddLabel)
         dispatch(saveBoard(currBoard))
-        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
+        console.log('currBoard.labels:', currBoard.labels)
     }
 
     const deleteLabel = (labelId) => {

@@ -32,7 +32,7 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs }) {
     return (
         <section className="cloudinary-container">
             <Widget
-                sources={['local', 'camera', 'url', 'dropbox', 'instagram', 'search_web']}
+                sources={['local', 'camera', 'url', 'dropbox', 'instagram']}
                 sourceKeys={{ dropboxAppKey: 'idwo4j2egt6411m', instagramClientId: '14c890ce047a8defd4410d4bd0b1d823' }}
                 resourceType={'image'}
                 cloudName={'dtu0lzwpw'}
