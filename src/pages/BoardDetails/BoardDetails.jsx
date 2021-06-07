@@ -14,6 +14,7 @@ import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
 import { Notification } from '../../cmps/Notification/Notification'
+import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
 
 export function BoardDetails(props) {
@@ -28,6 +29,10 @@ export function BoardDetails(props) {
     const [msg, setMsg] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
+
+    const containerRef = useRef()
+    const { events } = useScrollOnDrag(containerRef);
+
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
             const listener = (event) => {
@@ -382,6 +387,10 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+
+
+
+
     if (!currBoard || !draggedCards || !draggedCards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
@@ -418,6 +427,11 @@ export function BoardDetails(props) {
         isMsg: isMsg,
         msg: msg,
     }
+
+
+    
+
+
 
 
     return (
@@ -477,7 +491,7 @@ export function BoardDetails(props) {
             <DragDropContext onDragEnd={handleOnDragEnd}>
                 <Droppable droppableId="cards" type="CARD">
                     {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
+                        <div {...provided.droppableProps} ref={provided.innerRef} {...events} ref={containerRef} className="cards-container flex">
                             <div className="flex">
                                 {draggedCards.map((card, idx) => {
                                     return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
