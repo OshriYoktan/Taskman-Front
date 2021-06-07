@@ -14,6 +14,7 @@ import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
 import { Notification } from '../../cmps/Notification/Notification'
+import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
 
 export function BoardDetails(props) {
@@ -28,6 +29,10 @@ export function BoardDetails(props) {
     const [msg, setMsg] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
+
+    const containerRef = useRef()
+    const { events } = useScrollOnDrag(containerRef);
+
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
             const listener = (event) => {
@@ -385,6 +390,10 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
+
+
+
+
     if (!currBoard || !draggedCards || !draggedCards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
@@ -421,6 +430,11 @@ export function BoardDetails(props) {
         isMsg: isMsg,
         msg: msg,
     }
+
+
+    
+
+
 
 
     return (
@@ -477,32 +491,32 @@ export function BoardDetails(props) {
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>
             </div>
-                <DragDropContext onDragEnd={handleOnDragEnd}>
-                    <Droppable droppableId="cards" type="CARD">
-                        {(provided) => (
-                            <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
-                                <div className="flex">
-                                    {draggedCards.map((card, idx) => {
-                                        return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
-                                            {(previewProvider) =>
-                                            (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
-                                                <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
-                                            </div>)}
-                                        </Draggable></div>
-                                    })}
-                                    {provided.placeholder}
-                                    {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
-                                    {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                                        <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
-                                        <div className="flex">
-                                            <button>Add Card</button>
-                                            <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
-                                        </div>
-                                    </form></div>}
-                                </div>
-                            </div>)}
-                    </Droppable>
-                </DragDropContext>
+            <DragDropContext onDragEnd={handleOnDragEnd}>
+                <Droppable droppableId="cards" type="CARD">
+                    {(provided) => (
+                        <div {...provided.droppableProps} ref={provided.innerRef} {...events} ref={containerRef} className="cards-container flex">
+                            <div className="flex">
+                                {draggedCards.map((card, idx) => {
+                                    return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
+                                        {(previewProvider) =>
+                                        (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                            <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
+                                        </div>)}
+                                    </Draggable></div>
+                                })}
+                                {provided.placeholder}
+                                {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
+                                {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
+                                    <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
+                                    <div className="flex">
+                                        <button>Add Card</button>
+                                        <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+                                    </div>
+                                </form></div>}
+                            </div>
+                        </div>)}
+                </Droppable>
+            </DragDropContext>
             {
                 isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
                     <div className="card-title-modal">
