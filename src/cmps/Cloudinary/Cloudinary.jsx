@@ -44,7 +44,7 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs }) {
                     width: '100%',
                     height: '100%',
                     backgroundColor: 'inherit',
-                    borderRadius: '4px',
+                    borderRadius: '5px',
                     padding: 0
                 }}
                 folder={'taskman'}

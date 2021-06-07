@@ -23,7 +23,8 @@ export function saveBoard(board) {
 }
 export function setCurrBoard(boardId) {
   return async dispatch => {
-    const board = await boardService.getBoardById(boardId)
+    var board = null
+    if (boardId) board = await boardService.getBoardById(boardId)
     dispatch({ type: 'SET_BOARD', board })
   }
 }

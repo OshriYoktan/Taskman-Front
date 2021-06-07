@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faThermometerEmpty, faSquare, faPaperclip, faClipboard, faPlus, faComment } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faPaperclip, faClipboard, faPlus, faComment } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';

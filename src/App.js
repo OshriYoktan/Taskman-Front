@@ -1,15 +1,22 @@
+import { useEffect } from 'react';
 import { WidgetLoader } from 'react-cloudinary-upload-widget';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.scss';
 import { AppHeader } from './cmps/AppHeader';
 import { BoardDetails } from './pages/BoardDetails';
 import { LandingPage } from './pages/LandingPage';
 import { TaskmanApp } from './pages/TaskmanApp';
+import { loadBoards } from './store/actions/boardActions';
 
 function App() {
-  const background = useSelector(state => state.boardReducer.background)
+  const dispatch = useDispatch()
   const currBoard = useSelector(state => state.boardReducer.currBoard)
+  const background = useSelector(state => state.boardReducer.background)
+
+  useEffect(() => {
+    dispatch(loadBoards())
+  }, [currBoard])
 
   return (
     <Router>

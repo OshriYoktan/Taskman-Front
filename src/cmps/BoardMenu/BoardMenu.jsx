@@ -44,12 +44,12 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const onSearchLabel = idx => {
-        if (filterBy.labels.includes(boardMenuOp.labels[idx].desc)) {
-            const removeIdx = filterBy.labels.findIndex(label => label === boardMenuOp.labels[idx].desc)
+        if (filterBy.labels.includes(labels[idx].desc)) {
+            const removeIdx = filterBy.labels.findIndex(label => label === labels[idx].desc)
             filterBy.labels.splice(removeIdx, 1)
             setFilterBy({ ...filterBy, labels: filterBy.labels })
         }
-        else setFilterBy({ ...filterBy, labels: [...filterBy.labels, boardMenuOp.labels[idx].desc] })
+        else setFilterBy({ ...filterBy, labels: [...filterBy.labels, labels[idx].desc] })
     }
 
     const sendFilter = () => {
@@ -252,7 +252,7 @@ export function BoardMenu({ boardMenuOp }) {
                 </div>
                 <div>
                     <form onChange={handleSubmit(onSearchTask)}>
-                        <input type="text" placeholder="Search for task..." {...register("searchTask")} />
+                        <input type="text" autoComplete="off" placeholder="Search for task..." {...register("searchTask")} />
                     </form>
                 </div>
                 <div>
@@ -275,9 +275,9 @@ export function BoardMenu({ boardMenuOp }) {
                     <ul>
                         {labels.map((label, idx) => <li key={label._id} style={{ backgroundColor: label.color }}>
                             <form onChange={handleSubmit(utilService.debounce(saveLabels, 100))}>
-                                <input type="text" defaultValue={label.desc} placeholder="Label name" required {...register("editBoardLabel" + idx)} />
+                                <input type="text" autoComplete="off" defaultValue={label.desc} placeholder="Label name" required {...register("editBoardLabel" + idx)} />
                                 <label name="label-color"><FontAwesomeIcon className="fa" icon={faPalette} />
-                                    <input type="color" {...register("editBoardLabelColor" + idx)} defaultValue={label.color} /></label>
+                                    <input type="color" autoComplete="off" {...register("editBoardLabelColor" + idx)} defaultValue={label.color} /></label>
                             </form>
                             <p><FontAwesomeIcon className="fa" icon={faTimes} onClick={() => deleteLabel(label._id)} /></p>
                         </li>)}

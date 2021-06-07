@@ -14,13 +14,13 @@ export function BoardList({ boardListOp }) {
 
     return (
         <ul className="board-container">
-            {boardListOp.boards.map(board => <li key={board._id}><BoardPreview board={board}></BoardPreview></li>)}
+            {boardListOp.boards.map(board => <li key={board._id}><BoardPreview key={board._id} board={board} /></li>)}
             <li className="board-link add-board">
                 {!isCreateBoard && <button onClick={() => setIsCreateBoard(!isCreateBoard)}>Create board</button>}
                 {isCreateBoard &&
                     <form onSubmit={handleSubmit(onAddBoard)}>
-                        <input type="text" id="title" name="title" {...register("newBoardTitle")} placeholder="Board name" />
-                        <h4>Create board</h4>
+                        <input type="text" id="title" name="title" autoComplete="off" {...register("newBoardTitle")} placeholder="Board name" />
+                        <button>Create board</button>
                     </form>}
             </li>
         </ul>

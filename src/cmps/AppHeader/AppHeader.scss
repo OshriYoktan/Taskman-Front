@@ -6,30 +6,30 @@
     width: 100%;
     height: 5vh;
     color: white;
-    background-color: rgba(0, 0, 0, 0.10);
+    background-color: rgba(0, 0, 0, 0.32);
     border-radius: 3px;
     > * {
         user-select: none;
     }
     & > :first-child {
         margin-left: 15px;
-        background-color: hsla(0, 0%, 100%, 0.24);
+        background-color: hsla(0, 0, 100%, 0.24);
         border-radius: 5px;
         display: flex;
         justify-content: center;
         align-items: center;
         width: 35px;
-        height: 100%;
+        height: 90%;
     }
     & > :last-child {
         margin-right: 15px;
-        background-color: hsla(0, 0%, 100%, 0.24);
+        background-color: hsla(0, 0, 100%, 0.24);
         border-radius: 5px;
         display: flex;
         justify-content: center;
         align-items: center;
         width: 35px;
-        height: 100%;
+        height: 90%;
     }
     .link {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,

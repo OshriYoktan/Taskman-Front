@@ -90,6 +90,9 @@ export function BoardDetails(props) {
             setMembers(currBoard.members)
             preMembers()
         }
+        if (currBoard) {
+            setMembers(currBoard.members)
+        }
     }, [currBoard])
 
     useOnClickOutside(ref, () => setCurrTask(false));
@@ -362,7 +365,7 @@ export function BoardDetails(props) {
             })
             if (!newCards || !Object.keys(newCards).length) {
                 const failCard = boardService.getEmptyCard()
-                failCard.title = 'There are no matched tasks.'
+                failCard.title = 'No search results.'
                 setDraggedCards([failCard])
             } else setDraggedCards(newCards)
         } else setDraggedCards(currBoard.cards)
@@ -386,11 +389,7 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
-
-
-
-
-    if (!currBoard || !draggedCards || !draggedCards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+    if (!currBoard || !draggedCards || !draggedCards.length || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
         openCardModal,
@@ -427,18 +426,12 @@ export function BoardDetails(props) {
         msg: msg,
     }
 
-
-    
-
-
-
-
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
                 <div className="flex ">
                     <form onBlur={handleSubmit(setBoardTitle)}>
-                        <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} />
+                        <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} autoComplete="off" />
                     </form>
                     <div className="flex">
                         <div className="avatars">
@@ -501,7 +494,7 @@ export function BoardDetails(props) {
                                     </Draggable></div>
                                 })}
                                 {provided.placeholder}
-                                {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
+                                {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
                                 {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
                                     <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
                                     <div className="flex">
