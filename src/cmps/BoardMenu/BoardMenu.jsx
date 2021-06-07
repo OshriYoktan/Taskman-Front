@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Avatar from 'react-avatar'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,7 +19,7 @@ export function BoardMenu({ boardMenuOp }) {
     const [isBackground, setIsBackground] = useState(false)
     const [isFilter, setIsFilter] = useState(false)
     const [isLabels, setIsLabels] = useState(false)
-    const [labels, setLabels] = useState(currBoard.labels)
+    const [labels, setLabels] = useState(null)
     const [cloudImgs, setCloudImgs] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
@@ -33,6 +33,10 @@ export function BoardMenu({ boardMenuOp }) {
     useEffect(() => {
         if (!boardMenuOp.isMenu) closeMenu()
     }, [boardMenuOp.isMenu])
+
+    useEffect(() => {
+        setLabels(currBoard.labels)
+    }, [currBoard])
 
     const onSearchTask = data => {
         setFilterBy({ ...filterBy, task: data.searchTask })
@@ -51,6 +55,23 @@ export function BoardMenu({ boardMenuOp }) {
         boardMenuOp.filterTasks(filterBy)
     }
 
+    // const saveLabels = data => {
+    //     const entries = Object.entries(data)
+    //     const labels = entries.map((label, idx) => {
+    //         if (!idx) return
+    //         if (idx % 2 === 0) return { color: label[1] }
+    //         return { desc: label[1] }
+    //     })
+    //     labels.splice(0, 1)
+    //     const arr = []
+    //     labels.forEach((label, idx) => {
+    //         if (idx % 2 === 0) arr.push({ _id: utilService.makeId(), desc: label.desc, color: labels[idx + 1].color })
+    //     })
+    //     setLabels(currBoard.labels)
+    //     dispatch(saveBoard({ ...currBoard, labels: labels }))
+    //     setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
+    // }
+
     const saveLabels = data => {
         const descs = []
         const colors = []
@@ -67,7 +88,7 @@ export function BoardMenu({ boardMenuOp }) {
             else arr2.push(val)
         })
         const labels = arr1.map((val, idx) => {
-            return { desc: arr1[idx], color: arr2[idx] }
+            return { _id: utilService.makeId(), desc: arr1[idx], color: arr2[idx] }
         })
         setLabels(currBoard.labels)
         dispatch(saveBoard({ ...currBoard, labels: labels }))
@@ -75,20 +96,21 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const onAddBoardLabel = (data) => {
-        const label = { desc: data.addBoardLabel, color: data.addBoardLabelColor }
+        const label = { _id: utilService.makeId(), desc: data.addBoardLabel, color: data.addBoardLabelColor }
         currBoard.labels.push(label)
+        setIsAddLabel(!isAddLabel)
+        boardMenuOp.addActivity('Guest', 'added', 'label')
         dispatch(saveBoard(currBoard))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
-        setIsAddLabel(!isAddLabel)
-        boardMenuOp.addActivity('Aviv Zohar', 'added', 'label')
     }
 
-    const deleteLabel = (idx) => {
+    const deleteLabel = (labelId) => {
+        const idx = currBoard.labels.findIndex(l => l._id === labelId)
         currBoard.labels.splice(idx, 1)
         setLabels(currBoard.labels)
         dispatch(saveBoard(currBoard))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
-        boardMenuOp.addActivity('Aviv Zohar', 'deleted', 'label')
+        boardMenuOp.addActivity('Guest', 'deleted', 'label')
     }
 
     const closeMenu = () => {
@@ -249,13 +271,13 @@ export function BoardMenu({ boardMenuOp }) {
                 </div>
                 <div className="hide-overflow">
                     <ul>
-                        {labels.map((label, idx) => <li key={idx} style={{ backgroundColor: label.color }}>
-                            <form onChange={handleSubmit(utilService.debounce(saveLabels, 800))}>
+                        {labels.map((label, idx) => <li key={label._id} style={{ backgroundColor: label.color }}>
+                            <form onChange={handleSubmit(utilService.debounce(saveLabels, 100))}>
                                 <input type="text" defaultValue={label.desc} placeholder="Label name" required {...register("editBoardLabel" + idx)} />
                                 <label name="label-color"><FontAwesomeIcon className="fa" icon={faPalette} />
                                     <input type="color" {...register("editBoardLabelColor" + idx)} defaultValue={label.color} /></label>
                             </form>
-                            <p><FontAwesomeIcon className="fa" icon={faTimes} onClick={() => deleteLabel(idx)} /></p>
+                            <p><FontAwesomeIcon className="fa" icon={faTimes} onClick={() => deleteLabel(label._id)} /></p>
                         </li>)}
                         {!isAddLabel && <li onClick={() => setIsAddLabel(!isAddLabel)}><p>New label</p></li>}
                         {isAddLabel && <li>
