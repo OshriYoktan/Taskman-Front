@@ -244,7 +244,7 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-        addActivity('Aviv Zohar', 'added', 'label', currCard.title)
+        addActivity('Guest', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
@@ -277,18 +277,18 @@ export function BoardDetails(props) {
         if (!currTask.members.length) {
             member.tasks.push(currTask._id)
             currTask.members.push(member)
-            addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
+            addActivity('Guest', 'attached', member.name, currTask.title)
         }
         else if (currTask.members.some((currMember) => currMember._id === member._id)) {
             const taskIdx = member.tasks.findIndex(t => t === currTask._id)
             member.tasks.splice(taskIdx, 1)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
-            addActivity('Aviv Zohar', 'removed', member.name, currTask.title)
+            addActivity('Guest', 'removed', member.name, currTask.title)
         } else {
             member.tasks.push(currTask._id)
             currTask.members.push(member)
-            addActivity('Aviv Zohar', 'attached', member.name, currTask.title)
+            addActivity('Guest', 'attached', member.name, currTask.title)
         }
         console.log('member', member);
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
@@ -306,7 +306,7 @@ export function BoardDetails(props) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
         setIsAddCard(!isAddCard)
         reset()
-        addActivity('Aviv Zohar', 'added', 'card')
+        addActivity('Guest', 'added', 'card')
         socketService.emit('card to-add-card', newCard);
         // data.newCardTitle = ''
     }
@@ -315,7 +315,7 @@ export function BoardDetails(props) {
         const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
         socketService.emit('card to-delete-card', cardIdx);
-        addActivity('Aviv Zohar', 'deleted', 'card')
+        addActivity('Guest', 'deleted', 'card')
         setDraggedCards(currBoard.cards)
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(boardToSave._id))
@@ -324,11 +324,11 @@ export function BoardDetails(props) {
 
     const changeBackground = (background, type) => {
         if (type) {
-            addActivity('Aviv Zohar', 'change', 'color')
+            addActivity('Guest', 'change', 'color')
             dispatch(saveBoard({ ...currBoard, background: { color: background, img: null } }))
         }
         else {
-            addActivity('Aviv Zohar', 'change', 'image')
+            addActivity('Guest', 'change', 'image')
             dispatch(saveBoard({ ...currBoard, background: { color: null, img: background } }))
         }
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
@@ -385,7 +385,7 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(currBoard._id))
     }
 
-    if (!currBoard || !draggedCards || !draggedCards.length || !members.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+    if (!currBoard || !draggedCards || !draggedCards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
         openCardModal,

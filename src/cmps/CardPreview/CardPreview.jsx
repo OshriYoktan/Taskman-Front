@@ -61,7 +61,7 @@ export function CardPreview(props) {
         setIsAddTask(!isAddTask)
         const forSocket = { task: newTask, card: card._id }
         socketService.emit('task to-add-task', forSocket);
-        cardPreviewOp.addActivity('Aviv Zohar', 'added', 'task', card.title)
+        cardPreviewOp.addActivity('Guest', 'added', 'task', card.title)
         newTask = boardService.getEmptyTask()
         reset({ newTask: '' })
     }
