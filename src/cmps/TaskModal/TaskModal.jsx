@@ -274,7 +274,7 @@ export function TaskModal({ taskModalOp }) {
                     {currTask.attachments.map((attac, attIdx) =>
                         <div key={attIdx} className="attachments-container">
                             <div className="att-src">
-                                <Color src={attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
+                                <Color crossOrigin="anonymous" src={attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
                                     {({ data }) => (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} alt="photo" />)}
                                 </Color>
                             </div>
@@ -353,9 +353,10 @@ export function TaskModal({ taskModalOp }) {
                         <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
                         <p> Due date </p>
                         {(!dueDateModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
-
                     </div>
-                    <Cloudinary currTask={currTask} cloudOp={cloudOp} txt={<div className="right-task-btn"><FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon><p>Attachments</p></div>} />
+                    <Cloudinary currTask={currTask} cloudOp={cloudOp} txt={<div className="right-task-btn">
+                        <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
+                        <p>Attachments</p></div>} />
                     {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} currCard={currCard} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile}></CoverModal></div>}
                     <div onClick={() => setCoverModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
