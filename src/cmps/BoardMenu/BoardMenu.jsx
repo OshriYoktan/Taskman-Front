@@ -55,45 +55,44 @@ export function BoardMenu({ boardMenuOp }) {
         boardMenuOp.filterTasks(filterBy)
     }
 
+    const saveLabels = data => {
+        const entries = Object.entries(data)
+        const labels = entries.map((label, idx) => {
+            if (!idx) return
+            if (idx % 2 === 0) return { color: label[1] }
+            return { desc: label[1] }
+        })
+        labels.splice(0, 1)
+        const arr = []
+        labels.forEach((label, idx) => {
+            if (idx % 2 === 0) arr.push({ _id: utilService.makeId(), desc: label.desc, color: labels[idx + 1].color })
+        })
+        setLabels(arr)
+        dispatch(saveBoard({ ...currBoard, labels: arr }))
+    }
+
     // const saveLabels = data => {
-    //     const entries = Object.entries(data)
-    //     const labels = entries.map((label, idx) => {
-    //         if (!idx) return
-    //         if (idx % 2 === 0) return { color: label[1] }
-    //         return { desc: label[1] }
+    //     const descs = []
+    //     const colors = []
+    //     Object.keys(data).forEach(input => {
+    //         if (input.includes('editBoardLabelColor')) colors.push(input)
+    //         else if (input.includes('editBoardLabel')) descs.push(input)
     //     })
-    //     labels.splice(0, 1)
-    //     const arr = []
-    //     labels.forEach((label, idx) => {
-    //         if (idx % 2 === 0) arr.push({ _id: utilService.makeId(), desc: label.desc, color: labels[idx + 1].color })
+    //     const arrValues = Object.values(data)
+    //     arrValues.splice(0, 1)
+    //     const arr1 = []
+    //     const arr2 = []
+    //     arrValues.forEach((val, idx) => {
+    //         if (idx % 2 === 0) arr1.push(val)
+    //         else arr2.push(val)
+    //     })
+    //     const labels = arr1.map((val, idx) => {
+    //         return { _id: utilService.makeId(), desc: arr1[idx], color: arr2[idx] }
     //     })
     //     setLabels(currBoard.labels)
     //     dispatch(saveBoard({ ...currBoard, labels: labels }))
     //     setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
     // }
-
-    const saveLabels = data => {
-        const descs = []
-        const colors = []
-        Object.keys(data).forEach(input => {
-            if (input.includes('editBoardLabelColor')) colors.push(input)
-            else if (input.includes('editBoardLabel')) descs.push(input)
-        })
-        const arrValues = Object.values(data)
-        arrValues.splice(0, 1)
-        const arr1 = []
-        const arr2 = []
-        arrValues.forEach((val, idx) => {
-            if (idx % 2 === 0) arr1.push(val)
-            else arr2.push(val)
-        })
-        const labels = arr1.map((val, idx) => {
-            return { _id: utilService.makeId(), desc: arr1[idx], color: arr2[idx] }
-        })
-        setLabels(currBoard.labels)
-        dispatch(saveBoard({ ...currBoard, labels: labels }))
-        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
-    }
 
     const onAddBoardLabel = (data) => {
         const label = { _id: utilService.makeId(), desc: data.addBoardLabel, color: data.addBoardLabelColor }
@@ -105,8 +104,9 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const deleteLabel = (labelId) => {
-        const idx = currBoard.labels.findIndex(l => l._id === labelId)
-        currBoard.labels.splice(idx, 1)
+        const idx = labels.findIndex(l => l._id === labelId)
+        labels.splice(idx, 1)
+        currBoard.labels = labels
         setLabels(currBoard.labels)
         dispatch(saveBoard(currBoard))
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
