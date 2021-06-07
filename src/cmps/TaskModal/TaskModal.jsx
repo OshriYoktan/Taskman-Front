@@ -195,8 +195,11 @@ export function TaskModal({ taskModalOp }) {
         <section className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
-                    <Color src={currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                        {({ data }) => (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} />)}
+                    <Color src={currTask.cover} crossOrigin="anonymous" format="hex">
+                        {({ data, loading }) => {
+                            if (loading) return <div>Loading...</div>;
+                            return (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover})` }} />)
+                        }}
                     </Color>
                 }
                 <div className="task-header">
@@ -272,7 +275,7 @@ export function TaskModal({ taskModalOp }) {
                         <div key={attIdx} className="attachments-container">
                             <div className="att-src">
                                 <Color src={attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                                    {({ data, loading, error }) => (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} alt="photo" />)}
+                                    {({ data }) => (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} alt="photo" />)}
                                 </Color>
                             </div>
                             <div className="att-details">
@@ -360,11 +363,6 @@ export function TaskModal({ taskModalOp }) {
                     </div>
                 </div>
             </div>
-            {/* {!labelModal ? null : <div ref={labelRef}> <LabelModal setLabelModal={setLabelModal} labelModal={labelModal} currTask={currTask} addLabel={taskModalOp.addLabel}  ></LabelModal></div>} */}
-            {/* {!memberModal ? null : <div ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
-            {!checklistModal ? null : <div ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
-            {!dueDateModal ? null : <div ref={dueDateRef}> <DueDateModal setDueDateModal={setDueDateModal} dueDateModal={dueDateModal} addDueDate={taskModalOp.addDueDate} currTask={currTask}></DueDateModal></div>}
-            {!coverModal ? null : <div ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile} ></CoverModal></div>} */}
         </section >
     )
 }

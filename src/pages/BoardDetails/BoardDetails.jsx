@@ -29,7 +29,6 @@ export function BoardDetails(props) {
     const [msg, setMsg] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
-
     const containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
 
