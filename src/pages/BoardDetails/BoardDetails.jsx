@@ -477,32 +477,32 @@ export function BoardDetails(props) {
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>
             </div>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId="cards" type="CARD">
-                    {(provided) => (
-                        <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
-                            <div className="flex">
-                                {draggedCards.map((card, idx) => {
-                                    return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
-                                        {(previewProvider) =>
-                                        (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
-                                            <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
-                                        </div>)}
-                                    </Draggable></div>
-                                })}
-                                {provided.placeholder}
-                                {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
-                                {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                                    <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
-                                    <div className="flex">
-                                        <button>Add Card</button>
-                                        <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
-                                    </div>
-                                </form></div>}
-                            </div>
-                        </div>)}
-                </Droppable>
-            </DragDropContext>
+                <DragDropContext onDragEnd={handleOnDragEnd}>
+                    <Droppable droppableId="cards" type="CARD">
+                        {(provided) => (
+                            <div {...provided.droppableProps} ref={provided.innerRef} className="cards-container flex">
+                                <div className="flex">
+                                    {draggedCards.map((card, idx) => {
+                                        return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
+                                            {(previewProvider) =>
+                                            (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                                <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
+                                            </div>)}
+                                        </Draggable></div>
+                                    })}
+                                    {provided.placeholder}
+                                    {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon> Add another card</button>}
+                                    {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
+                                        <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
+                                        <div className="flex">
+                                            <button>Add Card</button>
+                                            <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+                                        </div>
+                                    </form></div>}
+                                </div>
+                            </div>)}
+                    </Droppable>
+                </DragDropContext>
             {
                 isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
                     <div className="card-title-modal">
