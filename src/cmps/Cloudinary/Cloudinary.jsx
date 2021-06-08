@@ -5,14 +5,16 @@ import { utilService } from '../../services/utilService'
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions'
 import './Cloudinary.scss'
 
-export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs }) {
+export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudOp }) {
     const dispatch = useDispatch()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
 
     const onAttAdd = (res) => {
-        console.log('res:', res)
+        console.log('type:', type)
         if (type === 'cover') {
             currTask.cover = res.info.secure_url
+            // console.log('cover')
+            currTask.attachments.push(res.info.secure_url)
             const newBoard = boardService.updateCard(currTask, currCard, currBoard)
             dispatch(saveBoard(newBoard))
             dispatch(setCurrBoard(newBoard._id))
@@ -26,6 +28,8 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs }) {
         else {
             var newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
             currTask.attachments.push(newAtt)
+            cloudOp.updateBoard(currTask)
+
         }
     }
 

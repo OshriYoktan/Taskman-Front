@@ -25,7 +25,6 @@ export function TaskModal({ taskModalOp }) {
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
-
     const [isComment, setIsComment] = useState(null)
     //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
@@ -55,6 +54,10 @@ export function TaskModal({ taskModalOp }) {
     const labelRef = useRef()
     useOnClickOutside(labelRef, () => setLabelModal(false));
 
+    const [attNameModal, setAttNameModal] = useState(null)
+    const editAttachRef = useRef()
+    useOnClickOutside(editAttachRef, () => setAttNameModal(false));
+
     const [labelEditModal, setLabelEditModal] = useState(false)
     const labelEditRef = useRef()
     useOnClickOutside(labelEditRef, () => setLabelEditModal(false));
@@ -78,7 +81,6 @@ export function TaskModal({ taskModalOp }) {
 
     var descValue;
     const [isDesc, setIsDesc] = useState(false)
-    const [attNameModal, setAttNameModal] = useState(null)
 
     const currCard = currBoard.cards.find(card => {
         return card.tasks.find(t => {
@@ -274,8 +276,8 @@ export function TaskModal({ taskModalOp }) {
                     {currTask.attachments.map((attac, attIdx) =>
                         <div key={attIdx} className="attachments-container">
                             <div className="att-src">
-                                <Color crossOrigin="anonymous" src={attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                                    {({ data }) => (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} alt="photo" />)}
+                                <Color crossOrigin="anonymous" src={attac.src} format="hex">
+                                    {({ data }) => (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src})` }} alt="photo" />)}
                                 </Color>
                             </div>
                             <div className="att-details">
@@ -291,8 +293,8 @@ export function TaskModal({ taskModalOp }) {
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>
                                 </div>
-                                <div className="att-edit-main">
-                                    <p>Link name:</p>
+                                <div className="att-edit-main" ref={editAttachRef}>
+                                    <p>Attachment name:</p>
                                     <form onSubmit={handleSubmit(res => onSubmitAtt(res, attIdx))}>
                                         <input type="text" autoComplete="off" id={'att-item-' + attIdx} defaultValue={attac.title}  {...register('attItem' + attIdx)} />
                                         <button>Save</button>
