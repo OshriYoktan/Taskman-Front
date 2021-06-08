@@ -6,11 +6,10 @@
     height: 95vh;
     padding: 20px;
     position: fixed;
-    left: 50%;
-    top: 53%;
+    bottom: 0;
+    transform: translateX(-50%);
     overflow-y: auto;
     z-index: 30;
-    transform: translate(-50%, -50%);
     border-radius: 2px;
     background-color: #f4f5f7;
     h3 {
