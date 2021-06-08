@@ -36,7 +36,6 @@ export function BoardMenu({ boardMenuOp }) {
 
     useEffect(() => {
         setLabels(currBoard.labels)
-        console.log('labels effect:', labels);
     }, [currBoard])
 
     const onSearchTask = data => {
