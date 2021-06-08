@@ -95,8 +95,7 @@ export function CardPreview(props) {
                     </form>
                     <div onClick={(ev) => cardPreviewOp.openCardModal(ev, card)} className="manage-card"><p>⋮</p></div>
                 </div>
-                <DragDropContext onDragEnd={handleOnDragEnd}>
-                    <Droppable droppableId="tasks">
+                    <Droppable droppableId="tasks" onDragEnd={handleOnDragEnd}>
                         {(provided) => (
                             <ul {...provided.droppableProps} ref={provided.innerRef} className="tasks-container">
                                 {tasks.map((task, idx) => {
@@ -134,7 +133,6 @@ export function CardPreview(props) {
                                 })}{provided.placeholder}
                             </ul>)}
                     </Droppable>
-                </DragDropContext>
                 {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
                 {isAddTask && <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
                     <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} />
