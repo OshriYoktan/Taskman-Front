@@ -15,9 +15,10 @@ export function BoardPreview({ board }) {
         <div className="board-link links" key={board._id} onClick={() => dispatch(setCurrBoard(board._id))} style={board.background ? board.background.img ? { backgroundImage: `url(${board.background.img})` } : { backgroundColor: board.background.color } : { backgroundColor: 'white' }}>
             {board.background ? board.background.img ? <Link className="link" to={`/board/${board._id}`}>
                 <Color src={board.background.img} crossOrigin="anonymous" format="hex">
-                    {({ data }) => (
+                    {({ data, loading }) => {
+                        if (loading) return <div>Loading...</div>;
                         <h4 style={{ color: data }}>{board.title}</h4>
-                    )}
+                    }}
                 </Color>
             </Link> : <LinkPrev /> : <LinkPrev />}
         </div>

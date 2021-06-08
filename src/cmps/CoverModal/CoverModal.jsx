@@ -19,20 +19,23 @@ export function CoverModal(props) {
                 <div className="cover-color-container">
                     {coverColors.map((color, idx) => <span className="cover-color" key={idx} onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
                 </div>
-                {!props.currTask.attachments.length ? <div>
-                    <Cloudinary currCard={props.currCard} txt='Upload photo' type='cover' currTask={props.currTask} />
-                </div> : <div>
+                {!props.currTask.attachments.length ?null: < div >
                     <h4>ATTACHMENTS:</h4>
                     <div className="cover-attachments-container">
                         {props.currTask.attachments.map((attach) => {
-                            return <Color crossOrigin="anonymous" key={attach._id} src={attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                                {({ data }) => (<div className="cover-attach" style={{ backgroundColor: data, backgroundImage: `url(${attach.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} onClick={() => props.addCover(attach.src)} />)}
+                            return <Color crossOrigin="anonymous" key={attach._id} src={attach.src} format="hex">
+                                {({ data, loading }) => {
+                                    if (loading) return <div>Loading...</div>;
+                                    return <div className="cover-attach" style={{ backgroundColor: data, backgroundImage: `url(${attach.src})` }} onClick={() => props.addCover(attach.src)} />
+                                }}
                             </Color>
                         })}
                     </div>
                 </div>}
+                
+                <Cloudinary cloudOp={props.cloudOp} currCard={props.currCard} className="add-attachment-cover-btn" txt='Upload photo' type='cover' currTask={props.currTask} />
                 {props.currTask.cover && <button className="remove-cover-btn" onClick={() => props.addCover('')}>Remove cover</button>}
             </div>
-        </section>
+        </section >
     )
 }

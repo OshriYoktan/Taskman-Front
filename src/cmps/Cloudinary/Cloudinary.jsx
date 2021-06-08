@@ -11,13 +11,16 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudO
 
     const onAttAdd = (res) => {
         console.log('type:', type)
+        var newAtt
         if (type === 'cover') {
             currTask.cover = res.info.secure_url
-            // console.log('cover')
-            currTask.attachments.push(res.info.secure_url)
-            const newBoard = boardService.updateCard(currTask, currCard, currBoard)
-            dispatch(saveBoard(newBoard))
-            dispatch(setCurrBoard(newBoard._id))
+            console.log('res.info.secure_url:', res.info.secure_url)
+            // newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
+            // currTask.attachments.push(newAtt)
+            cloudOp.updateBoard(currTask)
+            // const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+            // dispatch(saveBoard(newBoard))
+            // dispatch(setCurrBoard(newBoard._id))
         }
         else if (type === 'background') {
             currBoard.images.unshift(res.info.secure_url)
@@ -26,7 +29,7 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudO
             dispatch(setCurrBoard(currBoard._id))
         }
         else {
-            var newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
+            newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
             currTask.attachments.push(newAtt)
             cloudOp.updateBoard(currTask)
 
