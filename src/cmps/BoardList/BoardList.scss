@@ -1,14 +1,17 @@
 .board-container {
+    display: flex;
     width: 100%;
-    height: 20vh;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 25px;
-    text-align: center;
+    height: 100%;
     margin-top: 30px;
+    flex-wrap: wrap;
+    transition: 0.3s;
     li {
-        display: block;
-        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0.5em;
+        width: 250px;
+        height: 150px;
         a {
             width: 100%;
             height: 100%;
