@@ -1,11 +1,15 @@
-import { userService } from "../../services/userService"
-
 const INITIAL_STATE = {
-  user: userService.getUser() || null
+  users: [],
+  user: null
 }
 
 export function userReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
+    case 'SET_USERS':
+      return {
+        ...state,
+        users: action.users
+      }
     case 'LOAD_USER':
       return {
         ...state,

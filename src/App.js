@@ -8,6 +8,7 @@ import { BoardDetails } from './pages/BoardDetails';
 import { LandingPage } from './pages/LandingPage';
 import { TaskmanApp } from './pages/TaskmanApp';
 import { loadBoards } from './store/actions/boardActions';
+import { loadUsers } from './store/actions/userActions';
 
 function App() {
   const dispatch = useDispatch()
@@ -15,6 +16,7 @@ function App() {
   const background = useSelector(state => state.boardReducer.background)
 
   useEffect(() => {
+    dispatch(loadUsers())
     dispatch(loadBoards())
   }, [currBoard])
 

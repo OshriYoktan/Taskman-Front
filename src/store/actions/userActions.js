@@ -1,5 +1,12 @@
-import { userService } from "../../services/userService"
+import userService from "../../services/userService"
 
+export function loadUsers() {
+  return async dispatch => {
+    const users = await userService.query()
+    const action = { type: 'SET_USERS', users }
+    dispatch(action)
+  }
+}
 export function loadUser(username) {
   userService.signUp(username)
   return async dispatch => {
@@ -7,17 +14,6 @@ export function loadUser(username) {
     const action = {
       type: 'LOAD_USER',
       user
-    }
-    dispatch(action)
-  }
-}
-
-export function transferCoins(amount, contactId) {
-  // let user = userService.getUser(contactId)
-  return async dispatch => {
-    const action = {
-      type: 'TRANSFER_COINS',
-      amount
     }
     dispatch(action)
   }
