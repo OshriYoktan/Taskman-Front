@@ -7,14 +7,21 @@ export function loadUsers() {
     dispatch(action)
   }
 }
-export function loadUser(username) {
-  userService.signUp(username)
+export function login(userToLogin) {
   return async dispatch => {
-    const user = await userService.getUser()
-    const action = {
-      type: 'LOAD_USER',
-      user
-    }
+    const user = await userService.login(userToLogin)
+    if (!user) return
+    console.log('user:', user)
+    userService.storage.saveUserToStorage(user)
+    const action = { type: 'LOAD_USER', user }
+    dispatch(action)
+  }
+}
+export function logout() {
+  return async dispatch => {
+    await userService.logout()
+    userService.storage.saveUserToStorage(null)
+    const action = { type: 'LOAD_USER', user: null }
     dispatch(action)
   }
 }

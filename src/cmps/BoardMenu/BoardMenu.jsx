@@ -205,7 +205,7 @@ export function BoardMenu({ boardMenuOp }) {
                 <div className="flex hide-overflow">
                     <div className="flex">
                         <h3>Members</h3>
-                        <div>{boardMenuOp.members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}</div>
+                        <div>{boardMenuOp.members.map(member => <Avatar key={member._id} name={member.name} size="30" round={true} />)}</div>
                         <p>Total: {boardMenuOp.members.length}</p>
                     </div>
                     <div className="flex">
@@ -215,7 +215,7 @@ export function BoardMenu({ boardMenuOp }) {
                     <div className="flex">
                         <h3>Statistics</h3>
                         <h4>Tasks per member</h4>
-                        <PolarArea data={dataForMembersChart} />
+                        <PolarArea name="PolarArea" data={dataForMembersChart} />
                         <h4>Tasks status</h4>
                         <Bar height="200" data={dataForChart} />
                     </div>
