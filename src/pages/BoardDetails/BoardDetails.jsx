@@ -16,13 +16,14 @@ import { socketService } from '../../services/socketService'
 import { Notification } from '../../cmps/Notification/Notification'
 import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
+import { updateUser } from '../../store/actions/userActions'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm()
     var newCard = boardService.getEmptyCard()
-    const users = boardService.getUsers()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
+    const users = useSelector(state => state.userReducer.users)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
     const [isMsg, setIsMsg] = useState(false)
@@ -47,12 +48,6 @@ export function BoardDetails(props) {
                 document.removeEventListener("touchstart", listener);
             };
         }, [ref, handler]);
-        // Add ref and handler to effect dependencies
-        // It's worth noting that because passed in handler is a new ...
-        // ... function on every render that will cause this effect ...
-        // ... callback/cleanup to run every render. It's not a big deal ...
-        // ... but to optimize you can wrap handler in useCallback before ...
-        // ... passing it into this hook.
     }
 
     useEffect(() => {
@@ -116,7 +111,6 @@ export function BoardDetails(props) {
     // Sockets /////////////////////////////////////////////////////////
 
     const updateCardForSockets = card => {
-        console.log('card:', card)
         const cardIdx = currBoard.cards.findIndex(c => c._id === card._id)
         currBoard.cards.splice(cardIdx, 1, card)
         dispatch(setCurrBoard(currBoard._id))
@@ -154,7 +148,6 @@ export function BoardDetails(props) {
     }
 
     const addLabelForSockets = data => {
-        console.log('data:', data)
         if (!data.task.labels.length) data.task.labels.push(data.label)
         else {
             if (data.task.labels.some((currLabel) => currLabel.color === data.label.color)) {
@@ -181,7 +174,6 @@ export function BoardDetails(props) {
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
         setDraggedCards(items);
-        
     }
 
     const openCardModal = (ev, card) => {
@@ -295,10 +287,11 @@ export function BoardDetails(props) {
             currTask.members.push(member)
             addActivity('Guest', 'attached', member.name, currTask.title)
         }
-        console.log('member', member);
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
+        console.log('member:', member)
+        dispatch(updateUser(member))
         dispatch(setCurrBoard(newBoard._id))
     }
 
@@ -313,7 +306,6 @@ export function BoardDetails(props) {
         reset()
         addActivity('Guest', 'added', 'card')
         socketService.emit('card to-add-card', newCard);
-        // data.newCardTitle = ''
     }
 
     const deleteCard = () => {
@@ -509,17 +501,15 @@ export function BoardDetails(props) {
                         </div>)}
                 </Droppable>
             </DragDropContext>
-            {
-                isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
-                    <div className="card-title-modal">
-                        <p>{cardModal.title}</p>
-                        <button onClick={() => closeModal()}>x</button>
-                    </div>
-                    <div className="card-modal-btns">
-                        <button onClick={() => deleteCard()}>Delete This Card</button>
-                    </div>
+            {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
+                <div className="card-title-modal">
+                    <p>{cardModal.title}</p>
+                    <button onClick={() => closeModal()}>x</button>
                 </div>
-            }
+                <div className="card-modal-btns">
+                    <button onClick={() => deleteCard()}>Delete This Card</button>
+                </div>
+            </div>}
             {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
             <Notification notifyOp={notifyOp} />
         </div >

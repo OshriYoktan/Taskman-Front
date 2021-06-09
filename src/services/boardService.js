@@ -13,7 +13,6 @@ export default {
     updateBoard,
     getCloudImages,
     getEmptyTask,
-    getUsers,
     getCoverColors,
 }
 
@@ -46,7 +45,6 @@ const cloudUrls = [
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621018122/taskman/vlad-kutepov-WYJ9c7uSdnU-unsplash_c2g6gy.jpg',
 ]
 const gLabels = [{ "_id": utilService.makeId(), "desc": "Copy Request", "color": "#61BD4F" }, { "_id": utilService.makeId(), "desc": "One more step", "color": "#F2D600" }, { "_id": utilService.makeId(), "desc": "Design Team", "color": "#FF9F1A" }, { "_id": utilService.makeId(), "desc": "Product Marketing", "color": "#EB5A46" }, { "_id": utilService.makeId(), "desc": "Trello Tip", "color": "#C377E0" }, { "_id": utilService.makeId(), "desc": "Help", "color": "#0079BF" }, { "_id": utilService.makeId(), "desc": "Priority", "color": "#51E898" }]
-const gUsers = [{ _id: 'u101', name: 'Aviv Zohar', tasks: [] }, { _id: 'u102', name: 'Hadar Marom', tasks: [] }, { _id: 'u103', name: 'Oshri Yoktan', tasks: [] }, { _id: 'u104', name: 'gil shrager', tasks: [] }, { _id: 'u105', name: 'Ofek aharon', tasks: [] }]
 const gCoverColors = ['#7bc86c', '#f5dd29', '#ffaf3f', '#ef7564', '#cd8de5', '#5ba4cf', '#29cce5', '#6deca9', '#ff8ed4', '#172b4d']
 
 // const newBoard = getEmptyBoard()
@@ -115,9 +113,6 @@ function getCloudImages() {
     return cloudUrls;
 }
 
-function getUsers() {
-    return gUsers;
-}
 function getCoverColors() {
     return gCoverColors;
 }
@@ -125,7 +120,7 @@ function getCoverColors() {
 function getEmptyBoard() {
     return {
         title: '',
-        members: [...gUsers],
+        members: [],
         cards: [{ _id: utilService.makeId(), title: 'Your first card!', tasks: [] }],
         activity: [],
         background: [],
