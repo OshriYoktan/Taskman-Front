@@ -16,10 +16,11 @@ function App() {
   const background = useSelector(state => state.boardReducer.background)
 
   useEffect(() => {
+    console.log('load!');
     dispatch(loadUsers())
     dispatch(loadBoards())
   }, [currBoard])
-
+  
   return (
     <Router>
       <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBoard.background.color } : { backgroundImage: currBoard.background.img ? `url(${currBoard.background.img})` : '' } : { backgroundColor: 'white' } : { backgroundColor: 'white' }}>

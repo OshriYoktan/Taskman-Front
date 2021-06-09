@@ -8,6 +8,7 @@
     overflow: hidden;
     white-space: nowrap;
     transition: 0.3s;
+    z-index: 50;
     > :first-child {
         display: flex;
         border-bottom: 1px solid rgba(128, 128, 128, 0.5);
@@ -24,6 +25,21 @@
             position: absolute;
             right: 20px;
             cursor: pointer;
+        }
+    }
+    > :nth-child(2) {
+        p {
+            padding: 10px 13px;
+        }
+        > p:first-of-type {
+            font-weight: 600;
+        }
+    }
+    > :nth-child(3) {
+        ul {
+            li {
+                padding: 10px 13px;
+            }
         }
     }
 }
