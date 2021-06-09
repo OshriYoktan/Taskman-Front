@@ -17,7 +17,7 @@ export function BoardPreview({ board }) {
                 <Color src={board.background.img} crossOrigin="anonymous" format="hex">
                     {({ data, loading }) => {
                         if (loading) return <div>Loading...</div>;
-                        <h4 style={{ color: data }}>{board.title}</h4>
+                        return <h4 style={{ color: data }}>{board.title}</h4>
                     }}
                 </Color>
             </Link> : <LinkPrev /> : <LinkPrev />}

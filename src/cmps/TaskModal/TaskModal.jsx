@@ -130,8 +130,7 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const toggleTaskDone = () => {
-        if (!currTask.doneAt) currTask.doneAt = Date.now()
-        else currTask.doneAt = ''
+        (!currTask.doneAt) ? currTask.doneAt = Date.now() : currTask.doneAt = ''
         updateBoard(currTask)
     }
 
@@ -161,6 +160,10 @@ export function TaskModal({ taskModalOp }) {
 
     const backgroundColorDueDate = (task) => {
         return task.doneAt ? '#61BD4F' : ((task.dueDate > Date.now()) ? 'inherite' : '#ec9488')
+
+    }
+    const displayDueDate = (task) => {
+        return task.doneAt ? 'unset' : ((task.dueDate > Date.now()) ? 'none' : 'unset')
     }
 
     const onAttRemove = (id) => {
@@ -192,7 +195,6 @@ export function TaskModal({ taskModalOp }) {
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
                     <Color src={currTask.cover} crossOrigin="anonymous" format="hex">
                         {({ data, loading }) => {
-                            console.log('data:', data)
                             if (loading) return <div>Loading...</div>;
                             return (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover})` }} />)
                         }}
@@ -224,7 +226,7 @@ export function TaskModal({ taskModalOp }) {
                         <button onClick={() => setLabelModal(true)}><FontAwesomeIcon icon={faPlus} /></button>
                     </section>}
                     {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}><h3>DUE DATE:</h3>
-                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
+                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', display: displayDueDate(currTask), backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
                         </span> </section>}
                     <section className="desc-section">
                         <div className="desc-svg"><FontAwesomeIcon icon={faAlignLeft} />

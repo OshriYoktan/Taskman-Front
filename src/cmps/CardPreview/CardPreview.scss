@@ -2,7 +2,7 @@
     height: 100%;
     width: 280px;
     margin: 0 4px;
-    padding: 10px;
+    padding: 10px 0;
     > :first-child {
         width: 100%;
         max-height: 80vh;
@@ -101,44 +101,63 @@
         top: 0;
         transform: translateY(-7px);
     }
-    .buttom-preview-info {
+    .container-of-all {
+        flex-direction: row;
+        flex-wrap: wrap;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        color: #8b95a7;
-        .due-date-to-preview {
-            border-radius: 3px;
-            padding: 2px 3px;
-            width: 80px;
+        .buttom-preview-info {
+            flex-direction: row;
+            flex-wrap: wrap;
             display: flex;
-            justify-content: space-around;
             align-items: center;
-            .icon {
-                font-size: 15px;
+            color: #8b95a7;
+            > * {
+                margin: 2px 5px;
             }
-            .font-awesome-clock {
-                display: inline-block;
-            }
-            .font-awesome-home {
-                display: none;
-            }
-            .font-awesome-check-square {
-                display: none;
-            }
-            &:hover {
-                background-color: #eb5a46 !important;
+            .due-date-to-preview {
+                border-radius: 3px;
+                padding: 2px 3px;
+                width: 80px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                .icon {
+                    font-size: 15px;
+                }
                 .font-awesome-clock {
-                    display: none;
+                    display: inline-block;
                 }
                 .font-awesome-home {
-                    display: inline-block;
+                    display: none;
                 }
                 .font-awesome-check-square {
-                    display: inline-block;
+                    display: none;
+                }
+                &:hover {
+                    background-color: #eb5a46 !important;
+                    .font-awesome-clock {
+                        display: none;
+                    }
+                    .font-awesome-home {
+                        display: inline-block;
+                    }
+                    .font-awesome-check-square {
+                        display: inline-block;
+                    }
                 }
             }
         }
+        .avatar-card-preview {
+            display: flex;
+            justify-content: flex-end;
+
+            > * {
+                margin-left: -4%;
+            }
+        }
     }
+
     .add-task-container {
         input,
         textarea {
@@ -155,14 +174,6 @@
                 outline: solid 2px #0079bf;
                 cursor: text;
             }
-        }
-    }
-    .avatar-card-preview {
-        display: flex;
-        justify-content: flex-end;
-
-        > * {
-            margin-left: -4%;
         }
     }
 }
