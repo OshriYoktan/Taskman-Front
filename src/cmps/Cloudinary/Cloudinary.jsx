@@ -5,17 +5,22 @@ import { utilService } from '../../services/utilService'
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions'
 import './Cloudinary.scss'
 
-export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs }) {
+export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudOp }) {
     const dispatch = useDispatch()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
 
     const onAttAdd = (res) => {
-        console.log('res:', res)
+        console.log('type:', type)
+        var newAtt
         if (type === 'cover') {
             currTask.cover = res.info.secure_url
-            const newBoard = boardService.updateCard(currTask, currCard, currBoard)
-            dispatch(saveBoard(newBoard))
-            dispatch(setCurrBoard(newBoard._id))
+            console.log('res.info.secure_url:', res.info.secure_url)
+            // newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
+            // currTask.attachments.push(newAtt)
+            cloudOp.updateBoard(currTask)
+            // const newBoard = boardService.updateCard(currTask, currCard, currBoard)
+            // dispatch(saveBoard(newBoard))
+            // dispatch(setCurrBoard(newBoard._id))
         }
         else if (type === 'background') {
             currBoard.images.unshift(res.info.secure_url)
@@ -24,8 +29,10 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs }) {
             dispatch(setCurrBoard(currBoard._id))
         }
         else {
-            var newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
+            newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
             currTask.attachments.push(newAtt)
+            cloudOp.updateBoard(currTask)
+
         }
     }
 

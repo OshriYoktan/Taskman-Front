@@ -25,7 +25,6 @@ export function TaskModal({ taskModalOp }) {
     const { register, handleSubmit, reset } = useForm();
     const [client, setClient] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
-
     const [isComment, setIsComment] = useState(null)
     //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
@@ -55,6 +54,10 @@ export function TaskModal({ taskModalOp }) {
     const labelRef = useRef()
     useOnClickOutside(labelRef, () => setLabelModal(false));
 
+    const [attNameModal, setAttNameModal] = useState(null)
+    const editAttachRef = useRef()
+    useOnClickOutside(editAttachRef, () => setAttNameModal(false));
+
     const [labelEditModal, setLabelEditModal] = useState(false)
     const labelEditRef = useRef()
     useOnClickOutside(labelEditRef, () => setLabelEditModal(false));
@@ -78,7 +81,6 @@ export function TaskModal({ taskModalOp }) {
 
     var descValue;
     const [isDesc, setIsDesc] = useState(false)
-    const [attNameModal, setAttNameModal] = useState(null)
 
     const currCard = currBoard.cards.find(card => {
         return card.tasks.find(t => {
@@ -88,7 +90,6 @@ export function TaskModal({ taskModalOp }) {
     const onSubmitDesc = data => {
         currTask.desc = data.desc
         updateBoard(currTask)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const onSubmitItemInList = (data, idxInList) => {
@@ -115,7 +116,6 @@ export function TaskModal({ taskModalOp }) {
     const onRemoveComment = (id) => {
         const idx = currTask.comments.findIndex(comment => { return comment._id === id })
         currTask.comments.splice(idx, 1)
-        // socketService.emit('task to-update-task', { card: currCard, task: currTask })
         updateBoard(currTask)
     }
 
@@ -127,15 +127,12 @@ export function TaskModal({ taskModalOp }) {
 
     const changeCheckBox = (item) => {
         item.isChecked = !item.isChecked
-        updateBoard(currTask)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const toggleTaskDone = () => {
         if (!currTask.doneAt) currTask.doneAt = Date.now()
         else currTask.doneAt = ''
         updateBoard(currTask)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const setRange = checklist => {
@@ -145,12 +142,11 @@ export function TaskModal({ taskModalOp }) {
         const rengeToShow = +((itemsChecked / checklist.list.length * 100).toFixed(2))
         checklist.range = rengeToShow
         updateBoard(currTask)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const updateBoard = task => {
         const updatedBoard = boardService.updateCard(task, currCard, currBoard)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
+        socketService.emit('task to-update-task', { card: currCard, task: task || currTask })
         dispatch(saveBoard(updatedBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
@@ -170,14 +166,12 @@ export function TaskModal({ taskModalOp }) {
     const onAttRemove = (id) => {
         const idx = currTask.attachments.findIndex(att => { return att._id === id })
         currTask.attachments.splice(idx, 1)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
         updateBoard(currTask)
     }
 
     const setTaskTitle = data => {
         currTask.title = data.taskTitle
         updateBoard(currTask)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const testLog = (ev) => {
@@ -194,9 +188,11 @@ export function TaskModal({ taskModalOp }) {
     return (
         <section className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
+                {currTask.cover && console.log('currTask.cover:', currTask.cover)}
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
                     <Color src={currTask.cover} crossOrigin="anonymous" format="hex">
                         {({ data, loading }) => {
+                            console.log('data:', data)
                             if (loading) return <div>Loading...</div>;
                             return (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover})` }} />)
                         }}
@@ -274,8 +270,11 @@ export function TaskModal({ taskModalOp }) {
                     {currTask.attachments.map((attac, attIdx) =>
                         <div key={attIdx} className="attachments-container">
                             <div className="att-src">
-                                <Color crossOrigin="anonymous" src={attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'} format="hex">
-                                    {({ data }) => (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src || 'https://images.unsplash.com/photo-1563718428108-a2420c356c5c?ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDV8Ym84alFLVGFFMFl8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60'})` }} alt="photo" />)}
+                                <Color crossOrigin="anonymous" src={attac.src} format="hex">
+                                    {({ data, loading }) => {
+                                        if (loading) return <div>Loading...</div>;
+                                        return (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src})` }} alt="photo" />)
+                                    }}
                                 </Color>
                             </div>
                             <div className="att-details">
@@ -291,8 +290,8 @@ export function TaskModal({ taskModalOp }) {
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>
                                 </div>
-                                <div className="att-edit-main">
-                                    <p>Link name:</p>
+                                <div className="att-edit-main" ref={editAttachRef}>
+                                    <p>Attachment name:</p>
                                     <form onSubmit={handleSubmit(res => onSubmitAtt(res, attIdx))}>
                                         <input type="text" autoComplete="off" id={'att-item-' + attIdx} defaultValue={attac.title}  {...register('attItem' + attIdx)} />
                                         <button>Save</button>
@@ -357,7 +356,7 @@ export function TaskModal({ taskModalOp }) {
                     <Cloudinary currTask={currTask} cloudOp={cloudOp} txt={<div className="right-task-btn">
                         <FontAwesomeIcon icon={faPaperclip}></FontAwesomeIcon>
                         <p>Attachments</p></div>} />
-                    {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} currCard={currCard} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile}></CoverModal></div>}
+                    {(!coverModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={coverRef}><CoverModal setCoverModal={setCoverModal} coverModal={coverModal} cloudOp={cloudOp} currCard={currCard} addCover={taskModalOp.addCover} currTask={currTask} onButtonClick={onButtonClick} inputFile={inputFile}></CoverModal></div>}
                     <div onClick={() => setCoverModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
                         <p> Cover </p>
