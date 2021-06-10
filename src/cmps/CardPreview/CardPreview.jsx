@@ -85,9 +85,6 @@ export function CardPreview(props) {
     const colorDueDate = (task) => {
         return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
     }
-    useEffect(() => {
-        console.log('currBoard:', currBoard)
-    })
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">

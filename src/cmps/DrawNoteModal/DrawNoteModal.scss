@@ -1,0 +1,44 @@
+.draw-note-modal {
+    background-color: #f4f5f7;
+    position: relative;
+    left: 100%;
+    transform: translate(-35.5%, 0);
+    // border-radius: 2px;
+    border: 1px solid rgba(207, 191, 191, 0.6);
+    width: 322px;
+    white-space: nowrap;
+    overflow: auto;
+    transition: 0.6s;
+    z-index: 10;
+    top: 107px;
+    color: #172b4d;
+    min-height: 180px;
+    .draw-note-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid black;
+        height: 60px;
+        > :first-child {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button {
+            background-color: inherit;
+            position: absolute;
+            top: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
+            height: 60px;
+        }
+    }
+    .draw-note-modal-body {
+        display: flex;
+        align-items: center;
+        min-height: 200px;
+        flex-direction: column;
+    }
+}

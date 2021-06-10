@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useForm } from "react-hook-form";
 import { useDispatch } from 'react-redux'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faPaperclip, faClipboard, faPlus, faComment } from '@fortawesome/free-solid-svg-icons'
+import { faAlignLeft, faClock, faList, faTag, faTimes, faUser, faCheckSquare, faWindowMaximize, faPaperclip, faClipboard, faPlus, faComment, faPalette } from '@fortawesome/free-solid-svg-icons'
 import boardService from '../../services/boardService.js'
 import './TaskModal.scss'
 import Avatar from 'react-avatar';
@@ -11,6 +11,7 @@ import { MemberModal } from '../MemberModal/MemberModal';
 import { CheckListModal } from '../CheckListModal/CheckListModal';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
+import { DrawNoteModal } from '../DrawNoteModal/DrawNoteModal.jsx';
 import { CoverModal } from '../CoverModal/CoverModal.jsx';
 import loader from '../../assets/imgs/taskman-loader.svg'
 import Moment from 'react-moment';
@@ -77,6 +78,10 @@ export function TaskModal({ taskModalOp }) {
     const [dueDateModal, setDueDateModal] = useState(false)
     const dueDateRef = useRef()
     useOnClickOutside(dueDateRef, () => setDueDateModal(false));
+
+    const [drawNoteModal, setDrawNoteModal] = useState(false)
+    const drawNoteRef = useRef()
+    useOnClickOutside(drawNoteRef, () => setDrawNoteModal(false));
     //--------------------------------------------------------------------\\
 
     var descValue;
@@ -286,6 +291,7 @@ export function TaskModal({ taskModalOp }) {
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
+                            {attNameModal && console.log('client.clientY:', client.clientY)}
                             {attNameModal && <div style={{ transform: `translate(-269px,${client.clientY}px)` }} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
@@ -361,6 +367,11 @@ export function TaskModal({ taskModalOp }) {
                     <div onClick={() => setCoverModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClipboard}></FontAwesomeIcon>
                         <p> Cover </p>
+                    </div>
+                    <div onClick={() => setDrawNoteModal(true)} className="right-task-btn">
+                        <FontAwesomeIcon icon={faPalette}></FontAwesomeIcon>
+                        <p> Draw Note </p>
+                        {(!drawNoteModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={drawNoteRef}> <DrawNoteModal setDrawNoteModal={setDrawNoteModal} drawNoteModal={drawNoteModal} currTask={currTask}></DrawNoteModal></div>}
                     </div>
                 </div>
             </div>
