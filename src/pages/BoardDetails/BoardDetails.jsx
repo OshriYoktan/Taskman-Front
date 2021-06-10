@@ -488,7 +488,7 @@ export function BoardDetails(props) {
                             <div {...provided.droppableProps}  {...events} ref={containerRef} className="cards-container flex">
                                 <div className="flex">
                                     {draggedCards.map((card, idx) => {
-                                        return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
+                                        return <div className="test" key={card._id}><Draggable  key={card._id} draggableId={card._id} index={idx}>
                                             {(previewProvider) =>
                                             (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                                 <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>

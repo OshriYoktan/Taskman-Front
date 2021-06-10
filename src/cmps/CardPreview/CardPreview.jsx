@@ -5,7 +5,7 @@ import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import boardService from '../../services/boardService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckSquare, faList, faTimes, faClock, faSquare, faPlus, faPaperclip } from '@fortawesome/free-solid-svg-icons'
+import { faCheckSquare, faList, faTimes, faClock, faSquare, faPlus, faPaperclip, faAlignLeft, faComments } from '@fortawesome/free-solid-svg-icons'
 import './CardPreview.scss'
 import Avatar from 'react-avatar';
 import Moment from 'react-moment';
@@ -85,7 +85,9 @@ export function CardPreview(props) {
     const colorDueDate = (task) => {
         return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
     }
-
+    useEffect(() => {
+        console.log('currBoard:', currBoard)
+    })
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
@@ -119,6 +121,8 @@ export function CardPreview(props) {
                                                                 <FontAwesomeIcon className="icon font-awesome-clock" icon={faClock} /><FontAwesomeIcon className="icon font-awesome-check-square" icon={faCheckSquare} /><Moment format="MMM D" withTitle>{task.dueDate}</Moment>
                                                             </div>}
                                                         {!task.attachments.length ? null : <div><FontAwesomeIcon icon={faPaperclip} /> {task.attachments.length} </div>}
+                                                        {!task.desc ? null : <div><FontAwesomeIcon icon={faAlignLeft} /></div>}
+                                                        {!task.comments.length ? null : <div><FontAwesomeIcon icon={faComments} />{task.comments.length}</div>}
                                                         {(!task.checklists.length || (task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0) <= 0)) ? null :
                                                             < p > <FontAwesomeIcon icon={faList} />{task.checklists.reduce((accTotal, checklist) => {
                                                                 return accTotal + checklist.list.reduce((acc, itemInList) => itemInList.isChecked + acc, 0)
@@ -131,8 +135,7 @@ export function CardPreview(props) {
                                                     </div>}
                                                 </div>
                                             </li>
-                                        )
-                                        }</Draggable>)
+                                        )}</Draggable>)
                             })}{provided.placeholder}
                         </ul>)}
                 </Droppable>

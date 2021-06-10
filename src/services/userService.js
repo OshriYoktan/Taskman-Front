@@ -1,19 +1,11 @@
 import { httpService } from "./http.service"
 
 const KEY = 'user/'
+const AUTH = 'auth/'
 
-export default {
-    query,
-    getUserById,
-    deleteUser,
-    saveUser,
-    getEmptyUser,
-}
+const gUsersForBack = [{ name: 'Aviv Zohar', username: 'avivzo9', password: '1234', tasks: [] }, { name: 'Hadar Marom', username: 'hadarMa', password: '1234', tasks: [] }, { name: 'Oshri Yoktan', username: 'OshYok', password: '1234', tasks: [] }]
 
-const gUsers = [{ _id: 'u101', name: 'Aviv Zohar', username: 'avivzo9', tasks: [] }, { _id: 'u102', name: 'Hadar Marom', username: 'hadarMa', tasks: [] }, { _id: 'u103', name: 'Oshri Yoktan', username: 'OshYok', tasks: [] }, { _id: 'u104', name: 'gil shrager', tasks: [] }, { _id: 'u105', name: 'Ofek aharon', tasks: [] }]
-const gUsersForBack = [{ name: 'Aviv Zohar', username: 'avivzo9', tasks: [] }, { name: 'Hadar Marom', username: 'hadarMa', tasks: [] }, { name: 'Oshri Yoktan', username: 'OshYok', tasks: [] }, { _id: 'u104', name: 'gil shrager', tasks: [] }, { _id: 'u105', name: 'Ofek aharon', tasks: [] }]
-
-// gUsersForBack.forEach(user => saveUser(user))
+// saveUser(gUsersForBack[2])
 
 // CRUDL
 async function query() {
@@ -49,6 +41,24 @@ async function saveUser(user) {
     }
 }
 
+async function login(user) {
+    try {
+        return await httpService.post(AUTH + 'login', user)
+    } catch (err) {
+        console.log('err:', err)
+    }
+}
+
+// storage
+const storage = {
+    saveUserToStorage(user) {
+        sessionStorage.setItem('loggedinUser', JSON.stringify(user))
+    },
+    loadUserFromStorage() {
+        return JSON.parse(sessionStorage.getItem('loggedinUser'))
+    }
+}
+
 // get functions /////////////////////////////////////////////////////////////////////////////////////////////////
 
 function getEmptyUser() {
@@ -57,4 +67,14 @@ function getEmptyUser() {
         username: '',
         password: ''
     }
+}
+
+export default {
+    query,
+    getUserById,
+    deleteUser,
+    saveUser,
+    getEmptyUser,
+    storage,
+    login
 }

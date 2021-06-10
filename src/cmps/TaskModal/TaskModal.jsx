@@ -191,7 +191,6 @@ export function TaskModal({ taskModalOp }) {
     return (
         <section className="task-modal hide-overflow">
             <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
-                {currTask.cover && console.log('currTask.cover:', currTask.cover)}
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
                     <Color src={currTask.cover} crossOrigin="anonymous" format="hex">
                         {({ data, loading }) => {
@@ -287,7 +286,7 @@ export function TaskModal({ taskModalOp }) {
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
-                            {attNameModal && <div style={{ transform: `translate(-540px,${client.clientY - 190}px)` }} className="att-edit">
+                            {attNameModal && <div style={{ transform: `translate(-269px,${client.clientY}px)` }} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>
