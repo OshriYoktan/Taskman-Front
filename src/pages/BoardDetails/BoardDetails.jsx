@@ -182,6 +182,8 @@ export function BoardDetails(props) {
         items.splice(result.destination.index, 0, reorderedItem);
         setDraggedCards(items);
         
+        
+        
     }
 
     const openCardModal = (ev, card) => {
