@@ -16,13 +16,15 @@ import { socketService } from '../../services/socketService'
 import { Notification } from '../../cmps/Notification/Notification'
 import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
+import { updateUser } from '../../store/actions/userActions'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm()
     var newCard = boardService.getEmptyCard()
-    const users = boardService.getUsers()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
+    const users = useSelector(state => state.userReducer.users)
+    const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
     const [isMsg, setIsMsg] = useState(false)
@@ -47,12 +49,6 @@ export function BoardDetails(props) {
                 document.removeEventListener("touchstart", listener);
             };
         }, [ref, handler]);
-        // Add ref and handler to effect dependencies
-        // It's worth noting that because passed in handler is a new ...
-        // ... function on every render that will cause this effect ...
-        // ... callback/cleanup to run every render. It's not a big deal ...
-        // ... but to optimize you can wrap handler in useCallback before ...
-        // ... passing it into this hook.
     }
 
     useEffect(() => {
@@ -60,7 +56,10 @@ export function BoardDetails(props) {
         dispatch(updateBackground(false))
         const { id } = props.match.params
         socketService.emit("board topic", id);
-        if (!currBoard) dispatch(setCurrBoard(id))
+        if (!currBoard) {
+            dispatch(setCurrBoard(id))
+            console.log('loop');
+        }
         else if (!draggedCards) {
             setDraggedCards(currBoard.cards)
             socketService.on('task add-task', data => {
@@ -89,9 +88,11 @@ export function BoardDetails(props) {
             })
             setMembers(currBoard.members)
             preMembers()
+            console.log('loop');
         }
         if (currBoard) {
             setMembers(currBoard.members)
+            console.log('loop');
         }
     }, [currBoard])
 
@@ -116,7 +117,6 @@ export function BoardDetails(props) {
     // Sockets /////////////////////////////////////////////////////////
 
     const updateCardForSockets = card => {
-        console.log('card:', card)
         const cardIdx = currBoard.cards.findIndex(c => c._id === card._id)
         currBoard.cards.splice(cardIdx, 1, card)
         dispatch(setCurrBoard(currBoard._id))
@@ -154,7 +154,6 @@ export function BoardDetails(props) {
     }
 
     const addLabelForSockets = data => {
-        console.log('data:', data)
         if (!data.task.labels.length) data.task.labels.push(data.label)
         else {
             if (data.task.labels.some((currLabel) => currLabel.color === data.label.color)) {
@@ -181,7 +180,6 @@ export function BoardDetails(props) {
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
         setDraggedCards(items);
-        
     }
 
     const openCardModal = (ev, card) => {
@@ -220,6 +218,7 @@ export function BoardDetails(props) {
     }
 
     const onAddMember = (member) => {
+        console.log('member:', member)
         currBoard.members = [...members, member]
         setMembers(currBoard.members)
         dispatch(saveBoard(currBoard))
@@ -249,7 +248,7 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-        addActivity('Guest', 'added', 'label', currCard.title)
+        addActivity(user ? user.username : 'Guest', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
@@ -279,27 +278,29 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
+        console.log('member:', member)
         if (!currTask.members.length) {
-            member.tasks.push(currTask._id)
+            member.tasks.push(currTask.title)
             currTask.members.push(member)
-            addActivity('Guest', 'attached', member.name, currTask.title)
+            addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
         else if (currTask.members.some((currMember) => currMember._id === member._id)) {
             const taskIdx = member.tasks.findIndex(t => t === currTask._id)
             member.tasks.splice(taskIdx, 1)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
-            addActivity('Guest', 'removed', member.name, currTask.title)
+            addActivity(user ? user.username : 'Guest', 'removed', member.username, currTask.title)
         } else {
-            member.tasks.push(currTask._id)
+            member.tasks.push(currTask.title)
             currTask.members.push(member)
-            addActivity('Guest', 'attached', member.name, currTask.title)
+            addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
-        console.log('member', member);
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
+        dispatch(updateUser(member))
         dispatch(setCurrBoard(newBoard._id))
+        console.log('member:', member)
     }
 
     const addNewCard = (data) => {
@@ -311,16 +312,15 @@ export function BoardDetails(props) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
         setIsAddCard(!isAddCard)
         reset()
-        addActivity('Guest', 'added', 'card')
+        addActivity(user ? user.username : 'Guest', 'added', 'card')
         socketService.emit('card to-add-card', newCard);
-        // data.newCardTitle = ''
     }
 
     const deleteCard = () => {
         const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
         socketService.emit('card to-delete-card', cardIdx);
-        addActivity('Guest', 'deleted', 'card')
+        addActivity(user ? user.username : 'Guest', 'deleted', 'card')
         setDraggedCards(currBoard.cards)
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(boardToSave._id))
@@ -329,11 +329,11 @@ export function BoardDetails(props) {
 
     const changeBackground = (background, type) => {
         if (type) {
-            addActivity('Guest', 'change', 'color')
+            addActivity(user ? user.username : 'Guest', 'change', 'color')
             dispatch(saveBoard({ ...currBoard, background: { color: background, img: null } }))
         }
         else {
-            addActivity('Guest', 'change', 'image')
+            addActivity(user ? user.username : 'Guest', 'change', 'image')
             dispatch(saveBoard({ ...currBoard, background: { color: null, img: background } }))
         }
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
@@ -463,7 +463,7 @@ export function BoardDetails(props) {
                                     })}
                                 </ul>
                             </div>}
-                            <div className="exist-members">
+                            {!currBoard.members.length ? null : <div className="exist-members">
                                 <p>In This Board:</p>
                                 {currBoard.members.map((user, idx) => {
                                     return <button key={user._id} onClick={() => removeUserFromBoard(user._id)} className="suggested-user">
@@ -472,7 +472,7 @@ export function BoardDetails(props) {
                                         <p><FontAwesomeIcon icon={faCheckCircle} /></p>
                                     </button>
                                 })}
-                            </div>
+                            </div>}
                         </div>}
                     </div>
                 </div>
@@ -488,7 +488,7 @@ export function BoardDetails(props) {
                             <div {...provided.droppableProps}  {...events} ref={containerRef} className="cards-container flex">
                                 <div className="flex">
                                     {draggedCards.map((card, idx) => {
-                                        return <div className="test" key={card._id}><Draggable  key={card._id} draggableId={card._id} index={idx}>
+                                        return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
                                             {(previewProvider) =>
                                             (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                                 <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
@@ -509,17 +509,15 @@ export function BoardDetails(props) {
                         </div>)}
                 </Droppable>
             </DragDropContext>
-            {
-                isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
-                    <div className="card-title-modal">
-                        <p>{cardModal.title}</p>
-                        <button onClick={() => closeModal()}>x</button>
-                    </div>
-                    <div className="card-modal-btns">
-                        <button onClick={() => deleteCard()}>Delete This Card</button>
-                    </div>
+            {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
+                <div className="card-title-modal">
+                    <p>{cardModal.title}</p>
+                    <button onClick={() => closeModal()}>x</button>
                 </div>
-            }
+                <div className="card-modal-btns">
+                    <button onClick={() => deleteCard()}>Delete This Card</button>
+                </div>
+            </div>}
             {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
             <Notification notifyOp={notifyOp} />
         </div >

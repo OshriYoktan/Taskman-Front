@@ -11,7 +11,6 @@ export function login(userToLogin) {
   return async dispatch => {
     const user = await userService.login(userToLogin)
     if (!user) return
-    console.log('user:', user)
     userService.storage.saveUserToStorage(user)
     const action = { type: 'LOAD_USER', user }
     dispatch(action)
@@ -22,6 +21,14 @@ export function logout() {
     await userService.logout()
     userService.storage.saveUserToStorage(null)
     const action = { type: 'LOAD_USER', user: null }
+    dispatch(action)
+  }
+}
+export function updateUser(user) {
+  return async dispatch => {
+    const updatedUser = await userService.saveUser(user)
+    userService.storage.saveUserToStorage(updatedUser)
+    const action = { type: 'LOAD_USER', updatedUser }
     dispatch(action)
   }
 }

@@ -49,6 +49,14 @@ async function login(user) {
     }
 }
 
+async function logout() {
+    try {
+        return await httpService.post(AUTH + 'logout')
+    } catch (err) {
+        console.log('err:', err)
+    }
+}
+
 // storage
 const storage = {
     saveUserToStorage(user) {
@@ -76,5 +84,6 @@ export default {
     saveUser,
     getEmptyUser,
     storage,
-    login
+    login,
+    logout
 }
