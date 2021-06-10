@@ -10,10 +10,10 @@ import { socketService } from '../../services/socketService.js'
 export function TaskmanApp() {
     const dispatch = useDispatch()
     const boards = useSelector(state => state.boardReducer.boards)
-    const newBoard = boardService.getEmptyBoard()
 
     useEffect(() => {
         socketService.setup();
+        dispatch(setCurrBoard(null))
         dispatch(loadBoards())
         dispatch(updateBackground(true))
     }, [])
@@ -23,8 +23,9 @@ export function TaskmanApp() {
         newBoard.title = title
         dispatch(saveBoard(newBoard))
         dispatch(loadBoards())
+        // boards.push(newBoard)
     }
-
+    
     if (!boards || !boards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const boardListOp = {

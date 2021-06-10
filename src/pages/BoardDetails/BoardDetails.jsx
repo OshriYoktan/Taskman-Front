@@ -24,6 +24,7 @@ export function BoardDetails(props) {
     var newCard = boardService.getEmptyCard()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const users = useSelector(state => state.userReducer.users)
+    const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
     const [isMsg, setIsMsg] = useState(false)
@@ -55,7 +56,10 @@ export function BoardDetails(props) {
         dispatch(updateBackground(false))
         const { id } = props.match.params
         socketService.emit("board topic", id);
-        if (!currBoard) dispatch(setCurrBoard(id))
+        if (!currBoard) {
+            dispatch(setCurrBoard(id))
+            console.log('loop');
+        }
         else if (!draggedCards) {
             setDraggedCards(currBoard.cards)
             socketService.on('task add-task', data => {
@@ -84,9 +88,11 @@ export function BoardDetails(props) {
             })
             setMembers(currBoard.members)
             preMembers()
+            console.log('loop');
         }
         if (currBoard) {
             setMembers(currBoard.members)
+            console.log('loop');
         }
     }, [currBoard])
 
@@ -212,6 +218,7 @@ export function BoardDetails(props) {
     }
 
     const onAddMember = (member) => {
+        console.log('member:', member)
         currBoard.members = [...members, member]
         setMembers(currBoard.members)
         dispatch(saveBoard(currBoard))
@@ -241,7 +248,7 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
         dispatch(setCurrBoard(newBoard._id))
-        addActivity('Guest', 'added', 'label', currCard.title)
+        addActivity(user ? user.username : 'Guest', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
@@ -271,28 +278,29 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
+        console.log('member:', member)
         if (!currTask.members.length) {
-            member.tasks.push(currTask._id)
+            member.tasks.push(currTask.title)
             currTask.members.push(member)
-            addActivity('Guest', 'attached', member.name, currTask.title)
+            addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
         else if (currTask.members.some((currMember) => currMember._id === member._id)) {
             const taskIdx = member.tasks.findIndex(t => t === currTask._id)
             member.tasks.splice(taskIdx, 1)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
-            addActivity('Guest', 'removed', member.name, currTask.title)
+            addActivity(user ? user.username : 'Guest', 'removed', member.username, currTask.title)
         } else {
-            member.tasks.push(currTask._id)
+            member.tasks.push(currTask.title)
             currTask.members.push(member)
-            addActivity('Guest', 'attached', member.name, currTask.title)
+            addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
-        console.log('member:', member)
         dispatch(updateUser(member))
         dispatch(setCurrBoard(newBoard._id))
+        console.log('member:', member)
     }
 
     const addNewCard = (data) => {
@@ -304,7 +312,7 @@ export function BoardDetails(props) {
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
         setIsAddCard(!isAddCard)
         reset()
-        addActivity('Guest', 'added', 'card')
+        addActivity(user ? user.username : 'Guest', 'added', 'card')
         socketService.emit('card to-add-card', newCard);
     }
 
@@ -312,7 +320,7 @@ export function BoardDetails(props) {
         const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
         socketService.emit('card to-delete-card', cardIdx);
-        addActivity('Guest', 'deleted', 'card')
+        addActivity(user ? user.username : 'Guest', 'deleted', 'card')
         setDraggedCards(currBoard.cards)
         dispatch(saveBoard(boardToSave))
         dispatch(setCurrBoard(boardToSave._id))
@@ -321,11 +329,11 @@ export function BoardDetails(props) {
 
     const changeBackground = (background, type) => {
         if (type) {
-            addActivity('Guest', 'change', 'color')
+            addActivity(user ? user.username : 'Guest', 'change', 'color')
             dispatch(saveBoard({ ...currBoard, background: { color: background, img: null } }))
         }
         else {
-            addActivity('Guest', 'change', 'image')
+            addActivity(user ? user.username : 'Guest', 'change', 'image')
             dispatch(saveBoard({ ...currBoard, background: { color: null, img: background } }))
         }
         setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
@@ -455,7 +463,7 @@ export function BoardDetails(props) {
                                     })}
                                 </ul>
                             </div>}
-                            <div className="exist-members">
+                            {!currBoard.members.length ? null : <div className="exist-members">
                                 <p>In This Board:</p>
                                 {currBoard.members.map((user, idx) => {
                                     return <button key={user._id} onClick={() => removeUserFromBoard(user._id)} className="suggested-user">
@@ -464,7 +472,7 @@ export function BoardDetails(props) {
                                         <p><FontAwesomeIcon icon={faCheckCircle} /></p>
                                     </button>
                                 })}
-                            </div>
+                            </div>}
                         </div>}
                     </div>
                 </div>

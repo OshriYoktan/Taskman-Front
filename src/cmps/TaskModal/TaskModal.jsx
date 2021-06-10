@@ -23,7 +23,8 @@ export function TaskModal({ taskModalOp }) {
     const { currTask, currBoard } = taskModalOp
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
-    const [client, setClient] = useState(null)
+    const [clientX, setClientX] = useState(null)
+    const [clientY, setClientY] = useState(null)
     const [urlImg, setUrlImg] = useState(false)
     const [isComment, setIsComment] = useState(null)
     //-------------------------onClickOutside----------------------------\\
@@ -175,7 +176,10 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const testLog = (ev) => {
-        setClient(ev)
+        setClientX(ev.target.offsetLeft)
+        setClientY(ev.target.offsetTop)
+
+        
     }
 
 
@@ -285,7 +289,7 @@ export function TaskModal({ taskModalOp }) {
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
-                            {attNameModal && <div style={{ transform: `translate(-540px,${client.clientY - 190}px)` }} className="att-edit">
+                            {attNameModal && <div style={{ left: `${clientX + 450}px`, top: `${clientY - 300}px` }} className="att-edit">
                                 <div className="att-edit-header">
                                     <p>Edit attachment</p>
                                     <button onClick={() => setAttNameModal(false)}>x</button>

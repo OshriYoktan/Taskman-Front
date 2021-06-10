@@ -26,8 +26,8 @@ export function AppHeader() {
     return (
         <>
             <nav className="app-header sub-container">
-                <Link className="link" to="/boards" onClick={() => dispatch(setCurrBoard(null))} ><FontAwesomeIcon icon={faHome} /></Link>
-                <Link className="link" to="/boards" onClick={() => dispatch(setCurrBoard(null))} >Taskman</Link>
+                <Link className="link" to="/boards" ><FontAwesomeIcon icon={faHome} /></Link>
+                <Link className="link" to="/boards" >Taskman</Link>
                 <button className="link" onClick={() => setIsProfile(!isProfile)} ><FontAwesomeIcon icon={faUserCircle} /></button>
             </nav>
             {isProfile && <UserProfile profileOp={profileOp} />}

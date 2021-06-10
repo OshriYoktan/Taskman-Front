@@ -41,28 +41,30 @@ export function UserProfile({ profileOp }) {
                 </div>
                 <div>
                     <p>{user.username}</p>
-                    <p>Tasks: {user.tasks.length}</p>
+                    <p>Tasks:</p>
                 </div>
                 <div>
                     <ul>
-                        <li>Task</li>
-                        <li>Task</li>
+                        {user.tasks && user.tasks.map(task => <li>{task}</li>)}
+                        {user.tasks && <li>{user.tasks.length}</li>}
                     </ul>
                 </div>
                 <div>
                     <button onClick={onLogout}>Logout</button>
                 </div>
             </section>}
-            {!user && <section>
-                <div>
-                    <h3>Login</h3>
-                </div>
-                <form onSubmit={handleSubmit(onLogin)}>
-                    <input type="text" autoComplete="off" placeholder="username" {...register("loginUsername")} />
-                    <input type="password" autoComplete="off" placeholder="password" {...register("loginPass")} />
-                    <button>Login</button>
-                </form>
-            </section>}
+            {
+                !user && <section>
+                    <div>
+                        <h3>Login</h3>
+                    </div>
+                    <form onSubmit={handleSubmit(onLogin)}>
+                        <input type="text" autoComplete="off" placeholder="username" {...register("loginUsername")} />
+                        <input type="password" autoComplete="off" placeholder="password" {...register("loginPass")} />
+                        <button>Login</button>
+                    </form>
+                </section>
+            }
         </>
     )
 }
