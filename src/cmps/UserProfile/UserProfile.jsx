@@ -41,12 +41,13 @@ export function UserProfile({ profileOp }) {
                 </div>
                 <div>
                     <p>{user.username}</p>
-                    <p>Tasks:</p>
+                    <p>{user.tasks.length ? 'Tasks:' : 'No tasks assigned.'}</p>
                 </div>
                 <div>
                     <ul>
-                        {user.tasks && user.tasks.map(task => <li>{task}</li>)}
-                        {user.tasks && <li>{user.tasks.length}</li>}
+                        {!user.tasks.length ? null : user.tasks.map((task, idx) => <li key={idx}>{task}</li>)}
+                        {!user.tasks.length ? null : <li>{user.tasks.length} tasks.</li>}
+                        {user.tasks ? null : <li>{user.tasks.length}</li>}
                     </ul>
                 </div>
                 <div>

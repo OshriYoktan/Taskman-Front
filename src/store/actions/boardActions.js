@@ -17,6 +17,7 @@ export function getBoardById(boardId) {
 export function saveBoard(board) {
   return async dispatch => {
     const updatedBoard = await boardService.saveBoard(board)
+    console.log('updatedBoard:', updatedBoard)
     if (!board._id) return dispatch({ type: 'ADD_BOARD', board: updatedBoard })
     else return dispatch({ type: 'UPDATE_BOARD', updatedBoard })
   }
