@@ -218,7 +218,6 @@ export function BoardDetails(props) {
     }
 
     const onAddMember = (member) => {
-        console.log('member:', member)
         currBoard.members = [...members, member]
         setMembers(currBoard.members)
         dispatch(saveBoard(currBoard))
@@ -278,7 +277,7 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
-        console.log('member:', member)
+        console.log('currTask:', currTask)
         if (!currTask.members.length) {
             member.tasks.push(currTask.title)
             currTask.members.push(member)

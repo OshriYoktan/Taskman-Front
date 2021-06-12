@@ -60,7 +60,6 @@ async function logout() {
 // storage
 const storage = {
     saveUserToStorage(user) {
-        console.log('user:', user)
         sessionStorage.setItem('loggedinUser', JSON.stringify(user))
     },
     loadUserFromStorage() {
