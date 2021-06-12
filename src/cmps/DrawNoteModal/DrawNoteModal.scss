@@ -40,5 +40,11 @@
         align-items: center;
         min-height: 200px;
         flex-direction: column;
+        .canvas-container{
+            background-color: red;
+            .board{
+                background-color: green;
+            }
+        }
     }
 }
