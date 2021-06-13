@@ -216,7 +216,6 @@ export function BoardDetails(props) {
     }
 
     const onAddMember = (member) => {
-        console.log('member:', member)
         currBoard.members = [...members, member]
         setMembers(currBoard.members)
         dispatch(saveBoard(currBoard))
@@ -276,7 +275,6 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
-        console.log('member:', member)
         if (!currTask.members.length) {
             member.tasks.push(currTask.title)
             currTask.members.push(member)
@@ -298,7 +296,6 @@ export function BoardDetails(props) {
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
         dispatch(setCurrBoard(newBoard._id))
-        console.log('member:', member)
     }
 
     const addNewCard = (data) => {

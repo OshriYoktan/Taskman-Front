@@ -43,3 +43,51 @@
         }
     }
 }
+
+.login-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    top: 5vh;
+    right: 0;
+    background-color: #ebecf0;
+    width: 270px;
+    height: 312px;
+    border-radius: 3px 0 0 3px;
+    z-index: 50;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: .3s;
+    h3 {
+        margin: 15px 0;
+        user-select: none;
+    }
+    form {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        input {
+            width: 200px;
+        }
+        >* {
+            margin: 5px 0;
+        }
+    }
+    p {
+        margin-top: 10px;
+        margin-bottom: 15px;
+        user-select: none;
+        cursor: pointer;
+        font-weight: 600;
+        text-align: center;
+    }
+}
+
+.profile-loader {
+    height: 312px;
+}

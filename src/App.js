@@ -32,7 +32,6 @@ function App() {
 
   return (
     <Router>
-      {/* {loggedinUser && <Redirect to='/boards' />} */}
       <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBoard.background.color } : { backgroundImage: currBoard.background.img ? `url(${currBoard.background.img})` : '' } : { backgroundColor: 'white' } : { backgroundColor: 'white' }}>
         <AppHeader />
         <WidgetLoader />

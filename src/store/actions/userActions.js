@@ -8,7 +8,6 @@ export function loadUsers() {
   }
 }
 export function login(userToLogin) {
-  console.log('userToLogin:', userToLogin)
   return async dispatch => {
     const user = await userService.login(userToLogin)
     if (!user) return
@@ -25,12 +24,20 @@ export function logout() {
     dispatch(action)
   }
 }
+export function signup(user) {
+  return async dispatch => {
+    const confirm = await userService.saveUser(user)
+    if (!confirm) return `Username - '${user.username}' is already taken.`
+    userService.storage.saveUserToStorage(user)
+    const action = { type: 'LOAD_USER', user }
+    dispatch(action)
+  }
+}
 export function updateUser(user) {
   return async dispatch => {
     const updatedUser = await userService.saveUser(user)
-    console.log('updatedUser:', updatedUser)
     userService.storage.saveUserToStorage(updatedUser)
-    const action = { type: 'LOAD_USER', updatedUser }
+    const action = { type: 'UPDATE_USER', updatedUser }
     dispatch(action)
   }
 }
