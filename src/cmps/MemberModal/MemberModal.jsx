@@ -1,24 +1,20 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import './MemberModal.scss'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Avatar from 'react-avatar'
 import { socketService } from '../../services/socketService'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import userService from '../../services/userService'
 
 export function MemberModal(props) {
+
     const { register, handleSubmit } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [searchMembers, setSearchMembers] = useState(currBoard.members)
+    const dispatch = useDispatch()
 
-    const onSearchMember = async data => {
-        // const members = []
-        // await currBoard.members.forEach(async m => {
-        //     const member = await userService.getUserById(m._id)
-        //     members.push(member);
-        // })
+    const onSearchMember = data => {
         const users = currBoard.members.filter(user => {
             return user.name.toLowerCase().includes(data.searchMember.toLowerCase())
         })
@@ -26,18 +22,15 @@ export function MemberModal(props) {
         console.log('users:', users)
         setSearchMembers(users)
     }
-
     const chooseMember = (member) => {
         // socketService.emit("add-member-to-task", member);
         props.addMemberToTask(member)
     }
-
     const chooseMemberForSockets = (member) => {
         console.log('workes');
         console.log('member:', member)
         props.addMemberToTask(member)
     }
-
     useEffect(() => {
         socketService.on("add-member-to-task-from-back", (() => {
             console.log('workes');

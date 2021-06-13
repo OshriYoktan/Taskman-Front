@@ -132,10 +132,12 @@ export function BoardMenu({ boardMenuOp }) {
             const member = await userService.getUserById(m._id)
             membersLength.push(member.tasks.length);
         })
+        console.log('membersLength:', membersLength)
         setTasks(membersLength)
     }
 
     if (!cloudImgs || !currBoard || !labels || !tasks) return (<div className="loader-container">Loading</div>)
+    console.log('tasks:', tasks)
 
     const inProgress = []
     const overdue = []
@@ -149,7 +151,9 @@ export function BoardMenu({ boardMenuOp }) {
     })
 
     const dataForMembersChart = {
-        labels: currBoard.members.map(m => m.name),
+        labels: currBoard.members.map(m => {
+            return m.name
+        }),
         datasets: [{
             label: 'Members',
             data: tasks,
