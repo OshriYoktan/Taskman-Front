@@ -187,7 +187,7 @@ export function TaskModal({ taskModalOp }) {
         setClientX(ev.target.offsetLeft)
         setClientY(ev.target.offsetTop)
 
-        
+
     }
 
 
@@ -374,7 +374,7 @@ export function TaskModal({ taskModalOp }) {
                     <div onClick={() => setDrawNoteModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faPalette}></FontAwesomeIcon>
                         <p> Draw Note </p>
-                        {(!drawNoteModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={drawNoteRef}> <DrawNoteModal setDrawNoteModal={setDrawNoteModal} drawNoteModal={drawNoteModal} currTask={currTask}></DrawNoteModal></div>}
+                        {(!drawNoteModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={drawNoteRef}> <DrawNoteModal setDrawNoteModal={setDrawNoteModal} drawNoteModal={drawNoteModal} updateBoard={updateBoard} currTask={currTask}></DrawNoteModal></div>}
                     </div>
                 </div>
             </div>

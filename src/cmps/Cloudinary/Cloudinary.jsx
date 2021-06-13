@@ -10,11 +10,9 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudO
     const currBoard = useSelector(state => state.boardReducer.currBoard)
 
     const onAttAdd = (res) => {
-        console.log('type:', type)
         var newAtt
         if (type === 'cover') {
             currTask.cover = res.info.secure_url
-            console.log('res.info.secure_url:', res.info.secure_url)
             // newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
             // currTask.attachments.push(newAtt)
             cloudOp.updateBoard(currTask)

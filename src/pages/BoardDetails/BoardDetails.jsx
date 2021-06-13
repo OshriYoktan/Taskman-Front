@@ -88,11 +88,9 @@ export function BoardDetails(props) {
             })
             setMembers(currBoard.members)
             preMembers()
-            console.log('loop');
         }
         if (currBoard) {
             setMembers(currBoard.members)
-            console.log('loop');
         }
     }, [currBoard])
 

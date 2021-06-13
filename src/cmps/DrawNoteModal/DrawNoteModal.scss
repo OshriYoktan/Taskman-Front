@@ -10,7 +10,7 @@
     overflow: auto;
     transition: 0.6s;
     z-index: 10;
-    top: 107px;
+    top: 60px;
     color: #172b4d;
     min-height: 180px;
     .draw-note-modal-header {
@@ -36,14 +36,35 @@
         }
     }
     .draw-note-modal-body {
-        display: flex;
-        align-items: center;
-        min-height: 200px;
-        flex-direction: column;
-        .canvas-container{
-            background-color: red;
-            .board{
-                background-color: green;
+        .canvas-container {
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            .canvas-inputs {
+                display: flex;
+                align-items: center;
+                .fa {
+                    font-size: 15px;
+                    margin-left: 4px;
+                }
+                input[type="color"] {
+                    visibility: hidden;
+                    margin: none;
+                    padding: none;
+                    width: 0;
+                    outline: firebrick;
+                }
+                input[type="number"] {
+                    // display: none;
+                    width: 50px;
+
+                    outline: firebrick;
+                }
+            }
+            canvas {
+                border: 1px black solid;
             }
         }
     }
