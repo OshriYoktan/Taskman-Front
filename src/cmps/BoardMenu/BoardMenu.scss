@@ -292,7 +292,7 @@
                 width: 90%;
                 height: 60px;
                 form {
-                    width: 100%;
+                    width: 90%;
                     height: 100%;
                     display: flex;
                     justify-content: flex-start;
@@ -302,6 +302,11 @@
                         border: none;
                         background-color: inherit;
                         margin-left: 5px;
+                    }
+                    label {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
                     }
                     input[type="text"] {
                         font-weight: 600;
@@ -316,7 +321,7 @@
                         }
                     }
                     input[type="color"] {
-                        display: none;
+                        visibility: hidden;
                         width: 10%;
                         border-radius: 50px;
                     }

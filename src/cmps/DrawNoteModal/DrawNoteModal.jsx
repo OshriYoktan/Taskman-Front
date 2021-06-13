@@ -1,6 +1,6 @@
 import './DrawNoteModal.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaintRoller, faPalette, faTimes, faTint } from '@fortawesome/free-solid-svg-icons'
+import { faPaintRoller, faTimes, faTint } from '@fortawesome/free-solid-svg-icons'
 import React, { useRef, useEffect, useState } from "react";
 import { utilService } from '../../services/utilService';
 import { useForm } from 'react-hook-form';
@@ -16,6 +16,7 @@ export function DrawNoteModal(props) {
     const { register, handleSubmit, reset } = useForm();
 
     var prevX = 0, currX = 0, prevY = 0, currY = 0;
+
     useEffect(() => {
         // console.log('render');
     });
@@ -25,7 +26,6 @@ export function DrawNoteModal(props) {
         const canvas = canvasRef.current
         const ctx = canvas.getContext('2d')
         setDot_flag(true)
-
         if (res === 'down') {
             setFlag(true);
             prevX = e.clientX;
@@ -97,7 +97,6 @@ export function DrawNoteModal(props) {
         setInputSize(res.inputSize)
         if (res.inputBackgroungColor !== backgroundColor) setBgcToCanvas(res.inputBackgroungColor)
     }
-
 
     return (
         <div className="draw-note-modal">
