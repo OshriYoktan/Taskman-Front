@@ -104,7 +104,6 @@ export function BoardMenu({ boardMenuOp }) {
         boardMenuOp.addActivity('Guest', 'added', 'label')
         setIsAddLabel(!isAddLabel)
         dispatch(saveBoard(currBoard))
-        console.log('currBoard.labels:', currBoard.labels)
     }
 
     const deleteLabel = (labelId) => {
@@ -132,12 +131,10 @@ export function BoardMenu({ boardMenuOp }) {
             const member = await userService.getUserById(m._id)
             membersLength.push(member.tasks.length);
         })
-        console.log('membersLength:', membersLength)
         setTasks(membersLength)
     }
 
     if (!cloudImgs || !currBoard || !labels || !tasks) return (<div className="loader-container">Loading</div>)
-    console.log('tasks:', tasks)
 
     const inProgress = []
     const overdue = []
@@ -149,14 +146,18 @@ export function BoardMenu({ boardMenuOp }) {
             else task.dueDate > Date.now() ? inProgress.push(task) : overdue.push(task)
         })
     })
+    const membersLabels = []
+    const membersTasks = []
+    currBoard.members.forEach(m => {
+        membersLabels.push(m.name)
+        membersTasks.push(m.tasks.length)
+    })
 
     const dataForMembersChart = {
-        labels: currBoard.members.map(m => {
-            return m.name
-        }),
+        labels: membersLabels,
         datasets: [{
             label: 'Members',
-            data: tasks,
+            data: membersTasks,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.7)',
                 'rgba(75, 192, 192, 0.7)',

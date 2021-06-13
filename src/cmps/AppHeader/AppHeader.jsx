@@ -4,7 +4,7 @@ import { faHome, faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import './AppHeader.scss'
 import { useDispatch } from 'react-redux'
 import { UserProfile } from '../UserProfile'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { login } from '../../store/actions/userActions'
 import userService from '../../services/userService'
 

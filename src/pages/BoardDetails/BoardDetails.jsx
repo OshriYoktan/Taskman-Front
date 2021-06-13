@@ -17,6 +17,7 @@ import { Notification } from '../../cmps/Notification/Notification'
 import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
 import { updateUser } from '../../store/actions/userActions'
+import userService from '../../services/userService'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
@@ -58,7 +59,6 @@ export function BoardDetails(props) {
         socketService.emit("board topic", id);
         if (!currBoard) {
             dispatch(setCurrBoard(id))
-            console.log('loop');
         }
         else if (!draggedCards) {
             setDraggedCards(currBoard.cards)
@@ -274,13 +274,14 @@ export function BoardDetails(props) {
         dispatch(setCurrBoard(newBoard._id))
     }
 
-    const addMember = (member) => {
+    const addMember = async (memberId) => {
+        const member = await userService.getUserById(memberId)
         if (!currTask.members.length) {
             member.tasks.push(currTask.title)
             currTask.members.push(member)
             addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
-        else if (currTask.members.some((currMember) => currMember._id === member._id)) {
+        else if (currTask.members.some(currMember => currMember._id === member._id)) {
             const taskIdx = member.tasks.findIndex(t => t === currTask._id)
             member.tasks.splice(taskIdx, 1)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)

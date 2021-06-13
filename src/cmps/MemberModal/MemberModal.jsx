@@ -24,7 +24,7 @@ export function MemberModal(props) {
     }
     const chooseMember = (member) => {
         // socketService.emit("add-member-to-task", member);
-        props.addMemberToTask(member)
+        props.addMemberToTask(member._id)
     }
     const chooseMemberForSockets = (member) => {
         console.log('workes');
