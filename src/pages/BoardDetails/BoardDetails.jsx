@@ -88,11 +88,9 @@ export function BoardDetails(props) {
             })
             setMembers(currBoard.members)
             preMembers()
-            console.log('loop');
         }
         if (currBoard) {
             setMembers(currBoard.members)
-            console.log('loop');
         }
     }, [currBoard])
 
@@ -277,7 +275,6 @@ export function BoardDetails(props) {
     }
 
     const addMember = (member) => {
-        console.log('currTask:', currTask)
         if (!currTask.members.length) {
             member.tasks.push(currTask.title)
             currTask.members.push(member)
@@ -299,7 +296,6 @@ export function BoardDetails(props) {
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
         dispatch(setCurrBoard(newBoard._id))
-        console.log('member:', member)
     }
 
     const addNewCard = (data) => {

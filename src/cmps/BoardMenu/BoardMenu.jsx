@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utilService } from '../../services/utilService'
 import { PolarArea, Bar } from 'react-chartjs-2';
 import { Cloudinary } from '../Cloudinary/Cloudinary'
+import userService from '../../services/userService'
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
@@ -21,11 +22,12 @@ export function BoardMenu({ boardMenuOp }) {
     const [isLabels, setIsLabels] = useState(false)
     const [labels, setLabels] = useState(null)
     const [cloudImgs, setCloudImgs] = useState(null)
+    const [tasks, setTasks] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
     const colors = ['lightgreen', 'lightyellow', 'lightblue', 'orange', 'slateblue', 'lightpink', 'lightgray', 'white']
 
-    useEffect(() => {
+    useEffect(async () => {
         setCloudImgs(currBoard.images)
         sendFilter()
     }, [filterBy])
@@ -36,6 +38,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     useEffect(() => {
         setLabels(currBoard.labels)
+        membersTaskLength()
     }, [currBoard])
 
     const onSearchTask = data => {
@@ -123,7 +126,16 @@ export function BoardMenu({ boardMenuOp }) {
         onSearchTask('')
     }
 
-    if (!cloudImgs || !currBoard || !labels) return (<div className="loader-container">Loading</div>)
+    const membersTaskLength = async () => {
+        const membersLength = []
+        await currBoard.members.forEach(async m => {
+            const member = await userService.getUserById(m._id)
+            membersLength.push(member.tasks.length);
+        })
+        setTasks(membersLength)
+    }
+
+    if (!cloudImgs || !currBoard || !labels || !tasks) return (<div className="loader-container">Loading</div>)
 
     const inProgress = []
     const overdue = []
@@ -140,7 +152,7 @@ export function BoardMenu({ boardMenuOp }) {
         labels: currBoard.members.map(m => m.name),
         datasets: [{
             label: 'Members',
-            data: currBoard.members.map(m => m.tasks.length),
+            data: tasks,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.7)',
                 'rgba(75, 192, 192, 0.7)',

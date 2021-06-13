@@ -37,7 +37,7 @@ export function updateUser(user) {
   return async dispatch => {
     const updatedUser = await userService.saveUser(user)
     userService.storage.saveUserToStorage(updatedUser)
-    const action = { type: 'LOAD_USER', updatedUser }
+    const action = { type: 'UPDATE_USER', updatedUser }
     dispatch(action)
   }
 }

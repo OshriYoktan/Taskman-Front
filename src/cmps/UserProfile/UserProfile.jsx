@@ -1,6 +1,6 @@
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { login, logout, signup } from '../../store/actions/userActions'
@@ -15,6 +15,26 @@ export function UserProfile({ profileOp }) {
     const [isLogin, setIsLogin] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [errMsg, setErrMsg] = useState(null)
+
+    const useOnClickOutside = (ref, handler) => {
+        useEffect(() => {
+            const listener = (event) => {
+                if (!ref.current || ref.current.contains(event.target)) {
+                    return;
+                }
+                handler(event);
+            };
+            document.addEventListener("mousedown", listener);
+            document.addEventListener("touchstart", listener);
+            return () => {
+                document.removeEventListener("mousedown", listener);
+                document.removeEventListener("touchstart", listener);
+            };
+        }, [ref, handler]);
+    }
+
+    const profileRef = useRef()
+    useOnClickOutside(profileRef, () => setIsProfile(false));
 
     const closeMenu = () => setIsProfile(false)
 
@@ -48,7 +68,7 @@ export function UserProfile({ profileOp }) {
 
     return (
         <>
-            {user && <section className="user-menu" style={isProfile ? { maxWidth: '100%' } : { maxWidth: '0' }}>
+            {user && <section ref={profileRef} className="user-menu" style={isProfile ? { maxWidth: '100%' } : { maxWidth: '0' }}>
                 <div>
                     <h3>Profile</h3>
                     <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
@@ -68,7 +88,7 @@ export function UserProfile({ profileOp }) {
                     <button onClick={onLogout}>Logout</button>
                 </div>
             </section>}
-            {!user && <section className="login-form">
+            {!user && <section ref={profileRef} className="login-form" style={isProfile ? { maxWidth: '100%' } : { maxWidth: '0' }}>
                 <h3>{isLogin ? 'Login' : 'Signup'}</h3>
                 {isLogin && <form onSubmit={handleSubmit(onLogin)}>
                     <input type="text" autoComplete="off" placeholder="username" {...register("loginUsername")} />
