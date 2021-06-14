@@ -23,7 +23,7 @@ export function TaskmanApp() {
         newBoard.title = title
         dispatch(saveBoard(newBoard))
         dispatch(loadBoards())
-        // boards.push(newBoard)
+        boards.push(newBoard)
     }
     
     if (!boards || !boards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)

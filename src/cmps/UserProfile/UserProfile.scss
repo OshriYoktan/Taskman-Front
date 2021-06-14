@@ -28,18 +28,41 @@
         }
     }
     > :nth-child(2) {
+        display: flex;
+        align-items: center;
+        height: 7vh;
+        padding-left: 10px;
         p {
             padding: 10px 13px;
-        }
-        > p:first-of-type {
             font-weight: 600;
         }
     }
     > :nth-child(3) {
+        margin-top: 10px;
+        height: 74.5vh;
+        overflow: auto;
+        p {
+            padding: 10px 13px;
+        }
         ul {
             li {
                 padding: 10px 13px;
             }
+        }
+    }
+    > :nth-child(4) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        height: 6.5vh;
+        background-color: #f4f5f7;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        button {
+            width: 50%;
+            height: 50px;
         }
     }
 }
@@ -59,7 +82,7 @@
     z-index: 50;
     overflow: hidden;
     white-space: nowrap;
-    transition: .3s;
+    transition: 0.3s;
     h3 {
         margin: 15px 0;
         user-select: none;
@@ -74,7 +97,7 @@
         input {
             width: 200px;
         }
-        >* {
+        > * {
             margin: 5px 0;
         }
     }
@@ -90,4 +113,9 @@
 
 .profile-loader {
     height: 312px;
+}
+
+.fail-login {
+    cursor: default !important;
+    color: red;
 }

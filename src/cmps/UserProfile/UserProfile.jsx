@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { login, logout, signup } from '../../store/actions/userActions'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import './UserProfile.scss'
+import Avatar from 'react-avatar'
 
 export function UserProfile({ profileOp }) {
     const { isProfile, setIsProfile } = profileOp
@@ -74,14 +75,15 @@ export function UserProfile({ profileOp }) {
                     <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div>
+                    <Avatar name={user.name} size="40" round={true} />
                     <p>{user.username}</p>
-                    <p>{user.tasks.length ? 'Tasks:' : 'No tasks assigned.'}</p>
                 </div>
-                <div>
+                <div className="hide-overflow">
+                    <p>{user.tasks.length ? 'Tasks:' : 'No tasks assigned.'}</p>
+                    {!user.tasks.length ? null : <p>{user.tasks.length} tasks.</p>}
                     <ul>
-                        {!user.tasks.length ? null : user.tasks.map((task, idx) => <li key={idx}>{task}</li>)}
-                        {!user.tasks.length ? null : <li>{user.tasks.length} tasks.</li>}
                         {user.tasks ? null : <li>{user.tasks.length}</li>}
+                        {!user.tasks.length ? null : user.tasks.map((task, idx) => <li key={idx}>{task}</li>)}
                     </ul>
                 </div>
                 <div>
@@ -93,13 +95,13 @@ export function UserProfile({ profileOp }) {
                 {isLogin && <form onSubmit={handleSubmit(onLogin)}>
                     <input type="text" autoComplete="off" placeholder="username" {...register("loginUsername")} />
                     <input type="password" autoComplete="off" placeholder="password" {...register("loginPass")} />
+                    {errMsg && <p className="fail-login">{errMsg}</p>}
                     <button>Login</button>
                 </form>}
                 {!isLogin && <form onSubmit={handleSubmit(onSignup)}>
                     <input type="text" autoComplete="off" placeholder="fullname" {...register("loginFullname")} />
                     <input type="text" autoComplete="off" placeholder="username" {...register("loginUsername")} />
                     <input type="password" autoComplete="off" placeholder="password" {...register("loginPass")} />
-                    {errMsg && <p>{errMsg}</p>}
                     <button>Signup</button>
                 </form>}
                 {isLogin && <p onClick={() => setIsLogin(!isLogin)}>Not a registered user?<br />Click here to sign-up.</p>}

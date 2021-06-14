@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Avatar from 'react-avatar'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,17 +11,21 @@ import { utilService } from '../../services/utilService'
 import { PolarArea, Bar } from 'react-chartjs-2';
 import { Cloudinary } from '../Cloudinary/Cloudinary'
 import userService from '../../services/userService'
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
+    const user = useSelector(state => state.userReducer.user)
     const [isAbout, setIsAbout] = useState(false)
     const [isBackground, setIsBackground] = useState(false)
     const [isFilter, setIsFilter] = useState(false)
     const [isLabels, setIsLabels] = useState(false)
     const [labels, setLabels] = useState(null)
     const [cloudImgs, setCloudImgs] = useState(null)
+    const [activity, setActivity] = useState(null)
     const [tasks, setTasks] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
@@ -38,6 +42,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     useEffect(() => {
         setLabels(currBoard.labels)
+        setActivity(currBoard.activity)
         membersTaskLength()
     }, [currBoard])
 
@@ -59,7 +64,8 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const saveLabels = data => {
-        const entries = Object.entries(data)
+        var entries = Object.entries(data)
+        entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor')
         const labels = entries.map((label, idx) => {
             if (!idx) return
             if (idx % 2 === 0) return { color: label[1] }
@@ -74,46 +80,22 @@ export function BoardMenu({ boardMenuOp }) {
         dispatch(saveBoard({ ...currBoard, labels: arr }))
     }
 
-    // const saveLabels = data => {
-    //     const descs = []
-    //     const colors = []
-    //     Object.keys(data).forEach(input => {
-    //         if (input.includes('editBoardLabelColor')) colors.push(input)
-    //         else if (input.includes('editBoardLabel')) descs.push(input)
-    //     })
-    //     const arrValues = Object.values(data)
-    //     arrValues.splice(0, 1)
-    //     const arr1 = []
-    //     const arr2 = []
-    //     arrValues.forEach((val, idx) => {
-    //         if (idx % 2 === 0) arr1.push(val)
-    //         else arr2.push(val)
-    //     })
-    //     const labels = arr1.map((val, idx) => {
-    //         return { _id: utilService.makeId(), desc: arr1[idx], color: arr2[idx] }
-    //     })
-    //     setLabels(currBoard.labels)
-    //     dispatch(saveBoard({ ...currBoard, labels: labels }))
-    //     setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
-    // }
-
     const onAddBoardLabel = (data) => {
         const label = { _id: utilService.makeId(), desc: data.addBoardLabel, color: data.addBoardLabelColor }
-        currBoard.labels = [...currBoard.labels, label]
-        setLabels(currBoard.labels)
-        boardMenuOp.addActivity('Guest', 'added', 'label')
+        setLabels([...labels, label])
+        currBoard.labels = [...labels, label]
         setIsAddLabel(!isAddLabel)
         dispatch(saveBoard(currBoard))
+        // boardMenuOp.addActivity(user?user.username:'Guest', 'added', 'label')
     }
 
     const deleteLabel = (labelId) => {
         const idx = labels.findIndex(l => l._id === labelId)
         labels.splice(idx, 1)
+        setLabels([...labels])
         currBoard.labels = labels
-        setLabels(currBoard.labels)
         dispatch(saveBoard(currBoard))
-        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
-        boardMenuOp.addActivity('Guest', 'deleted', 'label')
+        // boardMenuOp.addActivity(user?user.username:'Guest', 'deleted', 'label')
     }
 
     const closeMenu = () => {
@@ -134,7 +116,23 @@ export function BoardMenu({ boardMenuOp }) {
         setTasks(membersLength)
     }
 
-    if (!cloudImgs || !currBoard || !labels || !tasks) return (<div className="loader-container">Loading</div>)
+    const onDeleteBoard = () => {
+        confirmAlert({
+            title: 'Confirm to submit',
+            message: 'Are you sure want to delete this board?',
+            buttons: [
+                {
+                    label: 'Delete board',
+                    onClick: () => boardMenuOp.deleteBoard()
+                },
+                {
+                    label: 'Cancel'
+                }
+            ]
+        });
+    }
+
+    if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="loader-container">Loading</div>)
 
     const inProgress = []
     const overdue = []
@@ -204,12 +202,12 @@ export function BoardMenu({ boardMenuOp }) {
                 <div className="hide-overflow flex">
                     <h3>Activity</h3>
                     <ul>
-                        {!currBoard.activity.length ? null : currBoard.activity.map(activity => <li key={activity._id}>
+                        {!activity.length ? null : activity.map(activity => <li key={activity._id}>
                             {(activity.type !== 'attached' && activity.type !== 'removed') ? <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'deleted' ? 'from' : 'to'} <span>{activity.card}</span>{activity.card === 'board' ? '' : ' card'}.</p>
                                 : <p><span>{activity.member}</span> {activity.type} {activity.desc} {activity.type === 'removed' ? 'from' : 'to'} <span>{activity.card}</span> task.</p>}
                             <small><Moment fromNow>{activity.createdAt}</Moment></small>
                         </li>)}
-                        {!currBoard.activity.length && <li><h1>No activity here...</h1></li>}
+                        {!activity.length && <li><h1>No activity here...</h1></li>}
                     </ul>
                 </div>
             </article>
@@ -235,6 +233,10 @@ export function BoardMenu({ boardMenuOp }) {
                         <PolarArea name="PolarArea" data={dataForMembersChart} />
                         <h4>Tasks status</h4>
                         <Bar height="200" data={dataForChart} />
+                    </div>
+                    <div className="flex">
+                        <h3>Danger Zone</h3>
+                        <button onClick={onDeleteBoard}>Delete board</button>
                     </div>
                 </div>
             </article>

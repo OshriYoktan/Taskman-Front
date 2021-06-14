@@ -139,11 +139,12 @@
                 margin: 10px 0;
             }
         }
-        > :last-child {
+        > :nth-child(3) {
             // Statistics
             flex-direction: column;
             padding: 10px 13px;
             margin: 5px;
+            border-bottom: 1px solid rgba(128, 128, 128, 0.5);
             h3 {
                 font-size: 16px;
             }
@@ -156,6 +157,26 @@
             canvas {
                 width: 100% !important;
                 margin: 20px 0;
+            }
+        }
+        > :last-child {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            padding-bottom: 1em;
+            h3 {
+                font-size: 16px;
+                width: 90%;
+                margin: 30px 0;
+            }
+            button {
+                // delete board button
+                width: 80%;
+                height: 50px;
+                &:hover {
+                    background-color: red;
+                }
             }
         }
     }

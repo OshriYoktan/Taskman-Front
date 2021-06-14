@@ -10,7 +10,7 @@ export function loadUsers() {
 export function login(userToLogin) {
   return async dispatch => {
     const user = await userService.login(userToLogin)
-    if (!user) return
+    if (!user) return 'Incorrect username or password';
     userService.storage.saveUserToStorage(user)
     const action = { type: 'LOAD_USER', user }
     dispatch(action)

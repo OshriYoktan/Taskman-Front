@@ -10,7 +10,7 @@
     overflow: auto;
     transition: 0.6s;
     z-index: 10;
-    top: 60px;
+    top: 30px;
     color: #172b4d;
     min-height: 180px;
     .draw-note-modal-header {
@@ -42,6 +42,11 @@
             align-items: center;
             flex-direction: column;
             width: 100%;
+
+            .label-note-directions {
+                align-self: start;
+                margin: 5px 8px;
+            }
             .canvas-inputs {
                 display: flex;
                 align-items: center;
@@ -57,7 +62,6 @@
                     outline: firebrick;
                 }
                 input[type="number"] {
-                    // display: none;
                     width: 50px;
 
                     outline: firebrick;
@@ -65,6 +69,18 @@
             }
             canvas {
                 border: 1px black solid;
+            }
+            .canvas-btns {
+                display: flex;
+                justify-content: space-evenly;
+                width: 100%;
+                margin-bottom: 6px;
+                :first-child {
+                    background-color: lightblue;
+                }
+                :last-child {
+                    background-color: lightgreen;
+                }
             }
         }
     }

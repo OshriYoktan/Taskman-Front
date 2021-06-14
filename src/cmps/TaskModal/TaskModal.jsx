@@ -110,6 +110,7 @@ export function TaskModal({ taskModalOp }) {
     const onSubmitAtt = (data, idx) => {
         const input = Object.keys(data).find(str => str === ('attItem' + idx))
         currTask.attachments[idx].title = data[input];
+        setAttNameModal(false)
     }
 
     const onSumbitComment = data => {
@@ -211,7 +212,7 @@ export function TaskModal({ taskModalOp }) {
                 <div className="task-header">
                     <div className="task-title">
                         <form onChange={handleSubmit(setTaskTitle)}>
-                            <FontAwesomeIcon icon={faWindowMaximize} /> <input type="text" {...register("taskTitle")} defaultValue={currTask.title} placeholder="Task name" />
+                            <FontAwesomeIcon icon={faWindowMaximize} /> <input autoComplete="off" type="text" onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault() }} {...register("taskTitle")} defaultValue={currTask.title} placeholder="Task name" />
                         </form>
                         <p className="card-title">In list: {currCard.title}</p>
                     </div>

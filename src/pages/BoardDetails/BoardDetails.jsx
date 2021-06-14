@@ -1,6 +1,6 @@
-import { useEffect, useState, useRef, useCallback } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadBoards, saveBoard, setCurrBoard, updateBackground } from '../../store/actions/boardActions'
+import { loadBoards, saveBoard, setCurrBoard, updateBackground, removeBoard } from '../../store/actions/boardActions'
 import { CardPreview } from '../../cmps/CardPreview'
 import { TaskModal } from '../../cmps/TaskModal/TaskModal'
 import { useForm } from "react-hook-form";
@@ -18,6 +18,7 @@ import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
 import { updateUser } from '../../store/actions/userActions'
 import userService from '../../services/userService'
+import { useHistory } from 'react-router-dom'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
@@ -34,6 +35,7 @@ export function BoardDetails(props) {
     const ref = useRef()
     const containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
+    const history = useHistory()
 
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -370,9 +372,10 @@ export function BoardDetails(props) {
 
     const addActivity = (member, type, desc, card = 'board') => {
         const newActivity = { _id: utilService.makeId(), member, type, desc, card, createdAt: Date.now() }
+        console.log('newActivity:', newActivity)
         currBoard.activity.unshift(newActivity)
         socketService.emit('board to-add-activity', newActivity)
-        sendMsg(member, type, desc, card)
+        // sendMsg(member, type, desc, card)
         dispatch(saveBoard(currBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
@@ -384,6 +387,13 @@ export function BoardDetails(props) {
             setIsMsg(false)
         }, 3000)
         dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const deleteBoard = async (boardId) => {
+        const res = await dispatch(removeBoard(boardId || currBoard._id))
+        console.log('res:', res)
+        if (!res) sendMsg('Can\'t', 'delete', 'board')
+        else history.push('/boards')
     }
 
     if (!currBoard || !draggedCards || !draggedCards.length || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
@@ -404,7 +414,8 @@ export function BoardDetails(props) {
         changeBackground,
         members: currBoard.members,
         filterTasks,
-        addActivity
+        addActivity,
+        deleteBoard
     }
 
     const taskModalOp = {

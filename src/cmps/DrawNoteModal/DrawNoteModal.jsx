@@ -11,6 +11,7 @@ export function DrawNoteModal(props) {
     const [flag, setFlag] = useState(false)
     const [color, setColor] = useState('#000')
     const [backgroundColor, setBackgroundColor] = useState('#fff')
+    const [title, setTitle] = useState('')
     const [inputSize, setInputSize] = useState(3)
     const canvasRef = useRef(null)
     const { register, handleSubmit, reset } = useForm();
@@ -74,14 +75,17 @@ export function DrawNoteModal(props) {
         const canvas = canvasRef.current
         const ctx = canvas.getContext('2d')
         ctx.clearRect(0, 0, window.innerHeight, window.innerWidth)
+        setBackgroundColor('#fff')
     }
 
     const handleSave = () => {
         const canvas = canvasRef.current
         var dataURL = canvas.toDataURL();
-        const newAtt = { _id: utilService.makeId(), title: '', src: dataURL }
+        const newAtt = { _id: utilService.makeId(), title: title || '', src: dataURL }
         props.currTask.attachments.push(newAtt)
         props.updateBoard(props.currTask)
+        reset({ title: '' })
+        props.setDrawNoteModal(false)
     }
 
     const setBgcToCanvas = (bgc) => {
@@ -92,35 +96,43 @@ export function DrawNoteModal(props) {
         setBackgroundColor(bgc)
     }
 
-    const setStuff = (res) => {
+    const setControllers = (res) => {
         setColor(res.inputColor)
         setInputSize(res.inputSize)
         if (res.inputBackgroungColor !== backgroundColor) setBgcToCanvas(res.inputBackgroungColor)
+    }
+
+    const setTitleName = (res) => {
+        setTitle(res.title)
     }
 
     return (
         <div className="draw-note-modal">
             <section className="draw-note-modal-header">
                 <h3>Draw Note</h3>
-                <p className="btn-close-icon" onClick={() => props.setdrawNoteModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                <p className="btn-close-icon" onClick={() => props.setDrawNoteModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </section>
             <section className="draw-note-modal-body">
                 <div className="canvas-container">
-                    <div className="canvas-btns">
-                        <button onClick={handleClear}>Clear</button>
-                        <button onClick={handleSave}>Save</button>
-                    </div>
+                    <form onChange={handleSubmit(setTitleName)}>
+                        <label className="label-note-directions" htmlFor="title" >Draw Your Note Title Here:</label>
+                        <input type="text" autoComplete="off" id="title" name="title"  {...register("title")} defaultValue='' onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} />
+                    </form>
                     <canvas ref={canvasRef} width='300px' height='400px' onMouseDown={res => handleCanvasMouse(res, 'down')} onMouseMove={res => handleCanvasMouse(res, 'move')} onMouseOut={res => handleCanvasMouse(res, 'out')} onMouseUp={res => handleCanvasMouse(res, 'up')} />
-                    <form className="canvas-inputs" onChange={handleSubmit(setStuff)}>
+                    <form className="canvas-inputs" onChange={handleSubmit(setControllers)}>
                         <label htmlFor="input-color">Color<FontAwesomeIcon className="fa" icon={faTint} />
                             <input type="color" id="input-color" name="input-color"  {...register("inputColor")} defaultValue={color} />
                         </label>
                         <label htmlFor="input-backgroungColor">Background Color<FontAwesomeIcon className="fa" icon={faPaintRoller} />
-                            <input type="color" id="input-backgroungColor" name="input-backgroungColor"  {...register("inputBackgroungColor")} defaultValue={backgroundColor} />
+                            <input type="color" id="input-backgroungColor" name="input-backgroungColor"  {...register("inputBackgroungColor")} defaultValue={'#fff'} />
                         </label>
                         <label htmlFor="input-size">size</label>
                         <input type="number" id="input-size" name="input-size"  {...register("inputSize")} defaultValue={inputSize} />
                     </form>
+                    <div className="canvas-btns">
+                        <button onClick={handleClear}>Clear</button>
+                        <button onClick={handleSave}>Save</button>
+                    </div>
                 </div>
             </section>
         </div>

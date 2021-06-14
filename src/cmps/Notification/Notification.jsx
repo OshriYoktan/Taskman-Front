@@ -5,7 +5,20 @@ import './Notification.scss'
 export function Notification({ notifyOp }) {
     const { isMsg, msg } = notifyOp
 
-    if (!msg) return (<div></div>)
+    if (!msg) return (<></>)
+
+    if (msg.type === 'delete') {
+        return <section className="notification-container" style={isMsg ? { maxWidth: '100%' } : { maxWidth: '0' }}>
+            <div>
+                <FontAwesomeIcon className="fa" icon={faCheckCircle}></FontAwesomeIcon>
+                {msg.type === 'warning' && <FontAwesomeIcon className="fa" icon={faExclamationCircle}></FontAwesomeIcon>}
+            </div>
+            <div>
+                {<p><span>{msg.member}</span> {msg.type} {msg.desc} try again later.</p>}
+            </div>
+        </section>
+    }
+
     return (
         <section className="notification-container" style={isMsg ? { maxWidth: '100%' } : { maxWidth: '0' }}>
             <div>

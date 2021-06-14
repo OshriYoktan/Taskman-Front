@@ -17,7 +17,6 @@ export function getBoardById(boardId) {
 export function saveBoard(board) {
   return async dispatch => {
     const updatedBoard = await boardService.saveBoard(board)
-    console.log('updatedBoard:', updatedBoard)
     if (!board._id) return dispatch({ type: 'ADD_BOARD', board: updatedBoard })
     else return dispatch({ type: 'UPDATE_BOARD', updatedBoard })
   }
@@ -31,8 +30,10 @@ export function setCurrBoard(boardId) {
 }
 export function removeBoard(boardId) {
   return async dispatch => {
-    await boardService.remove(boardId)
+    const res = await boardService.deleteBoard(boardId)
+    if (!res) return
     dispatch({ type: 'REMOVE_BOARD', boardId })
+    return res.msg;
   }
 }
 export function updateBackground(background) {
