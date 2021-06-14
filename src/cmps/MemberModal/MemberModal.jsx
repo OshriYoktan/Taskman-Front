@@ -46,7 +46,7 @@ export function MemberModal(props) {
             </div>
             <ul className="member-container">
                 <form onChange={handleSubmit(onSearchMember)}>
-                    <input autoComplete="off" {...register("searchMember")} type="text" placeholder="Search members..." />
+                    <input autoComplete="off" onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} {...register("searchMember")} type="text" placeholder="Search members..." />
                 </form>
                 <p>Members:</p>
                 {searchMembers.map(member => member._id !== 'failMember' ? <li onClick={() => chooseMember(member)} key={member._id} className="members-list" >

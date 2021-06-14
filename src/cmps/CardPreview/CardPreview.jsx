@@ -90,7 +90,7 @@ export function CardPreview(props) {
             <div className="hide-overflow">
                 <div className="title">
                     <form onChange={handleSubmit(setCardTitle)}>
-                        <input type="text" {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
+                        <input type="text" onKeyDown={(e) => {console.log('e.key:', e.key); if (e.key === 'Enter') e.preventDefault();if(e.key === '\'')console.log('pressed Error'); }}{...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
                     </form>
                     <div onClick={(ev) => cardPreviewOp.openCardModal(ev, card)} className="manage-card"><p>⋮</p></div>
                 </div>

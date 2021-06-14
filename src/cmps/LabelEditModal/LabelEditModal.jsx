@@ -28,7 +28,7 @@ export function LabelEditModal(props) {
             <div className="label-edit-details">
                 <form onChange={handleSubmit(res => onChangeEditLabel(res))}>
                     <p>Name:</p>
-                    <input type="text" name="edit-name" autoComplete="off" defaultValue={labelEditModal.desc} {...register('labelName')} />
+                    <input type="text" name="edit-name" autoComplete="off" defaultValue={labelEditModal.desc} {...register('labelName')} onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }}/>
                     <p>Color:</p>
                     <input type="color" name="edit-color" className="edit-color" defaultValue={labelEditModal.color} {...register('labelColor')} />
                 </form>

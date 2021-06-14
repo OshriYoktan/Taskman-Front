@@ -132,12 +132,10 @@ export function BoardMenu({ boardMenuOp }) {
             const member = await userService.getUserById(m._id)
             membersLength.push(member.tasks.length);
         })
-        console.log('membersLength:', membersLength)
         setTasks(membersLength)
     }
 
     if (!cloudImgs || !currBoard || !labels || !tasks) return (<div className="loader-container">Loading</div>)
-    console.log('tasks:', tasks)
 
     const inProgress = []
     const overdue = []
