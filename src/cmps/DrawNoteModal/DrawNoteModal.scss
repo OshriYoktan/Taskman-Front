@@ -42,10 +42,19 @@
             align-items: center;
             flex-direction: column;
             width: 100%;
-
+            :first-child {
+                // display: contents;
+                align-self: start;
+            }
             .label-note-directions {
                 align-self: start;
                 margin: 5px 8px;
+            }
+            .input-note-directions {
+                width: 91.1%;
+                border: 1px black solid;
+                border-radius: 0;
+                background-color: #f4f5f7;
             }
             .canvas-inputs {
                 display: flex;
@@ -62,9 +71,12 @@
                     outline: firebrick;
                 }
                 input[type="number"] {
-                    width: 50px;
+                    width: 66px;
+                    border: 1px black solid;
+                    border-radius: 0;
+                    background-color: #f4f5f7;
+                    margin-left: 5px;
 
-                    outline: firebrick;
                 }
             }
             canvas {
@@ -77,9 +89,11 @@
                 margin-bottom: 6px;
                 :first-child {
                     background-color: lightblue;
+                    width: 45%;
                 }
                 :last-child {
                     background-color: lightgreen;
+                    width: 45%;
                 }
             }
         }

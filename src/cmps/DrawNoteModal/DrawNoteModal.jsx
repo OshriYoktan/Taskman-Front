@@ -115,8 +115,8 @@ export function DrawNoteModal(props) {
             <section className="draw-note-modal-body">
                 <div className="canvas-container">
                     <form onChange={handleSubmit(setTitleName)}>
-                        <label className="label-note-directions" htmlFor="title" >Draw Your Note Title Here:</label>
-                        <input type="text" autoComplete="off" id="title" name="title"  {...register("title")} defaultValue='' onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} />
+                        <label className="label-note-directions" htmlFor="canvas-title" >Note Title:</label>
+                        <input className="input-note-directions" type="text" autoComplete="off" id="canvas-title" name="canvas-title"  {...register("title")} defaultValue='' onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} />
                     </form>
                     <canvas ref={canvasRef} width='300px' height='400px' onMouseDown={res => handleCanvasMouse(res, 'down')} onMouseMove={res => handleCanvasMouse(res, 'move')} onMouseOut={res => handleCanvasMouse(res, 'out')} onMouseUp={res => handleCanvasMouse(res, 'up')} />
                     <form className="canvas-inputs" onChange={handleSubmit(setControllers)}>
