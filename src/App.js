@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { WidgetLoader } from 'react-cloudinary-upload-widget';
 import { useDispatch, useSelector } from 'react-redux';
-import { HashRouter as Router, Route, Switch, Redirect, useHistory } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
 import './App.scss';
 import { AppHeader } from './cmps/AppHeader';
 import { BoardDetails } from './pages/BoardDetails';

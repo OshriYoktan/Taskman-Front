@@ -4,12 +4,13 @@ import { BoardPreview } from '../BoardPreview'
 import './BoardList.scss'
 
 export function BoardList({ boardListOp }) {
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const [isCreateBoard, setIsCreateBoard] = useState(null)
 
     const onAddBoard = data => {
         boardListOp.addBoard(data.newBoardTitle)
         setIsCreateBoard(!isCreateBoard)
+        reset()
     }
 
     return (

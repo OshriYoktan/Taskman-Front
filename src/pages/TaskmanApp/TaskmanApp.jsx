@@ -6,10 +6,12 @@ import './TaskmanApp.scss'
 import boardService from '../../services/boardService.js'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService.js'
+import { useHistory } from 'react-router-dom'
 
 export function TaskmanApp() {
     const dispatch = useDispatch()
     const boards = useSelector(state => state.boardReducer.boards)
+    const history = useHistory()
 
     useEffect(() => {
         socketService.setup();
@@ -18,14 +20,15 @@ export function TaskmanApp() {
         dispatch(updateBackground(true))
     }, [])
 
-    const addBoard = (title) => {
+    const addBoard = async (title) => {
         const newBoard = boardService.getEmptyBoard()
         newBoard.title = title
-        dispatch(saveBoard(newBoard))
-        dispatch(loadBoards())
+        const res = await dispatch(saveBoard(newBoard))
         boards.push(newBoard)
+        console.log('res:', res)
+        // history('/')
     }
-    
+
     if (!boards || !boards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const boardListOp = {
