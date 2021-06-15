@@ -19,7 +19,6 @@ export function MemberModal(props) {
             return user.name.toLowerCase().includes(data.searchMember.toLowerCase())
         })
         if (!users.length) users.push({ _id: "failMember", name: "Member not found." })
-        console.log('users:', users)
         setSearchMembers(users)
     }
     const chooseMember = (member) => {
@@ -27,13 +26,10 @@ export function MemberModal(props) {
         props.addMemberToTask(member._id)
     }
     const chooseMemberForSockets = (member) => {
-        console.log('workes');
-        console.log('member:', member)
         props.addMemberToTask(member)
     }
     useEffect(() => {
         socketService.on("add-member-to-task-from-back", (() => {
-            console.log('workes');
         }))
         // socketService.on("add-member-to-task-from-back", chooseMemberForSockets)
     })
