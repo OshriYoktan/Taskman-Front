@@ -28,8 +28,6 @@ export function BoardDetails(props) {
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
-    const [isMsg, setIsMsg] = useState(false)
-    const [msg, setMsg] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
     const containerRef = useRef()
@@ -178,6 +176,8 @@ export function BoardDetails(props) {
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
         setDraggedCards(items);
+        currBoard.cards = [...items]
+        dispatch(saveBoard(currBoard))
     }
 
     const openCardModal = (ev, card) => {
@@ -384,6 +384,16 @@ export function BoardDetails(props) {
 
     if (!currBoard || !draggedCards || !draggedCards.length || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
+    const grid = 8;
+
+    const getItemStyle = (isDragging, draggableStyle) => ({
+        userSelect: 'none',
+        padding: grid * 2,
+        margin: `0 0 ${grid}px 0`,
+        background: isDragging ? 'lightgreen' : 'grey',
+        ...draggableStyle
+    });
+
     const cardPreviewOp = {
         openCardModal,
         closeModal,
@@ -413,11 +423,6 @@ export function BoardDetails(props) {
         addDueDate,
         addCover,
         currBoard: currBoard
-    }
-
-    const notifyOp = {
-        isMsg: isMsg,
-        msg: msg,
     }
 
     return (
@@ -478,12 +483,12 @@ export function BoardDetails(props) {
                 <Droppable direction="horizontal" droppableId="cards" type="CARD">
                     {(provided) => (
                         <div className="cards-container flex" ref={provided.innerRef}>
-                            <div {...provided.droppableProps}  {...events} ref={containerRef} className="cards-container flex">
+                            <div {...provided.droppableProps} className="cards-container flex">
                                 <div className="flex">
                                     {draggedCards.map((card, idx) => {
                                         return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
-                                            {(previewProvider) =>
-                                            (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                            {(previewProvider, snapshot) =>
+                                            (<div style={getItemStyle(snapshot.isDragging)} key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                                 <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                             </div>)}
                                         </Draggable></div>

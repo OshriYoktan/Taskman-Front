@@ -180,6 +180,9 @@
                 margin-left: 6px;
                 padding-left: 0;
             }
+            > :last-child {
+                margin-right: 3px;
+            }
         }
     }
 
