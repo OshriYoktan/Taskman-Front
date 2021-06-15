@@ -17,8 +17,9 @@ export function getBoardById(boardId) {
 export function saveBoard(board) {
   return async dispatch => {
     const updatedBoard = await boardService.saveBoard(board)
-    if (!board._id) return dispatch({ type: 'ADD_BOARD', board: updatedBoard })
-    else return dispatch({ type: 'UPDATE_BOARD', updatedBoard })
+    if (!board._id) dispatch({ type: 'ADD_BOARD', board: updatedBoard })
+    else dispatch({ type: 'UPDATE_BOARD', updatedBoard })
+    return updatedBoard;
   }
 }
 export function setCurrBoard(boardId) {
