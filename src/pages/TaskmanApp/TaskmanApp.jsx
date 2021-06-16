@@ -25,7 +25,6 @@ export function TaskmanApp() {
         newBoard.title = title
         const res = await dispatch(saveBoard(newBoard))
         boards.push(newBoard)
-        console.log('res:', res)
         // history('/')
     }
 

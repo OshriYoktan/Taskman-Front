@@ -1,7 +1,7 @@
 import './DrawNoteModal.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaintRoller, faTimes, faTint } from '@fortawesome/free-solid-svg-icons'
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { utilService } from '../../services/utilService';
 import { useForm } from 'react-hook-form';
 
@@ -17,10 +17,6 @@ export function DrawNoteModal(props) {
     const { register, handleSubmit, reset } = useForm();
 
     var prevX = 0, currX = 0, prevY = 0, currY = 0;
-
-    useEffect(() => {
-        // console.log('render');
-    });
 
     const handleCanvasMouse = (e, res) => {
         let newLocation

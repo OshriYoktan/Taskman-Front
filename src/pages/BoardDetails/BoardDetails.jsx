@@ -13,7 +13,6 @@ import { faBars, faCheckCircle, faPlus, faTimes } from '@fortawesome/free-solid-
 import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
-import { Notification } from '../../cmps/Notification/Notification'
 import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
 import { updateUser } from '../../store/actions/userActions'
@@ -29,8 +28,6 @@ export function BoardDetails(props) {
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
-    const [isMsg, setIsMsg] = useState(false)
-    const [msg, setMsg] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
     var containerRef = useRef()
@@ -172,7 +169,6 @@ export function BoardDetails(props) {
 
     const addActivityForSockets = activity => {
         currBoard.activity.unshift(activity)
-        sendMsg(activity.member, activity.type, activity.desc, activity.card)
         dispatch(setCurrBoard(currBoard._id))
     }
     ////////////////////////////////////////////////////////////////////
@@ -184,6 +180,8 @@ export function BoardDetails(props) {
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
         setDraggedCards(items);
+        currBoard.cards = [...items]
+        dispatch(saveBoard(currBoard))
         setIsScrollOnDradAllowed(true)
     }
 
@@ -348,7 +346,7 @@ export function BoardDetails(props) {
             if (filterBy.task !== '') {
                 currBoard.cards.map(card => {
                     return card.tasks.filter(task => {
-                        if (task.title.includes(filterBy.task)) newCards.push(card);
+                        if (task.title.toLowerCase().includes(filterBy.task.toLowerCase())) newCards.push(card);
                     })
                 })
             }
@@ -377,31 +375,29 @@ export function BoardDetails(props) {
 
     const addActivity = (member, type, desc, card = 'board') => {
         const newActivity = { _id: utilService.makeId(), member, type, desc, card, createdAt: Date.now() }
-        console.log('newActivity:', newActivity)
         currBoard.activity.unshift(newActivity)
         socketService.emit('board to-add-activity', newActivity)
-        // sendMsg(member, type, desc, card)
         dispatch(saveBoard(currBoard))
-        dispatch(setCurrBoard(currBoard._id))
-    }
-
-    const sendMsg = (member, type, desc, card = 'board') => {
-        setMsg({ member, type, desc, card })
-        setIsMsg(true)
-        setTimeout(() => {
-            setIsMsg(false)
-        }, 3000)
         dispatch(setCurrBoard(currBoard._id))
     }
 
     const deleteBoard = async (boardId) => {
         const res = await dispatch(removeBoard(boardId || currBoard._id))
-        console.log('res:', res)
-        if (!res) sendMsg('Can\'t', 'delete', 'board')
+        if (!res) return
         else history.push('/boards')
     }
 
     if (!currBoard || !draggedCards || !draggedCards.length || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+
+    const grid = 8;
+
+    const getItemStyle = (isDragging, draggableStyle) => ({
+        userSelect: 'none',
+        padding: grid * 2,
+        margin: `0 0 ${grid}px 0`,
+        background: isDragging ? 'lightgreen' : 'grey',
+        ...draggableStyle
+    });
 
     const cardPreviewOp = {
         openCardModal,
@@ -433,12 +429,6 @@ export function BoardDetails(props) {
         addCover,
         currBoard: currBoard
     }
-
-    const notifyOp = {
-        isMsg: isMsg,
-        msg: msg,
-    }
-
 
     return (
         <div className="board-details sub-container">
@@ -557,7 +547,6 @@ export function BoardDetails(props) {
                 </div>
             }
             {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
-            <Notification notifyOp={notifyOp} />
         </div >
     )
 }

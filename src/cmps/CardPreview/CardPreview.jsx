@@ -66,7 +66,8 @@ export function CardPreview(props) {
         reset({ newTask: '' })
     }
 
-    const handleOnDragEnd = async (result) => {
+    const handleOnDragTaskEnd = async (result) => {
+        console.log('result:', result)
         if (!result.destination) return;
         const items = Array.from(tasks);
         const [reorderedItem] = items.splice(result.source.index, 1);
@@ -85,6 +86,7 @@ export function CardPreview(props) {
     const colorDueDate = (task) => {
         return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
     }
+    
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
@@ -94,7 +96,7 @@ export function CardPreview(props) {
                     </form>
                     <div onClick={(ev) => cardPreviewOp.openCardModal(ev, card)} className="manage-card"><p>⋮</p></div>
                 </div>
-                <DragDropContext onDragEnd={handleOnDragEnd}>
+                <DragDropContext onDragEnd={handleOnDragTaskEnd}>
                     <Droppable droppableId="tasks">
                         {(provided) => (
                             <ul {...provided.droppableProps} ref={provided.innerRef} className="tasks-container">
