@@ -33,10 +33,12 @@ export function BoardDetails(props) {
     const [msg, setMsg] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
-    const containerRef = useRef()
+    var containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
-
+    useEffect(() => {
+        console.log('isScrollOnDradAllowed:', isScrollOnDradAllowed)
+    })
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
             const listener = (event) => {
@@ -113,6 +115,7 @@ export function BoardDetails(props) {
     const [yPosEl, setYPosEl] = useState(null)
     const [addMembersToBoard, setMembersToBoard] = useState(null)
     const [isDescShown, setIsDescShown] = useState(false)
+    const [isScrollOnDradAllowed, setIsScrollOnDradAllowed] = useState(true)
 
     // Sockets /////////////////////////////////////////////////////////
 
@@ -175,11 +178,13 @@ export function BoardDetails(props) {
     ////////////////////////////////////////////////////////////////////
 
     const handleOnDragEnd = (result) => {
+        console.log('end');
         if (!result.destination) return;
         const items = Array.from(draggedCards);
         const [reorderedItem] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedItem);
         setDraggedCards(items);
+        setIsScrollOnDradAllowed(true)
     }
 
     const openCardModal = (ev, card) => {
@@ -434,6 +439,7 @@ export function BoardDetails(props) {
         msg: msg,
     }
 
+
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
@@ -488,16 +494,16 @@ export function BoardDetails(props) {
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>
             </div>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
+            <DragDropContext onDragEnd={handleOnDragEnd} >
                 <Droppable direction="horizontal" droppableId="cards" type="CARD">
                     {(provided) => (
                         <div className="cards-container flex" ref={provided.innerRef}>
-                            <div {...provided.droppableProps}  {...events} ref={containerRef} className="cards-container flex">
+                            {isScrollOnDradAllowed ? < div {...provided.droppableProps}  {...events} ref={containerRef} className="cards-container flex">
                                 <div className="flex">
                                     {draggedCards.map((card, idx) => {
                                         return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
                                             {(previewProvider) =>
-                                            (<div key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                            (<div key={card._id} onMouseDownCapture={() => setIsScrollOnDradAllowed(false)} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                                 <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                             </div>)}
                                         </Draggable></div>
@@ -512,19 +518,44 @@ export function BoardDetails(props) {
                                         </div>
                                     </form></div>}
                                 </div>
-                            </div>
-                        </div>)}
+                            </div> :
+                                < div {...provided.droppableProps} className="cards-container flex">
+                                    <div className="flex">
+                                        {draggedCards.map((card, idx) => {
+                                            return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
+                                                {(previewProvider) =>
+                                                (<div key={card._id} onMouseOut={() => { console.log('out'); return setIsScrollOnDradAllowed(true) }} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                                    <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
+                                                </div>)}
+                                            </Draggable></div>
+                                        })}
+                                        {provided.placeholder}
+                                        {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
+                                        {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
+                                            <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
+                                            <div className="flex">
+                                                <button>Add Card</button>
+                                                <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+                                            </div>
+                                        </form></div>}
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    )}
                 </Droppable>
             </DragDropContext>
-            {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
-                <div className="card-title-modal">
-                    <p>{cardModal.title}</p>
-                    <button onClick={() => closeModal()}>x</button>
+            {
+                isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
+                    <div className="card-title-modal">
+                        <p>{cardModal.title}</p>
+                        <button onClick={() => closeModal()}>x</button>
+                    </div>
+                    <div className="card-modal-btns">
+                        <button onClick={() => deleteCard()}>Delete This Card</button>
+                    </div>
                 </div>
-                <div className="card-modal-btns">
-                    <button onClick={() => deleteCard()}>Delete This Card</button>
-                </div>
-            </div>}
+            }
             {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
             <Notification notifyOp={notifyOp} />
         </div >
