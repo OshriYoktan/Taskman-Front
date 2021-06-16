@@ -26,13 +26,13 @@ export function CardPreview(props) {
     }, [currBoard])
 
     const setCardTitle = data => {
-        card.title = data.cardTitle
+        card.title = data.cardTitle.replace(/'/g, '')
+        console.log('card.title:', card.title)
         const boardToUpdate = boardService.updateBoard(card, currBoard)
         socketService.emit('card to-update-card', card)
         socketService.emit('card to-update-card-title', card)
         setIsEditTitle(false)
         dispatch(saveBoard(boardToUpdate))
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const labelsDescToggle = (ev, bool) => {
@@ -67,7 +67,6 @@ export function CardPreview(props) {
     }
 
     const handleOnDragTaskEnd = async (result) => {
-        console.log('result:', result)
         if (!result.destination) return;
         const items = Array.from(tasks);
         const [reorderedItem] = items.splice(result.source.index, 1);
@@ -86,13 +85,13 @@ export function CardPreview(props) {
     const colorDueDate = (task) => {
         return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
     }
-    
+
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <div className="hide-overflow">
                 <div className="title">
-                    <form onChange={handleSubmit(setCardTitle)}>
-                        <input type="text" onKeyDown={(e) => { console.log('e.key:', e.key); if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') console.log('pressed Error'); }}{...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
+                    <form onBlur={handleSubmit(setCardTitle)}>
+                        <input type="text" onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
                     </form>
                     <div onClick={(ev) => cardPreviewOp.openCardModal(ev, card)} className="manage-card"><p>⋮</p></div>
                 </div>

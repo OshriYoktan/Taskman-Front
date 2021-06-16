@@ -33,9 +33,7 @@ export function BoardDetails(props) {
     var containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
-    useEffect(() => {
-        console.log('isScrollOnDradAllowed:', isScrollOnDradAllowed)
-    })
+
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
             const listener = (event) => {
@@ -199,7 +197,7 @@ export function BoardDetails(props) {
     }
 
     const setBoardTitle = (data) => {
-        var title = data.boardTitle;
+        var title = data.boardTitle.replace(/'/g, '');
         dispatch(saveBoard({ ...currBoard, title }))
     }
 
@@ -303,16 +301,15 @@ export function BoardDetails(props) {
     }
 
     const addNewCard = (data) => {
-        newCard = boardService.getEmptyCard()
+        var newCard = boardService.getEmptyCard()
         newCard.title = data.newCardTitle
-        currBoard.cards.push(newCard)
-        setDraggedCards(currBoard.cards)
-        dispatch(saveBoard({ ...currBoard, cards: [...currBoard.cards] }))
-        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
-        setIsAddCard(!isAddCard)
-        reset()
-        addActivity(user ? user.username : 'Guest', 'added', 'card')
-        socketService.emit('card to-add-card', newCard);
+        setDraggedCards([...draggedCards, newCard])
+        currBoard.cards = [...draggedCards, newCard]
+        dispatch(saveBoard(currBoard))
+        // setIsAddCard(!isAddCard)
+        // reset()
+        // addActivity(user ? user.username : 'Guest', 'added', 'card')
+        // socketService.emit('card to-add-card', newCard);
     }
 
     const deleteCard = () => {
@@ -387,16 +384,6 @@ export function BoardDetails(props) {
 
     if (!currBoard || !draggedCards || !draggedCards.length || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
-    const grid = 8;
-
-    const getItemStyle = (isDragging, draggableStyle) => ({
-        userSelect: 'none',
-        padding: grid * 2,
-        margin: `0 0 ${grid}px 0`,
-        background: isDragging ? 'lightgreen' : 'grey',
-        ...draggableStyle
-    });
-
     const cardPreviewOp = {
         openCardModal,
         closeModal,
@@ -427,7 +414,6 @@ export function BoardDetails(props) {
         addCover,
         currBoard: currBoard
     }
-
 
     return (
         <div className="board-details sub-container">
