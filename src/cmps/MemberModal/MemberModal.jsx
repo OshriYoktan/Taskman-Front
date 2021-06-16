@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 export function MemberModal(props) {
-
     const { register, handleSubmit } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [searchMembers, setSearchMembers] = useState(currBoard.members)
