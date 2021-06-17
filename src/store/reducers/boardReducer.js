@@ -2,6 +2,7 @@ const INITIAL_STATE = {
   boards: [],
   currBoard: null,
   background: false,
+  setBackground: null,
   filterBy: null,
 }
 

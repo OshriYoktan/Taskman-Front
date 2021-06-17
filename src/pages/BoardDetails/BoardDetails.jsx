@@ -170,10 +170,10 @@ export function BoardDetails(props) {
         currBoard.activity.unshift(activity)
         dispatch(setCurrBoard(currBoard._id))
     }
+
     ////////////////////////////////////////////////////////////////////
 
     const handleOnDragEnd = (result) => {
-        console.log('end');
         if (!result.destination) return;
         const items = Array.from(draggedCards);
         const [reorderedItem] = items.splice(result.source.index, 1);
@@ -245,7 +245,6 @@ export function BoardDetails(props) {
         }
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(newBoard._id))
         addActivity(user ? user.username : 'Guest', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
@@ -256,7 +255,6 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(newBoard._id))
     }
 
     const addDueDate = (date) => {
@@ -264,7 +262,6 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(newBoard._id))
     }
 
     const addCover = (cover) => {
@@ -297,7 +294,6 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
-        dispatch(setCurrBoard(newBoard._id))
     }
 
     const addNewCard = (data) => {
@@ -306,10 +302,10 @@ export function BoardDetails(props) {
         setDraggedCards([...draggedCards, newCard])
         currBoard.cards = [...draggedCards, newCard]
         dispatch(saveBoard(currBoard))
-        // setIsAddCard(!isAddCard)
-        // reset()
-        // addActivity(user ? user.username : 'Guest', 'added', 'card')
-        // socketService.emit('card to-add-card', newCard);
+        setIsAddCard(!isAddCard)
+        reset()
+        addActivity(user ? user.username : 'Guest', 'added', 'card')
+        socketService.emit('card to-add-card', newCard);
     }
 
     const deleteCard = () => {
@@ -319,7 +315,6 @@ export function BoardDetails(props) {
         addActivity(user ? user.username : 'Guest', 'deleted', 'card')
         setDraggedCards(currBoard.cards)
         dispatch(saveBoard(boardToSave))
-        dispatch(setCurrBoard(boardToSave._id))
         closeModal()
     }
 
@@ -373,7 +368,6 @@ export function BoardDetails(props) {
         currBoard.activity.unshift(newActivity)
         socketService.emit('board to-add-activity', newActivity)
         dispatch(saveBoard(currBoard))
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const deleteBoard = async (boardId) => {

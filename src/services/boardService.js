@@ -11,7 +11,6 @@ export default {
     getEmptyCard,
     updateCard,
     updateBoard,
-    getCloudImages,
     getEmptyTask,
     getCoverColors,
 }
@@ -109,10 +108,6 @@ function updateBoard(cardToUpdate, boardToUpdate) {
 
 // get functions /////////////////////////////////////////////////////////////////////////////////////////////////
 
-function getCloudImages() {
-    return cloudUrls;
-}
-
 function getCoverColors() {
     return gCoverColors;
 }
@@ -125,7 +120,8 @@ function getEmptyBoard() {
         activity: [],
         background: [],
         labels: gLabels,
-        images: cloudUrls
+        images: cloudUrls,
+        description: ''
     }
 }
 

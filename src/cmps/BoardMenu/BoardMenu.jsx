@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Avatar from 'react-avatar'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { saveBoard, setCurrBoard } from '../../store/actions/boardActions'
+import { saveBoard } from '../../store/actions/boardActions'
 import Moment from 'react-moment';
 import './BoardMenu.scss'
 import { faChevronLeft, faPalette, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -16,7 +16,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
-    const { register, handleSubmit, reset } = useForm();
+    const { register, handleSubmit } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const user = useSelector(state => state.userReducer.user)
     const [isAbout, setIsAbout] = useState(false)
@@ -78,6 +78,11 @@ export function BoardMenu({ boardMenuOp }) {
         })
         setLabels(arr)
         dispatch(saveBoard({ ...currBoard, labels: arr }))
+    }
+
+    const onBoardDesc = data => {
+        const descToUpdate = data.boardDesc.replace(/'/g, '')
+        dispatch(saveBoard({ ...currBoard, description: descToUpdate }))
     }
 
     const onAddBoardLabel = (data) => {
@@ -225,7 +230,9 @@ export function BoardMenu({ boardMenuOp }) {
                     </div>
                     <div className="flex">
                         <h3>Description</h3>
-                        <textarea placeholder="Type here a description" />
+                        <form onBlur={handleSubmit(onBoardDesc)}>
+                            <textarea defaultValue={currBoard.description} {...register("boardDesc")} placeholder="It’s your board’s time to shine! Let people know what this board is used for and what they can expect to see." />
+                        </form>
                     </div>
                     <div className="flex">
                         <h3>Statistics</h3>
