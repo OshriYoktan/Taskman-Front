@@ -14,6 +14,7 @@ import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
 import { DrawNoteModal } from '../DrawNoteModal/DrawNoteModal.jsx';
 import { CoverModal } from '../CoverModal/CoverModal.jsx';
 import loader from '../../assets/imgs/taskman-loader.svg'
+import smallLoader from '../../assets/imgs/small-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
 import { socketService } from '../../services/socketService.js';
@@ -150,13 +151,6 @@ export function TaskModal({ taskModalOp }) {
         updateBoard(currTask)
     }
 
-    const updateBoard = task => {
-        const updatedBoard = boardService.updateCard(task, currCard, currBoard)
-        socketService.emit('task to-update-task', { card: currCard, task: task || currTask })
-        dispatch(saveBoard(updatedBoard))
-        dispatch(setCurrBoard(currBoard._id))
-    }
-
     const onButtonClick = () => {
         inputFile.current.click()
     }
@@ -180,6 +174,7 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const setTaskTitle = data => {
+        if (!data.taskTitle) return
         currTask.title = data.taskTitle
         updateBoard(currTask)
     }
@@ -187,10 +182,14 @@ export function TaskModal({ taskModalOp }) {
     const testLog = (ev) => {
         setClientX(ev.target.offsetLeft)
         setClientY(ev.target.offsetTop)
-
-
     }
 
+    const updateBoard = task => {
+        const updatedBoard = boardService.updateCard(task, currCard, currBoard)
+        socketService.emit('task to-update-task', { card: currCard, task: task || currTask })
+        dispatch(saveBoard(updatedBoard))
+        dispatch(setCurrBoard(currBoard._id))
+    }
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
@@ -204,14 +203,14 @@ export function TaskModal({ taskModalOp }) {
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
                     <Color src={currTask.cover} crossOrigin="anonymous" format="hex">
                         {({ data, loading }) => {
-                            if (loading) return <div>Loading...</div>;
+                            if (loading) return <div>...</div>;
                             return (<div className="cover-section" style={{ backgroundColor: data, backgroundImage: `url(${currTask.cover})` }} />)
                         }}
                     </Color>
                 }
                 <div className="task-header">
                     <div className="task-title">
-                        <form onChange={handleSubmit(setTaskTitle)}>
+                        <form onBlur={handleSubmit(setTaskTitle)}>
                             <FontAwesomeIcon icon={faWindowMaximize} /> <input autoComplete="off" type="text" onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault() }} {...register("taskTitle")} defaultValue={currTask.title} placeholder="Task name" />
                         </form>
                         <p className="card-title">In list: {currCard.title}</p>
@@ -274,7 +273,7 @@ export function TaskModal({ taskModalOp }) {
                             </form>
                         </div>)}
                 </section>}
-                {!currTask.attachments.length ? null : <section >
+                {!currTask.attachments.length ? null : <section>
                     <div className="att-svg"><FontAwesomeIcon icon={faPaperclip} />
                         <p>Attachments:</p>
                     </div>
@@ -283,14 +282,16 @@ export function TaskModal({ taskModalOp }) {
                             <div className="att-src">
                                 <Color crossOrigin="anonymous" src={attac.src} format="hex">
                                     {({ data, loading }) => {
-                                        if (loading) return <div>Loading...</div>;
+                                        if (loading) return <div className="att-loader"><img src={smallLoader} alt="" /></div>;
                                         return (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src})` }} alt="photo" />)
                                     }}
                                 </Color>
                             </div>
                             <div className="att-details">
-                                <p>{attac.title || 'Photo'}</p>
-                                <p>Added Right now!</p>
+                                <div>
+                                    <p>{attac.title || 'Photo'}</p>
+                                    <p>Added Right now!</p>
+                                </div>
                                 <div className="att-btns">
                                     <button onClick={(ev) => { setAttNameModal(!attNameModal); testLog(ev) }}>Edit</button>
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>

@@ -123,6 +123,7 @@ export function BoardDetails(props) {
     }
 
     const updateTask = data => {
+        console.log('data:', data)
         const updateCard = currBoard.cards.find(c => c._id === data.card._id)
         const taskIdx = updateCard.tasks.findIndex(t => t._id === data.task._id)
         updateCard.tasks.splice(taskIdx, 1, data.task)
@@ -517,17 +518,15 @@ export function BoardDetails(props) {
                     )}
                 </Droppable>
             </DragDropContext>
-            {
-                isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
-                    <div className="card-title-modal">
-                        <p>{cardModal.title}</p>
-                        <button onClick={() => closeModal()}>x</button>
-                    </div>
-                    <div className="card-modal-btns">
-                        <button onClick={() => deleteCard()}>Delete This Card</button>
-                    </div>
+            {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
+                <div className="card-title-modal">
+                    <p>{cardModal.title}</p>
+                    <button onClick={() => closeModal()}>x</button>
                 </div>
-            }
+                <div className="card-modal-btns">
+                    <button onClick={() => deleteCard()}>Delete This Card</button>
+                </div>
+            </div>}
             {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
         </div >
     )

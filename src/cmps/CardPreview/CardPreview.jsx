@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
-import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
+import { saveBoard } from '../../store/actions/boardActions';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import boardService from '../../services/boardService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,8 +26,8 @@ export function CardPreview(props) {
     }, [currBoard])
 
     const setCardTitle = data => {
+        if (!data.cardTitle) return
         card.title = data.cardTitle.replace(/'/g, '')
-        console.log('card.title:', card.title)
         const boardToUpdate = boardService.updateBoard(card, currBoard)
         socketService.emit('card to-update-card', card)
         socketService.emit('card to-update-card-title', card)
@@ -38,7 +38,6 @@ export function CardPreview(props) {
     const labelsDescToggle = (ev, bool) => {
         ev.stopPropagation()
         cardPreviewOp.setIsDescShown(bool)
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const doneAtToggle = (ev, task) => {
@@ -48,7 +47,6 @@ export function CardPreview(props) {
         socketService.emit('task to-update-task', { card, task })
         const newBoard = boardService.updateCard(task, card, currBoard)
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const addTask = async data => {
@@ -57,13 +55,12 @@ export function CardPreview(props) {
         setTasks(tasks)
         const newBoard = boardService.updateCard(newTask, card, currBoard)
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(currBoard._id))
         setIsAddTask(!isAddTask)
         const forSocket = { task: newTask, card: card._id }
         socketService.emit('task to-add-task', forSocket);
         cardPreviewOp.addActivity('Guest', 'added', 'task', card.title)
         newTask = boardService.getEmptyTask()
-        reset({ newTask: '' })
+        reset()
     }
 
     const handleOnDragTaskEnd = async (result) => {
@@ -75,7 +72,6 @@ export function CardPreview(props) {
         setTasks(card.tasks);
         const boardToSave = await boardService.updateBoard(card, currBoard)
         dispatch(saveBoard(boardToSave))
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const backgroundColorDueDate = (task) => {
@@ -91,7 +87,7 @@ export function CardPreview(props) {
             <div className="hide-overflow">
                 <div className="title">
                     <form onBlur={handleSubmit(setCardTitle)}>
-                        <input type="text" onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
+                        <input type="text" required onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
                     </form>
                     <div onClick={(ev) => cardPreviewOp.openCardModal(ev, card)} className="manage-card"><p>⋮</p></div>
                 </div>

@@ -1,11 +1,10 @@
 import { Widget } from 'react-cloudinary-upload-widget'
 import { useDispatch, useSelector } from 'react-redux'
-import boardService from '../../services/boardService'
 import { utilService } from '../../services/utilService'
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions'
 import './Cloudinary.scss'
 
-export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudOp }) {
+export function Cloudinary({ type, txt, currTask, setCloudImgs, cloudOp }) {
     const dispatch = useDispatch()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
 
@@ -13,12 +12,7 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudO
         var newAtt
         if (type === 'cover') {
             currTask.cover = res.info.secure_url
-            // newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
-            // currTask.attachments.push(newAtt)
             cloudOp.updateBoard(currTask)
-            // const newBoard = boardService.updateCard(currTask, currCard, currBoard)
-            // dispatch(saveBoard(newBoard))
-            // dispatch(setCurrBoard(newBoard._id))
         }
         else if (type === 'background') {
             currBoard.images.unshift(res.info.secure_url)
@@ -30,7 +24,6 @@ export function Cloudinary({ type, txt, currTask, currCard, setCloudImgs, cloudO
             newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
             currTask.attachments.push(newAtt)
             cloudOp.updateBoard(currTask)
-
         }
     }
 

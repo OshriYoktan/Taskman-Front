@@ -31,7 +31,6 @@ export function DrawNoteModal(props) {
             currY = e.clientY - canvas.getBoundingClientRect().top;
             newLocation = { x: currX, y: currY }
             setLocations([...locations, newLocation])
-
             if (dot_flag) {
                 ctx.beginPath();
                 ctx.fillStyle = backgroundColor;
@@ -104,15 +103,15 @@ export function DrawNoteModal(props) {
 
     return (
         <div className="draw-note-modal">
-            <section className="draw-note-modal-header">
+            <section className="modal-header">
                 <h3>Draw Note</h3>
                 <p className="btn-close-icon" onClick={() => props.setDrawNoteModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </section>
             <section className="draw-note-modal-body">
                 <div className="canvas-container">
                     <form onChange={handleSubmit(setTitleName)}>
-                        <label className="label-note-directions" htmlFor="canvas-title" >Note Title:</label>
-                        <input className="input-note-directions" type="text" autoComplete="off" id="canvas-title" name="canvas-title"  {...register("title")} defaultValue='' onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} />
+                        <h3>Note Title</h3>
+                        <input placeholder="Note Title" type="text" autoComplete="off" id="canvas-title" name="canvas-title"  {...register("title")} defaultValue='' onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} />
                     </form>
                     <canvas ref={canvasRef} width='300px' height='400px' onMouseDown={res => handleCanvasMouse(res, 'down')} onMouseMove={res => handleCanvasMouse(res, 'move')} onMouseOut={res => handleCanvasMouse(res, 'out')} onMouseUp={res => handleCanvasMouse(res, 'up')} />
                     <form className="canvas-inputs" onChange={handleSubmit(setControllers)}>
