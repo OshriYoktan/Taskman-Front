@@ -1,18 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import './MemberModal.scss'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Avatar from 'react-avatar'
 import { socketService } from '../../services/socketService'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 export function MemberModal(props) {
-
     const { register, handleSubmit } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const [searchMembers, setSearchMembers] = useState(currBoard.members)
-    const dispatch = useDispatch()
 
     const onSearchMember = data => {
         const users = currBoard.members.filter(user => {
@@ -36,22 +34,21 @@ export function MemberModal(props) {
 
     return (
         <div className="member-modal" >
-            <div className="member-modal-header">
+            <div className="modal-header">
                 <h3>Members</h3>
-                <p className="btn-close-icon" onClick={() => props.setMemberModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                <p onClick={() => props.setMemberModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </div>
+            <form onChange={handleSubmit(onSearchMember)}>
+                <input autoComplete="off" onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} {...register("searchMember")} type="text" placeholder="Search members..." />
+            </form>
+            <h3>Users:</h3>
             <ul className="member-container">
-                <form onChange={handleSubmit(onSearchMember)}>
-                    <input autoComplete="off" onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} {...register("searchMember")} type="text" placeholder="Search members..." />
-                </form>
-                <p>Members:</p>
                 {searchMembers.map(member => member._id !== 'failMember' ? <li onClick={() => chooseMember(member)} key={member._id} className="members-list" >
-                    <div className="member-details">
-                        <Avatar key={member._id} name={member.name} size="30" round={true} />
-                    </div>
+                    <Avatar key={member._id} name={member.name} size="30" round={true} />
                     <span>{member.name}</span>
-                    <span className="member-icon" >{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span></li> :
-                    <li className="members-list" key={member._id}><span>{member.name}</span></li>
+                    <span className="member-icon">{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span></li> :
+                    <li className="members-list" key={member._id}><span>{member.name}</span>
+                    </li>
                 )}
             </ul>
         </div>

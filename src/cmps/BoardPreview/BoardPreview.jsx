@@ -3,7 +3,6 @@ import './BoardPreview.scss'
 import Color from 'color-thief-react';
 import { useDispatch } from 'react-redux';
 import { setCurrBoard } from '../../store/actions/boardActions';
-import loader from '../../assets/imgs/taskman-loader.svg'
 
 export function BoardPreview({ board }) {
     const dispatch = useDispatch()
@@ -17,7 +16,7 @@ export function BoardPreview({ board }) {
             {board.background ? board.background.img ? <Link className="link" to={`/board/${board._id}`}>
                 <Color src={board.background.img} crossOrigin="anonymous" format="hex">
                     {({ data, loading }) => {
-                        if (loading) return <div className="preview-loader"><img src={loader} alt="" /></div>;
+                        if (loading) return <div className="preview-loader">...</div>;
                         return <h4 style={{ color: data }}>{board.title}</h4>
                     }}
                 </Color>

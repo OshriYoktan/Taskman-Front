@@ -30,7 +30,7 @@ export function BoardDetails(props) {
     const [currTask, setCurrTask] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
-    const containerRef = useRef()
+    var containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
 
@@ -61,6 +61,7 @@ export function BoardDetails(props) {
         }
         else if (!draggedCards) {
             setDraggedCards(currBoard.cards)
+            setMembers(currBoard.members)
             socketService.on('task add-task', data => {
                 addTaskForSockets(data)
             })
@@ -85,13 +86,13 @@ export function BoardDetails(props) {
             socketService.on('board add-activity', activity => {
                 addActivityForSockets(activity)
             })
-            setMembers(currBoard.members)
-            preMembers()
         }
-        if (currBoard) {
-            setMembers(currBoard.members)
-        }
+        if (currBoard) setMembers(currBoard.members)
     }, [currBoard])
+
+    useEffect(() => {
+        preMembers()
+    }, [members])
 
     useOnClickOutside(ref, () => setCurrTask(false));
     const [isMenu, setIsMenu] = useState(false)
@@ -108,8 +109,9 @@ export function BoardDetails(props) {
     const [isCardModal, setIsCardModal] = useState(null)
     const [xPosEl, setXPosEl] = useState(null)
     const [yPosEl, setYPosEl] = useState(null)
-    const [addMembersToBoard, setMembersToBoard] = useState(null)
+    const [addMembersToBoard, setMembersToBoard] = useState([])
     const [isDescShown, setIsDescShown] = useState(false)
+    const [isScrollOnDradAllowed, setIsScrollOnDradAllowed] = useState(true)
 
     // Sockets /////////////////////////////////////////////////////////
 
@@ -121,6 +123,7 @@ export function BoardDetails(props) {
     }
 
     const updateTask = data => {
+        console.log('data:', data)
         const updateCard = currBoard.cards.find(c => c._id === data.card._id)
         const taskIdx = updateCard.tasks.findIndex(t => t._id === data.task._id)
         updateCard.tasks.splice(taskIdx, 1, data.task)
@@ -168,6 +171,7 @@ export function BoardDetails(props) {
         currBoard.activity.unshift(activity)
         dispatch(setCurrBoard(currBoard._id))
     }
+
     ////////////////////////////////////////////////////////////////////
 
     const handleOnDragEnd = (result) => {
@@ -178,6 +182,7 @@ export function BoardDetails(props) {
         setDraggedCards(items);
         currBoard.cards = [...items]
         dispatch(saveBoard(currBoard))
+        setIsScrollOnDradAllowed(true)
     }
 
     const openCardModal = (ev, card) => {
@@ -193,43 +198,40 @@ export function BoardDetails(props) {
     }
 
     const setBoardTitle = (data) => {
-        var title = data.boardTitle;
+        var title = data.boardTitle.replace(/'/g, '');
         dispatch(saveBoard({ ...currBoard, title }))
     }
 
-    const addMemberToBoard = data => {
+    const serachUser = data => {
         const membersInBoard = members.map(member => member._id)
         const usersToAdd = users.filter(user => {
             if (!membersInBoard.includes(user._id)) return user.name.toLowerCase().includes(data.member.toLowerCase())
         })
         setMembersToBoard(usersToAdd)
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const preMembers = () => {
-        const membersInBoard = currBoard.members.map(member => member._id)
-        const usersToAdd = users.filter(user => {
-            if (!membersInBoard.includes(user._id)) return user.name.toLowerCase()
-        })
-        setMembersToBoard(usersToAdd)
-        dispatch(setCurrBoard(currBoard._id))
+        if (members) {
+            const membersInBoard = members.map(member => member._id)
+            const usersToAdd = users.filter(user => {
+                if (!membersInBoard.includes(user._id)) return user.name;
+            })
+            setMembersToBoard(usersToAdd)
+        }
     }
 
     const onAddMember = (member) => {
+        setMembers([...members, member])
         currBoard.members = [...members, member]
-        setMembers(currBoard.members)
         dispatch(saveBoard(currBoard))
-        dispatch(setCurrBoard(currBoard._id))
-        preMembers()
     }
 
     const removeUserFromBoard = (id) => {
         const idx = currBoard.members.findIndex(member => member._id === id)
-        currBoard.members.splice(idx, 1)
-        setMembers(currBoard.members)
-        preMembers()
+        members.splice(idx, 1)
+        setMembers([...members])
+        currBoard.members = [...members]
         dispatch(saveBoard(currBoard))
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const addLabel = (label) => {
@@ -244,7 +246,6 @@ export function BoardDetails(props) {
         }
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(newBoard._id))
         addActivity(user ? user.username : 'Guest', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
@@ -255,7 +256,6 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(newBoard._id))
     }
 
     const addDueDate = (date) => {
@@ -263,7 +263,6 @@ export function BoardDetails(props) {
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(newBoard._id))
     }
 
     const addCover = (cover) => {
@@ -296,16 +295,14 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
-        dispatch(setCurrBoard(newBoard._id))
     }
 
     const addNewCard = (data) => {
-        newCard = boardService.getEmptyCard()
+        var newCard = boardService.getEmptyCard()
         newCard.title = data.newCardTitle
-        currBoard.cards.push(newCard)
-        setDraggedCards(currBoard.cards)
-        dispatch(saveBoard({ ...currBoard, cards: [...currBoard.cards] }))
-        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
+        setDraggedCards([...draggedCards, newCard])
+        currBoard.cards = [...draggedCards, newCard]
+        dispatch(saveBoard(currBoard))
         setIsAddCard(!isAddCard)
         reset()
         addActivity(user ? user.username : 'Guest', 'added', 'card')
@@ -319,7 +316,6 @@ export function BoardDetails(props) {
         addActivity(user ? user.username : 'Guest', 'deleted', 'card')
         setDraggedCards(currBoard.cards)
         dispatch(saveBoard(boardToSave))
-        dispatch(setCurrBoard(boardToSave._id))
         closeModal()
     }
 
@@ -373,7 +369,6 @@ export function BoardDetails(props) {
         currBoard.activity.unshift(newActivity)
         socketService.emit('board to-add-activity', newActivity)
         dispatch(saveBoard(currBoard))
-        dispatch(setCurrBoard(currBoard._id))
     }
 
     const deleteBoard = async (boardId) => {
@@ -383,16 +378,6 @@ export function BoardDetails(props) {
     }
 
     if (!currBoard || !draggedCards || !draggedCards.length || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
-
-    const grid = 8;
-
-    const getItemStyle = (isDragging, draggableStyle) => ({
-        userSelect: 'none',
-        padding: grid * 2,
-        margin: `0 0 ${grid}px 0`,
-        background: isDragging ? 'lightgreen' : 'grey',
-        ...draggableStyle
-    });
 
     const cardPreviewOp = {
         openCardModal,
@@ -436,18 +421,21 @@ export function BoardDetails(props) {
                         <div className="avatars">
                             {members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
                         </div>
-                        <button onClick={() => setIsInvite(!isInvite)}>Invite</button>
+                        <button onClick={() => {
+                            setIsInvite(!isInvite)
+                            preMembers()
+                        }}>Invite</button>
                         {isInvite && <div ref={inviteRef} className="invite-members-modal">
-                            <form onChange={handleSubmit(addMemberToBoard)} >
+                            <form onChange={handleSubmit(serachUser)} >
                                 <div className="invite-title">
                                     <div className="close-btn">
-                                        <p>Invite to board:</p>
+                                        <p>Invite member to board</p>
                                         <button onClick={() => setIsInvite(!isInvite)}>x</button>
                                     </div>
-                                    <input type="text" autoComplete="off" placeholder="Search Taskman Members.." id="member" name="member"  {...register("member")} />
+                                    <input type="text" autoComplete="off" placeholder="Search users" id="member" name="member"  {...register("member")} />
                                 </div>
                             </form>
-                            {addMembersToBoard && <div className="exist-members">
+                            {!addMembersToBoard.length ? null : <div className="exist-members">
                                 <ul>
                                     <p>Suggested Members:</p>
                                     {addMembersToBoard.map((member, idx) => {
@@ -461,9 +449,9 @@ export function BoardDetails(props) {
                                     })}
                                 </ul>
                             </div>}
-                            {!currBoard.members.length ? null : <div className="exist-members">
+                            {!members.length ? null : <div className="exist-members">
                                 <p>In This Board:</p>
-                                {currBoard.members.map((user, idx) => {
+                                {members.map((user, idx) => {
                                     return <button key={user._id} onClick={() => removeUserFromBoard(user._id)} className="suggested-user">
                                         <Avatar key={idx} name={user.name} size="30" round={true} />
                                         <p>{user.name}</p>
@@ -479,16 +467,16 @@ export function BoardDetails(props) {
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>
             </div>
-            <DragDropContext onDragEnd={handleOnDragEnd}>
+            <DragDropContext onDragEnd={handleOnDragEnd} >
                 <Droppable direction="horizontal" droppableId="cards" type="CARD">
                     {(provided) => (
                         <div className="cards-container flex" ref={provided.innerRef}>
-                            <div {...provided.droppableProps} className="cards-container flex">
+                            {isScrollOnDradAllowed ? < div {...provided.droppableProps}  {...events} ref={containerRef} className="cards-container flex">
                                 <div className="flex">
                                     {draggedCards.map((card, idx) => {
                                         return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
-                                            {(previewProvider, snapshot) =>
-                                            (<div style={getItemStyle(snapshot.isDragging)} key={card._id}  {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                            {(previewProvider) =>
+                                            (<div key={card._id} onMouseDownCapture={() => setIsScrollOnDradAllowed(false)} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                                 <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                             </div>)}
                                         </Draggable></div>
@@ -503,8 +491,31 @@ export function BoardDetails(props) {
                                         </div>
                                     </form></div>}
                                 </div>
-                            </div>
-                        </div>)}
+                            </div> :
+                                < div {...provided.droppableProps} className="cards-container flex">
+                                    <div className="flex">
+                                        {draggedCards.map((card, idx) => {
+                                            return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
+                                                {(previewProvider) =>
+                                                (<div key={card._id} onMouseOut={() => { console.log('out'); return setIsScrollOnDradAllowed(true) }} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                                    <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
+                                                </div>)}
+                                            </Draggable></div>
+                                        })}
+                                        {provided.placeholder}
+                                        {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
+                                        {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
+                                            <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
+                                            <div className="flex">
+                                                <button>Add Card</button>
+                                                <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+                                            </div>
+                                        </form></div>}
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    )}
                 </Droppable>
             </DragDropContext>
             {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">

@@ -12,7 +12,8 @@
     z-index: 30;
     border-radius: 2px;
     background-color: #f4f5f7;
-    h3 {
+    > h3 {
+        /////////////////////////////////////////////////////
         font-weight: 400;
         color: #172b4d;
     }
@@ -448,10 +449,9 @@
     }
     .attachments-container {
         display: flex;
-        height: 80px;
+        width: 90%;
         margin-bottom: 15px;
         margin-left: 25px;
-        width: 90%;
         .att-src {
             .attachment-img {
                 background-position: 50%;
@@ -459,8 +459,8 @@
                 background-repeat: no-repeat;
                 border-radius: 3px;
                 background-color: dimgray;
-                width: 110px;
-                height: 80px;
+                width: 150px;
+                height: 110px;
             }
         }
         &:hover {
@@ -471,11 +471,28 @@
         }
         .att-details {
             margin-left: 10px;
-            .att-btns {
+            padding: 7px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: column;
+            > :first-child {
+                p:first-of-type {
+                    color: black;
+                    font-weight: 700;
+                    font-size: 16px;
+                }
+                p {
+                    font-size: 14px;
+                    color: #5e6c84;
+                }
+            }
+            > :nth-child(2) {
+                //att-btns
                 display: flex;
                 align-items: center;
-                margin-top: 15px;
                 button {
+                    padding: 12px;
                     height: 20px;
                     display: flex;
                     align-items: center;
@@ -483,15 +500,6 @@
                         margin-left: 5px;
                     }
                 }
-            }
-            p {
-                font-weight: 300;
-                font-size: 14px;
-                color: #5e6c84;
-            }
-            p:first-of-type {
-                color: #172b4d;
-                font-weight: 700;
             }
         }
         .att-edit {
@@ -505,7 +513,6 @@
             border: 1px solid rgba(207, 191, 191, 0.6);
             height: 170px;
             width: 270px;
-
             .att-edit-main {
                 margin-top: 10px;
                 margin-left: 10px;
@@ -534,4 +541,13 @@
     .member-list {
         flex-wrap: wrap;
     }
+}
+
+.att-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    width: 110px;
+    height: 80px;
 }
