@@ -238,7 +238,7 @@ export function TaskModal({ taskModalOp }) {
                         </span> </section>}
                     <section className="desc-section">
                         <div className="desc-svg"><FontAwesomeIcon icon={faAlignLeft} />
-                            <p>Description:</p>
+                            <p>Description</p>
                         </div>
                         <form onChange={handleSubmit(res => onSubmitDesc(res))}>
                             <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
@@ -275,7 +275,7 @@ export function TaskModal({ taskModalOp }) {
                 </section>}
                 {!currTask.attachments.length ? null : <section>
                     <div className="att-svg"><FontAwesomeIcon icon={faPaperclip} />
-                        <p>Attachments:</p>
+                        <p>Attachments</p>
                     </div>
                     {currTask.attachments.map((attac, attIdx) =>
                         <div key={attIdx} className="attachments-container">
@@ -314,7 +314,7 @@ export function TaskModal({ taskModalOp }) {
                     )}
                 </section>}
                 <div className="att-svg"><FontAwesomeIcon icon={faComment} />
-                    <p>Comments:</p>
+                    <p>Comments</p>
                 </div>
                 <div className="task-comment">
                     <form onSubmit={handleSubmit(onSumbitComment)}>
@@ -341,7 +341,7 @@ export function TaskModal({ taskModalOp }) {
             </div>
             <div className="add-to-task" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
                 <div className="right-task-modal">
-                    <h3>Add To Task:</h3>
+                    <h3>Add To Task</h3>
                     <p onClick={() => taskModalOp.setCurrTask(null)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="right-task-modal-btns">

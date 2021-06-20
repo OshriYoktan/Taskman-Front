@@ -1,3 +1,5 @@
+@import "../../mixins";
+
 .board-details {
     height: 95vh;
     .board-header {
@@ -14,7 +16,9 @@
                 margin-left: 20px;
                 .avatars {
                     min-width: 100px;
+                    max-height: 100%;
                     padding: 6px;
+                    overflow: auto;
                     margin-left: 20px;
                     user-select: none;
                     > * {
@@ -185,7 +189,6 @@
             }
         }
     }
-
     .add-card-btn {
         height: 32px;
         width: 260px;
@@ -210,7 +213,6 @@
             filter: brightness(85%);
         }
     }
-
     .add-card {
         margin-top: 10px;
         height: 130px;
@@ -226,7 +228,6 @@
             margin-right: 10px;
         }
     }
-
     .add-task-container {
         height: 100%;
         width: 100%;
@@ -271,7 +272,6 @@
             }
         }
     }
-
     .add-card-container {
         width: 260px;
         display: flex;

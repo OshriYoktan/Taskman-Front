@@ -115,12 +115,14 @@ export function DrawNoteModal(props) {
                     </form>
                     <canvas ref={canvasRef} width='300px' height='400px' onMouseDown={res => handleCanvasMouse(res, 'down')} onMouseMove={res => handleCanvasMouse(res, 'move')} onMouseOut={res => handleCanvasMouse(res, 'out')} onMouseUp={res => handleCanvasMouse(res, 'up')} />
                     <form className="canvas-inputs" onChange={handleSubmit(setControllers)}>
-                        <label htmlFor="input-color">Color<FontAwesomeIcon className="fa" icon={faTint} />
-                            <input type="color" id="input-color" name="input-color"  {...register("inputColor")} defaultValue={color} />
-                        </label>
-                        <label htmlFor="input-backgroungColor">Background Color<FontAwesomeIcon className="fa" icon={faPaintRoller} />
-                            <input type="color" id="input-backgroungColor" name="input-backgroungColor"  {...register("inputBackgroungColor")} defaultValue={'#fff'} />
-                        </label>
+                        <div>
+                            <label htmlFor="input-color"><FontAwesomeIcon className="fa" icon={faTint} /> Color
+                                <input type="color" id="input-color" name="input-color"  {...register("inputColor")} defaultValue={color} />
+                            </label>
+                            <label htmlFor="input-backgroungColor"><FontAwesomeIcon className="fa" icon={faPaintRoller} /> Background Color
+                                <input type="color" id="input-backgroungColor" name="input-backgroungColor"  {...register("inputBackgroungColor")} defaultValue={'#fff'} />
+                            </label>
+                        </div>
                         <label htmlFor="input-size">size</label>
                         <input type="number" id="input-size" name="input-size"  {...register("inputSize")} defaultValue={inputSize} />
                     </form>
