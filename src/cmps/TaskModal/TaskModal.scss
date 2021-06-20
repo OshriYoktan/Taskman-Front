@@ -43,7 +43,7 @@
         border: none;
         cursor: pointer;
         padding: 8px 10px;
-        height: 45px;
+        height: 130px;
         background-color: rgba(9, 30, 66, 0.04);
         margin-left: 25px;
         border-radius: 0;
@@ -54,7 +54,7 @@
         &:focus-visible {
             outline: solid 2px #0079bf;
             cursor: text;
-            height: 60px;
+            height: 130px;
             background-color: #fff;
         }
     }
