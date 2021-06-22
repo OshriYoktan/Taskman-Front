@@ -122,7 +122,7 @@ textarea {
         justify-content: flex-end !important;
         > :first-child {
             background-color: red;
-            opacity: .7;
+            opacity: 0.7;
             &:hover {
                 opacity: 1;
             }
@@ -193,4 +193,33 @@ $clr8: #f67e7e;
 
 .fa {
     font-size: 20px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.5);
+    height: 8vh;
+    cursor: default;
+    h3 {
+        font-weight: 600;
+        user-select: none;
+    }
+    p {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        right: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        transition: 0.3s;
+        cursor: pointer;
+        &:hover {
+            color: white;
+            background-color: #516079;
+        }
+    }
 }

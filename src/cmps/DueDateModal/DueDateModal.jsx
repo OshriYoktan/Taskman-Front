@@ -29,8 +29,8 @@ const defaultMaterialTheme = createMuiTheme({
             dayDisabled: {
                 color: lightBlue["100"],
             },
-            container:{
-                backgroundColor:"black"
+            container: {
+                backgroundColor: "black"
             },
             current: {
                 color: 'rgb(0, 82, 204)',
@@ -52,7 +52,7 @@ export function DueDateModal(props) {
     }
     return (
         <div className="due-date-modal">
-            <section className="due-date-modal-header">
+            <section className="modal-header">
                 <h3>Due Date</h3>
                 <p className="btn-close-icon" onClick={() => props.setDueDateModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </section>
@@ -72,7 +72,9 @@ export function DueDateModal(props) {
                         ></KeyboardDatePicker>
                     </MuiPickersUtilsProvider>
                 </ThemeProvider>
-                <button >save</button>
+                <div className="ddm-btn">
+                    <button>save</button>
+                </div>
             </form>
         </div>
 
