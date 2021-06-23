@@ -19,16 +19,15 @@ import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
 import { socketService } from '../../services/socketService.js';
 import Color from 'color-thief-react';
+import { confirmAlert } from 'react-confirm-alert';
 import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
 
 export function TaskModal({ taskModalOp }) {
-    const { currTask, currBoard } = taskModalOp
+    const { currTask, currBoard, setCurrTask } = taskModalOp
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
     const [clientX, setClientX] = useState(null)
     const [clientY, setClientY] = useState(null)
-    const [urlImg, setUrlImg] = useState(false)
-    const [isComment, setIsComment] = useState(null)
     //-------------------------onClickOutside----------------------------\\
     const inputFile = useRef(null)
     const useOnClickOutside = (ref, handler) => {
@@ -189,6 +188,28 @@ export function TaskModal({ taskModalOp }) {
         socketService.emit('task to-update-task', { card: currCard, task: task || currTask })
         dispatch(saveBoard(updatedBoard))
         dispatch(setCurrBoard(currBoard._id))
+    }
+
+    const onDeleteTask = () => {
+        confirmAlert({
+            title: 'Confirm to submit',
+            message: 'Are you sure want to delete this task?',
+            buttons: [
+                {
+                    label: 'Delete task',
+                    onClick: () => {
+                        const taskIdx = currCard.tasks.findIndex(t => t._id === currTask._id)
+                        currCard.tasks.splice(taskIdx, 1)
+                        setCurrTask(null)
+                        dispatch(saveBoard(currBoard))
+                    }
+                },
+                {
+                    label: 'Cancel',
+                    onClick: () => setCurrTask(currTask)
+                }
+            ]
+        });
     }
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
@@ -379,6 +400,7 @@ export function TaskModal({ taskModalOp }) {
                         {(!drawNoteModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={drawNoteRef}> <DrawNoteModal setDrawNoteModal={setDrawNoteModal} drawNoteModal={drawNoteModal} updateBoard={updateBoard} currTask={currTask}></DrawNoteModal></div>}
                     </div>
                 </div>
+                <button className="delete-task-btn" onClick={onDeleteTask}>Delete task</button>
             </div>
         </section >
     )
