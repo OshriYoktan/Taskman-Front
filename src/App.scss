@@ -130,16 +130,6 @@ textarea {
     }
 }
 
-// COLOR PALETTE
-$clr1: #014d56;
-$clr2: #002f34;
-$clr3: #004047;
-$clr4: #f67d7d;
-$clr5: #002529;
-$clr6: #ffffff;
-$clr7: #002529;
-$clr8: #f67e7e;
-
 // Helpers
 
 .container {
@@ -186,8 +176,10 @@ $clr8: #f67e7e;
     border-radius: 50px;
     width: 35px;
     height: 35px;
+    transition: 0.3s;
     &:hover {
-        background-color: rgba(250, 250, 250, 0.8);
+        color: white;
+        background-color: #516079;
     }
 }
 

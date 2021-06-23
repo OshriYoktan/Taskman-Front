@@ -139,28 +139,34 @@ export function BoardMenu({ boardMenuOp }) {
 
     if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="loader-container">Loading</div>)
 
-    const inProgress = []
-    const overdue = []
-    const completed = []
+    const tasksProgress = {
+        inProgress: [],
+        overdue: [],
+        completed: []
+    }
+
+    const membersTasks = {
+        membersLabels: [],
+        membersTasks: []
+    }
+
     currBoard.cards.forEach(card => {
         card.tasks.forEach(task => {
-            if (task.doneAt) completed.push(task)
-            else if (!task.dueDate) inProgress.push(task)
-            else task.dueDate > Date.now() ? inProgress.push(task) : overdue.push(task)
+            if (task.doneAt) tasksProgress.completed.push(task)
+            else if (!task.dueDate) tasksProgress.inProgress.push(task)
+            else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
         })
     })
-    const membersLabels = []
-    const membersTasks = []
     currBoard.members.forEach(m => {
-        membersLabels.push(m.name)
-        membersTasks.push(m.tasks.length)
+        membersTasks.membersLabels.push(m.name)
+        membersTasks.membersTasks.push(m.tasks.length)
     })
 
     const dataForMembersChart = {
-        labels: membersLabels,
+        labels: membersTasks.membersLabels,
         datasets: [{
             label: 'Members',
-            data: membersTasks,
+            data: membersTasks.membersTasks,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.7)',
                 'rgba(75, 192, 192, 0.7)',
@@ -176,7 +182,7 @@ export function BoardMenu({ boardMenuOp }) {
         labels: ['Completed', 'In progress', 'Overdue'],
         datasets: [{
             label: 'Status',
-            data: [completed.length, inProgress.length, overdue.length],
+            data: [tasksProgress.completed.length, tasksProgress.inProgress.length, tasksProgress.overdue.length],
             backgroundColor: [
                 'rgba(29, 185, 84, 0.7)',
                 'rgba(255, 159, 64, 0.7)',

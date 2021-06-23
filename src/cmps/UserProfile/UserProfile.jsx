@@ -16,6 +16,7 @@ export function UserProfile({ profileOp }) {
     const [isLogin, setIsLogin] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const [errMsg, setErrMsg] = useState(null)
+    const [userTasks, setUserTasks] = useState(null)
 
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -79,11 +80,11 @@ export function UserProfile({ profileOp }) {
                     <p>{user.username}</p>
                 </div>
                 <div className="hide-overflow">
-                    <p>{user.tasks.length ? 'Tasks:' : 'No tasks assigned.'}</p>
-                    {!user.tasks.length ? null : <p>{user.tasks.length} tasks.</p>}
+                    <p>{userTasks.length ? 'Tasks:' : 'No tasks assigned.'}</p>
+                    {!userTasks.length ? null : <p>{userTasks.length} tasks.</p>}
                     <ul>
-                        {user.tasks ? null : <li>{user.tasks.length}</li>}
-                        {!user.tasks.length ? null : user.tasks.map((task, idx) => <li key={idx}>{task}</li>)}
+                        {userTasks ? null : <li>{userTasks.length}</li>}
+                        {!userTasks.length ? null : userTasks.map(task => <li key={task._id}>{task.title}</li>)}
                     </ul>
                 </div>
                 <div>

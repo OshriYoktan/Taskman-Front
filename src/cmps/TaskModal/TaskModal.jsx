@@ -21,6 +21,7 @@ import { socketService } from '../../services/socketService.js';
 import Color from 'color-thief-react';
 import { confirmAlert } from 'react-confirm-alert';
 import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
+import { updateUser } from '../../store/actions/userActions.js';
 
 export function TaskModal({ taskModalOp }) {
     const { currTask, currBoard, setCurrTask } = taskModalOp
@@ -202,6 +203,11 @@ export function TaskModal({ taskModalOp }) {
                         currCard.tasks.splice(taskIdx, 1)
                         setCurrTask(null)
                         dispatch(saveBoard(currBoard))
+                        currTask.members.forEach(async m => {
+                            const taskIdx = m.tasks.findIndex(memberTask => memberTask.title === currTask.title)
+                            m.tasks.splice(taskIdx, 1)
+                            const res = await dispatch(updateUser(m))
+                        })
                     }
                 },
                 {
