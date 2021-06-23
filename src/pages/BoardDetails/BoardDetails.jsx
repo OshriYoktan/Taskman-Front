@@ -512,8 +512,7 @@ export function BoardDetails(props) {
                                             </div>
                                         </form></div>}
                                     </div>
-                                </div>
-                            }
+                                </div>}
                         </div>
                     )}
                 </Droppable>
