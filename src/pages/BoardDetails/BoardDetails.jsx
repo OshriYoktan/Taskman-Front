@@ -28,6 +28,7 @@ export function BoardDetails(props) {
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
+    const [filter, setFilter] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
     var containerRef = useRef()
@@ -50,6 +51,8 @@ export function BoardDetails(props) {
             };
         }, [ref, handler]);
     }
+
+    useEffect(() => currTask ? setIsMenu(false) : null)
 
     useEffect(() => {
         dispatch(loadBoards())
@@ -365,9 +368,10 @@ export function BoardDetails(props) {
     }
 
     const filterTasks = (filterBy) => {
+        setFilter(filterBy)
         if (filterBy.task || filterBy.labels.length) {
             var newCards = []
-            if (filterBy.task !== '') {
+            if (filterBy.task) {
                 currBoard.cards.map(card => {
                     return card.tasks.filter(task => {
                         if (task.title.toLowerCase().includes(filterBy.task.toLowerCase())) newCards.push(card);
@@ -375,9 +379,9 @@ export function BoardDetails(props) {
                 })
             }
             if (filterBy.labels.length) {
-                currBoard.cards.map(card => {
-                    return card.tasks.map(task => {
-                        return task.labels.map(label => {
+                currBoard.cards.forEach(card => {
+                    return card.tasks.forEach(task => {
+                        return task.labels.forEach(label => {
                             if (filterBy.labels.includes(label.desc)) newCards.push(card)
                         })
                     })
@@ -493,7 +497,7 @@ export function BoardDetails(props) {
                         </div>}
                     </div>
                 </div>
-                <div ref={menuRef} className="flex">
+                <div ref={filter ? (filter.task ? null : menuRef) : menuRef} className="flex">
                     <p className="open-menu-btn" onClick={() => setIsMenu(true)}><FontAwesomeIcon className="fa" icon={faBars}></FontAwesomeIcon></p>
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>

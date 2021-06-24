@@ -111,6 +111,7 @@ export function TaskModal({ taskModalOp }) {
     const onSubmitAtt = (data, idx) => {
         const input = Object.keys(data).find(str => str === ('attItem' + idx))
         currTask.attachments[idx].title = data[input];
+        updateBoard(currTask)
         setAttNameModal(false)
     }
 
