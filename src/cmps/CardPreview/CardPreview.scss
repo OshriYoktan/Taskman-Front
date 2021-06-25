@@ -212,10 +212,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    button {
-        background-color: #0079bf;
-        color: #fff;
-        border-radius: 3px;
+    > :nth-child(2) {
+        width: 25px;
+        height: 25px;
+        border-radius: 7px;
     }
 }
 

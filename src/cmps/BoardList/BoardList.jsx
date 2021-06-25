@@ -15,7 +15,6 @@ export function BoardList({ boardListOp }) {
 
     return (
         <ul className="board-container">
-            {console.log(boardListOp.boards)}
             {boardListOp.boards.map(board => <li key={board._id}><BoardPreview key={board._id} board={board} /></li>)}
             <li className="board-link add-board">
                 {!isCreateBoard && <button onClick={() => setIsCreateBoard(!isCreateBoard)}>Create board</button>}

@@ -95,7 +95,7 @@ export function TaskModal({ taskModalOp }) {
         })
     })
     const onSubmitDesc = data => {
-        currTask.desc = data.desc
+        currTask.desc = data.desc.replace(/'/g, '')
         updateBoard(currTask)
     }
 
@@ -270,9 +270,6 @@ export function TaskModal({ taskModalOp }) {
                         </div>
                         <form onChange={handleSubmit(res => onSubmitDesc(res))}>
                             <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
-                            {isDesc && <div className="save-desc">
-                                <button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }}>Save</button>
-                                <button onClick={() => setIsDesc(false)}><FontAwesomeIcon icon={faTimes} ></FontAwesomeIcon></button> </div>}
                         </form>
                     </section>
                 </div>
