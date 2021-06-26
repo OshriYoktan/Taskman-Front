@@ -16,7 +16,7 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const user = useSelector(state => state.userReducer.user)
     const [isAbout, setIsAbout] = useState(false)
@@ -110,6 +110,7 @@ export function BoardMenu({ boardMenuOp }) {
         setIsFilter(false)
         setIsLabels(false)
         onSearchTask('')
+        reset()
     }
 
     const membersTaskLength = async () => {
@@ -202,7 +203,7 @@ export function BoardMenu({ boardMenuOp }) {
             <article className="menu-main">
                 <div className="flex">
                     <h3>Menu</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="flex">
                     <p onClick={() => setIsAbout(!isAbout)}>About & Statistics</p>
@@ -224,9 +225,9 @@ export function BoardMenu({ boardMenuOp }) {
             </article>
             <article className="menu-about sub-menu" style={isAbout ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsAbout(!isAbout)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsAbout(!isAbout)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>About & Statistics</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="flex hide-overflow">
                     <div className="flex">
@@ -255,9 +256,9 @@ export function BoardMenu({ boardMenuOp }) {
             </article>
             <article className="menu-background sub-menu" style={isBackground ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsBackground(!isBackground)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsBackground(!isBackground)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>Change background</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="hide-overflow flex">
                     <div className="flex">
@@ -277,9 +278,9 @@ export function BoardMenu({ boardMenuOp }) {
             </article>
             <article className="menu-filter sub-menu" style={isFilter ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsFilter(!isFilter)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsFilter(!isFilter)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>Search cards</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div>
                     <form onChange={handleSubmit(onSearchTask)}>
@@ -298,9 +299,9 @@ export function BoardMenu({ boardMenuOp }) {
             </article>
             <article className="menu-labels sub-menu" style={isLabels ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsLabels(!isLabels)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsLabels(!isLabels)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>Labels</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="hide-overflow">
                     <ul>
