@@ -11,6 +11,7 @@ import { utilService } from '../../services/utilService'
 import { PolarArea, Bar } from 'react-chartjs-2';
 import { Cloudinary } from '../Cloudinary/Cloudinary'
 import userService from '../../services/userService'
+import loader from '../../assets/imgs/taskman-loader.svg'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -26,6 +27,7 @@ export function BoardMenu({ boardMenuOp }) {
     const [labels, setLabels] = useState(null)
     const [cloudImgs, setCloudImgs] = useState(null)
     const [activity, setActivity] = useState(null)
+    const [msg, setMsg] = useState(null)
     const [tasks, setTasks] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
@@ -123,7 +125,10 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const onDeleteBoard = () => {
-        confirmAlert({
+        if (!user) setMsg('Please login to delete this board')
+        else if (user.username !== 'avivzo9') setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
+        // else if (!user.admin) setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
+        else confirmAlert({
             title: 'Confirm to submit',
             message: 'Are you sure want to delete this board?',
             buttons: [
@@ -138,7 +143,7 @@ export function BoardMenu({ boardMenuOp }) {
         });
     }
 
-    if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="loader-container">Loading</div>)
+    if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
 
     const tasksProgress = {
         inProgress: [],
@@ -250,6 +255,7 @@ export function BoardMenu({ boardMenuOp }) {
                     </div>
                     <div className="flex">
                         <h3>Danger Zone</h3>
+                        {msg && <h3 className="authMsg">{msg}</h3>}
                         <button onClick={onDeleteBoard}>Delete board</button>
                     </div>
                 </div>

@@ -52,7 +52,7 @@ export function BoardDetails(props) {
         }, [ref, handler]);
     }
 
-    useEffect(() => currTask ? setIsMenu(false) : null)
+    useEffect(() => currTask ? setIsMenu(false) : null, [currTask])
 
     useEffect(() => {
         dispatch(loadBoards())
@@ -91,10 +91,12 @@ export function BoardDetails(props) {
             })
         }
         if (currBoard) setMembers(currBoard.members)
+        // eslint-disable-next-line
     }, [currBoard])
 
     useEffect(() => {
         preMembers()
+        // eslint-disable-next-line
     }, [members])
 
     useOnClickOutside(ref, () => setCurrTask(false));

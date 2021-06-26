@@ -2,6 +2,7 @@ import { httpService } from "./http.service"
 import { utilService } from "./utilService"
 const KEY = 'board/'
 
+// eslint-disable-next-line
 export default {
     query,
     getBoardById,
