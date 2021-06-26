@@ -1,3 +1,4 @@
+@import "../../mixins";
 .board-menu {
     position: absolute;
     max-width: 0;
@@ -26,7 +27,7 @@
 
 .menu-main {
     width: 100%;
-    > * {
+    >* {
         justify-content: center;
         width: 100%;
     }
@@ -47,7 +48,7 @@
         align-items: center;
         flex-direction: column;
         height: 30vh;
-        > * {
+        >* {
             padding: 10px 13px;
             width: 90%;
             border-radius: 10px;
@@ -111,7 +112,7 @@
                 justify-content: start;
                 align-items: center;
                 margin-left: 3%;
-                > * {
+                >* {
                     margin-left: -3%;
                 }
             }
@@ -277,7 +278,7 @@
                 margin: 5px 0;
                 cursor: pointer;
                 opacity: 0.7;
-                > * {
+                >* {
                     padding: 10px 13px;
                     margin: 10px 0;
                     font-weight: 600;
@@ -318,7 +319,7 @@
                     display: flex;
                     justify-content: flex-start;
                     align-items: center;
-                    > * {
+                    >* {
                         cursor: pointer;
                         border: none;
                         background-color: inherit;
@@ -400,13 +401,35 @@
             font-size: 17px;
             font-weight: 600;
         }
-        > p:first-of-type {
+        >p:first-of-type {
             position: absolute;
             left: 20px;
         }
-        > p:last-of-type {
+        >p:last-of-type {
             position: absolute;
             right: 20px;
+        }
+    }
+}
+
+@include narrow {
+    .board-menu {
+        height: 100vh;
+    }
+    .menu-main {
+        >:first-child {
+            height: 10vh;
+        }
+        >:nth-child(2) {
+            height: 50vh;
+        }
+        >:nth-child(3) {
+            height: 40vh;
+        }
+    }
+    .sub-menu {
+        >:first-child {
+            height: 10vh;
         }
     }
 }

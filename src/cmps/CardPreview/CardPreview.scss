@@ -1,3 +1,4 @@
+@import "../../mixins";
 .board-card {
     height: 100%;
     width: 280px;
@@ -112,10 +113,9 @@
             display: flex;
             align-items: center;
             color: #8b95a7;
-            > * {
+            >* {
                 margin: 2px 5px;
             }
-
             .due-date-to-preview {
                 border-radius: 3px;
                 padding: 2px 3px;
@@ -152,8 +152,7 @@
         .avatar-card-preview {
             display: flex;
             justify-content: flex-end;
-
-            > * {
+            >* {
                 margin-left: -4%;
             }
         }
@@ -230,5 +229,14 @@
     text-align: left;
     &:hover {
         filter: brightness(75%);
+    }
+}
+
+@include normal {
+    .board-card {
+        > :first-child {
+            width: 100%;
+            max-height: 75vh;
+        }
     }
 }

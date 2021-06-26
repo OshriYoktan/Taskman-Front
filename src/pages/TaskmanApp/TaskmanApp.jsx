@@ -24,9 +24,8 @@ export function TaskmanApp() {
         const newBoard = boardService.getEmptyBoard()
         newBoard.title = title
         const res = await dispatch(saveBoard(newBoard))
-        console.log('res:', res)
         boards.push(newBoard)
-        // history('/')
+        history.push('/')
     }
 
     if (!boards || !boards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
