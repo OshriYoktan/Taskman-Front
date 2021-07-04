@@ -52,7 +52,7 @@ export function BoardDetails(props) {
         }, [ref, handler]);
     }
 
-    useEffect(() => currTask ? setIsMenu(false) : null)
+    useEffect(() => currTask ? setIsMenu(false) : null, [currTask])
 
     useEffect(() => {
         dispatch(loadBoards())
@@ -91,10 +91,12 @@ export function BoardDetails(props) {
             })
         }
         if (currBoard) setMembers(currBoard.members)
+        // eslint-disable-next-line
     }, [currBoard])
 
     useEffect(() => {
         preMembers()
+        // eslint-disable-next-line
     }, [members])
 
     useOnClickOutside(ref, () => setCurrTask(false));
@@ -455,7 +457,7 @@ export function BoardDetails(props) {
                         <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} autoComplete="off" />
                     </form>
                     <div className="flex">
-                        <div className="avatars">
+                        <div className="avatars hide-overflow">
                             {members.map(member => <Avatar key={member._id} name={member.name} size="30" round={true} />)}
                         </div>
                         <button onClick={() => {

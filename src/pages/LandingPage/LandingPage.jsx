@@ -1,14 +1,20 @@
 import './LandingPage.scss'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { updateBackground } from '../../store/actions/boardActions'
+import userService from '../../services/userService'
 
 export function LandingPage() {
     const dispatch = useDispatch()
+    const history = useHistory()
+    const loggedinUser = userService.storage.loadUserFromStorage()
 
     useEffect(() => {
         dispatch(updateBackground(false))
+        if (loggedinUser) {
+            history.push('/boards')
+        }
     })
 
     return (
