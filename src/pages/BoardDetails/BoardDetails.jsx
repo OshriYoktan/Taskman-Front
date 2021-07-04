@@ -532,7 +532,7 @@ export function BoardDetails(props) {
                                         {draggedCards.map((card, idx) => {
                                             return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
                                                 {(previewProvider) =>
-                                                (<div key={card._id} onMouseOut={() => { console.log('out'); return setIsScrollOnDradAllowed(true) }} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
+                                                (<div key={card._id} onMouseOut={() => setIsScrollOnDradAllowed(true)} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
                                                     <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
                                                 </div>)}
                                             </Draggable></div>
