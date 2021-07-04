@@ -1,8 +1,10 @@
 import boardService from '../../services/boardService'
 
 export function loadBoards(filterBy) {
+  console.log('filterBy:', filterBy)
   return async dispatch => {
     const boards = await boardService.query(filterBy)
+    console.log('boards:', boards)
     const action = { type: 'SET_BOARDS', boards }
     dispatch(action)
   }
