@@ -83,7 +83,7 @@ export function UserProfile({ profileOp }) {
                     {!user.tasks.length ? null : <p>{user.tasks.length} tasks.</p>}
                     <ul>
                         {user.tasks ? null : <li>{user.tasks.length}</li>}
-                        {!user.tasks.length ? null : user.tasks.map((task, idx) => <li key={idx}>{task}</li>)}
+                        {!user.tasks.length ? null : user.tasks.map(task => <li key={task._id}>{task.title}</li>)}
                     </ul>
                 </div>
                 <div>

@@ -1,3 +1,4 @@
+@import "../../mixins";
 .board-card {
     height: 100%;
     width: 280px;
@@ -112,10 +113,9 @@
             display: flex;
             align-items: center;
             color: #8b95a7;
-            > * {
+            >* {
                 margin: 2px 5px;
             }
-
             .due-date-to-preview {
                 border-radius: 3px;
                 padding: 2px 3px;
@@ -149,17 +149,14 @@
                 }
             }
         }
-
         .avatar-card-preview {
             display: flex;
             justify-content: flex-end;
-
-            > * {
+            >* {
                 margin-left: -4%;
             }
         }
     }
-
     .add-task-container {
         input,
         textarea {
@@ -193,51 +190,20 @@
 }
 
 .manage-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
     cursor: pointer;
     border-radius: 3px;
     padding: 10px;
     font-size: 20px;
     font-weight: 600;
+    border-radius: 4px;
     transition: 0.3s;
-    border-radius: 20px;
     &:hover {
         background-color: rgba(9, 30, 66, 0.08);
-    }
-}
-
-.card-modal {
-    text-align: center;
-    width: 200px;
-    height: 225px;
-    background-color: #fff;
-    position: absolute;
-    border: 1px solid #bcbcbc;
-    box-shadow: 0 0 0;
-    border-radius: 3px;
-    z-index: 30;
-    .card-title-modal {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 1px solid black;
-        height: 30%;
-        button {
-            position: absolute;
-            top: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 33px;
-        }
-    }
-    .card-modal-btns {
-        padding: 6px 12px;
-        height: 70%;
-        width: 100%;
-        button {
-            width: 100%;
-        }
     }
 }
 
@@ -245,10 +211,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    button {
-        background-color: #0079bf;
-        color: #fff;
-        border-radius: 3px;
+    > :nth-child(2) {
+        width: 25px;
+        height: 25px;
+        border-radius: 7px;
     }
 }
 
@@ -263,5 +229,14 @@
     text-align: left;
     &:hover {
         filter: brightness(75%);
+    }
+}
+
+@include normal {
+    .board-card {
+        > :first-child {
+            width: 100%;
+            max-height: 75vh;
+        }
     }
 }

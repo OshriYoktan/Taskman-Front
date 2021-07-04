@@ -15,19 +15,20 @@ import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
 import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
-import { updateUser } from '../../store/actions/userActions'
+import { login, updateUser } from '../../store/actions/userActions'
 import userService from '../../services/userService'
 import { useHistory } from 'react-router-dom'
+import { confirmAlert } from 'react-confirm-alert'
 
 export function BoardDetails(props) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm()
-    var newCard = boardService.getEmptyCard()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const users = useSelector(state => state.userReducer.users)
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
     const [currTask, setCurrTask] = useState(null)
+    const [filter, setFilter] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
     var containerRef = useRef()
@@ -50,6 +51,8 @@ export function BoardDetails(props) {
             };
         }, [ref, handler]);
     }
+
+    useEffect(() => currTask ? setIsMenu(false) : null, [currTask])
 
     useEffect(() => {
         dispatch(loadBoards())
@@ -88,10 +91,12 @@ export function BoardDetails(props) {
             })
         }
         if (currBoard) setMembers(currBoard.members)
+        // eslint-disable-next-line
     }, [currBoard])
 
     useEffect(() => {
         preMembers()
+        // eslint-disable-next-line
     }, [members])
 
     useOnClickOutside(ref, () => setCurrTask(false));
@@ -123,7 +128,6 @@ export function BoardDetails(props) {
     }
 
     const updateTask = data => {
-        console.log('data:', data)
         const updateCard = currBoard.cards.find(c => c._id === data.card._id)
         const taskIdx = updateCard.tasks.findIndex(t => t._id === data.task._id)
         updateCard.tasks.splice(taskIdx, 1, data.task)
@@ -186,8 +190,13 @@ export function BoardDetails(props) {
     }
 
     const openCardModal = (ev, card) => {
-        setXPosEl(ev.clientX)
-        setYPosEl(ev.clientY)
+        if (ev.target.localName === 'p') {
+            setXPosEl(ev.target.parentElement.offsetLeft)
+            setYPosEl(ev.target.parentElement.offsetTop + 40)
+        } else {
+            setXPosEl(ev.target.offsetLeft)
+            setYPosEl(ev.target.offsetTop + 40)
+        }
         setIsCardModal(true)
         setCardModal(card)
     }
@@ -246,6 +255,7 @@ export function BoardDetails(props) {
         }
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         dispatch(saveBoard(newBoard))
+        dispatch(setCurrBoard(newBoard._id))
         addActivity(user ? user.username : 'Guest', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
@@ -276,18 +286,19 @@ export function BoardDetails(props) {
     const addMember = async (memberId) => {
         const member = await userService.getUserById(memberId)
         if (!currTask.members.length) {
-            member.tasks.push(currTask.title)
+            member.tasks.push({ _id: utilService.makeId(), title: currTask.title })
             currTask.members.push(member)
             addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
         else if (currTask.members.some(currMember => currMember._id === member._id)) {
-            const taskIdx = member.tasks.findIndex(t => t === currTask._id)
+            const taskIdx = member.tasks.findIndex(t => t._id === currTask._id)
+            console.log('member.tasks:', member.tasks)
             member.tasks.splice(taskIdx, 1)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
             addActivity(user ? user.username : 'Guest', 'removed', member.username, currTask.title)
         } else {
-            member.tasks.push(currTask.title)
+            member.tasks.push({ _id: utilService.makeId(), title: currTask.title })
             currTask.members.push(member)
             addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
@@ -295,6 +306,9 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
+        if (member._id === user._id) {
+            dispatch(login(member))
+        }
     }
 
     const addNewCard = (data) => {
@@ -310,13 +324,37 @@ export function BoardDetails(props) {
     }
 
     const deleteCard = () => {
-        const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
-        const boardToSave = boardService.updateBoard(cardIdx, currBoard)
-        socketService.emit('card to-delete-card', cardIdx);
-        addActivity(user ? user.username : 'Guest', 'deleted', 'card')
-        setDraggedCards(currBoard.cards)
-        dispatch(saveBoard(boardToSave))
-        closeModal()
+        confirmAlert({
+            title: 'Confirm to submit',
+            message: 'Are you sure want to delete this card?',
+            buttons: [
+                {
+                    label: 'Delete board',
+                    onClick: () => {
+                        const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
+                        const boardToSave = boardService.updateBoard(cardIdx, currBoard)
+                        socketService.emit('card to-delete-card', cardIdx);
+                        currCard.tasks.forEach(t => {
+                            if (t.members.length) {
+                                t.members.forEach(async m => {
+                                    const taskIdx = m.tasks.findIndex(memberTask => memberTask.title === t.title)
+                                    m.tasks.splice(taskIdx, 1)
+                                    const res = await dispatch(updateUser(m))
+                                })
+                            }
+                        })
+                        addActivity(user ? user.username : 'Guest', 'deleted', 'card')
+                        setDraggedCards(currBoard.cards)
+                        dispatch(saveBoard(boardToSave))
+                        closeModal()
+                        console.log('user', user);
+                    }
+                },
+                {
+                    label: 'Cancel'
+                }
+            ]
+        });
     }
 
     const changeBackground = (background, type) => {
@@ -332,9 +370,10 @@ export function BoardDetails(props) {
     }
 
     const filterTasks = (filterBy) => {
+        setFilter(filterBy)
         if (filterBy.task || filterBy.labels.length) {
             var newCards = []
-            if (filterBy.task !== '') {
+            if (filterBy.task) {
                 currBoard.cards.map(card => {
                     return card.tasks.filter(task => {
                         if (task.title.toLowerCase().includes(filterBy.task.toLowerCase())) newCards.push(card);
@@ -342,9 +381,9 @@ export function BoardDetails(props) {
                 })
             }
             if (filterBy.labels.length) {
-                currBoard.cards.map(card => {
-                    return card.tasks.map(task => {
-                        return task.labels.map(label => {
+                currBoard.cards.forEach(card => {
+                    return card.tasks.forEach(task => {
+                        return task.labels.forEach(label => {
                             if (filterBy.labels.includes(label.desc)) newCards.push(card)
                         })
                     })
@@ -377,7 +416,7 @@ export function BoardDetails(props) {
         else history.push('/boards')
     }
 
-    if (!currBoard || !draggedCards || !draggedCards.length || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+    if (!currBoard || !draggedCards || !draggedCards || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
         openCardModal,
@@ -413,56 +452,54 @@ export function BoardDetails(props) {
     return (
         <div className="board-details sub-container">
             <div className="board-header flex">
-                <div className="flex ">
+                <div className="flex">
                     <form onBlur={handleSubmit(setBoardTitle)}>
                         <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} autoComplete="off" />
                     </form>
                     <div className="flex">
-                        <div className="avatars">
-                            {members.map((member, idx) => <Avatar key={idx} name={member.name} size="30" round={true} />)}
+                        <div className="avatars hide-overflow">
+                            {members.map(member => <Avatar key={member._id} name={member.name} size="30" round={true} />)}
                         </div>
                         <button onClick={() => {
                             setIsInvite(!isInvite)
                             preMembers()
                         }}>Invite</button>
-                        {isInvite && <div ref={inviteRef} className="invite-members-modal">
+                        {isInvite && <div ref={inviteRef} className="invite-members-modal hide-overflow">
+                            <div className="invite-modal-header">
+                                <h3>Invite members</h3>
+                                <p className="btn-close-icon" onClick={() => setIsInvite(!isInvite)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                            </div>
                             <form onChange={handleSubmit(serachUser)} >
-                                <div className="invite-title">
-                                    <div className="close-btn">
-                                        <p>Invite member to board</p>
-                                        <button onClick={() => setIsInvite(!isInvite)}>x</button>
-                                    </div>
-                                    <input type="text" autoComplete="off" placeholder="Search users" id="member" name="member"  {...register("member")} />
-                                </div>
+                                <input type="text" autoComplete="off" placeholder="Search users" id="member" name="member"  {...register("member")} />
                             </form>
-                            {!addMembersToBoard.length ? null : <div className="exist-members">
+                            {!addMembersToBoard.length ? null : <div className="invite-members">
+                                <p>Suggested Members:</p>
                                 <ul>
-                                    <p>Suggested Members:</p>
                                     {addMembersToBoard.map((member, idx) => {
-                                        return <li key={member._id}>
-                                            <button onClick={() => onAddMember(member)} className="suggested-user">
-                                                <Avatar key={idx} name={member.name} size="30" round={true} />
-                                                <p>{member.name}</p>
-                                                <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
-                                            </button>
+                                        return (idx >= 3) ? null : <li key={member._id} onClick={() => onAddMember(member)}>
+                                            <Avatar key={member._id} name={member.name} size="30" round={true} />
+                                            <p>{member.name}</p>
+                                            <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
                                         </li>
                                     })}
                                 </ul>
                             </div>}
-                            {!members.length ? null : <div className="exist-members">
+                            {!members.length ? null : <div className="invite-members">
                                 <p>In This Board:</p>
-                                {members.map((user, idx) => {
-                                    return <button key={user._id} onClick={() => removeUserFromBoard(user._id)} className="suggested-user">
-                                        <Avatar key={idx} name={user.name} size="30" round={true} />
-                                        <p>{user.name}</p>
-                                        <p><FontAwesomeIcon icon={faCheckCircle} /></p>
-                                    </button>
-                                })}
+                                <ul>
+                                    {members.map((user, idx) => {
+                                        return <li key={user._id} onClick={() => removeUserFromBoard(user._id)}>
+                                            <Avatar key={idx} name={user.name} size="30" round={true} />
+                                            <p>{user.name}</p>
+                                            <p><FontAwesomeIcon icon={faCheckCircle} /></p>
+                                        </li>
+                                    })}
+                                </ul>
                             </div>}
                         </div>}
                     </div>
                 </div>
-                <div ref={menuRef} className="flex">
+                <div ref={filter ? (filter.task ? null : menuRef) : menuRef} className="flex">
                     <p className="open-menu-btn" onClick={() => setIsMenu(true)}><FontAwesomeIcon className="fa" icon={faBars}></FontAwesomeIcon></p>
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>
@@ -518,12 +555,12 @@ export function BoardDetails(props) {
                 </Droppable>
             </DragDropContext>
             {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
-                <div className="card-title-modal">
-                    <p>{cardModal.title}</p>
-                    <button onClick={() => closeModal()}>x</button>
+                <div className="card-modal-header">
+                    <h3>{cardModal.title}</h3>
+                    <p onClick={() => closeModal()}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="card-modal-btns">
-                    <button onClick={() => deleteCard()}>Delete This Card</button>
+                    <button onClick={deleteCard}>Delete Card</button>
                 </div>
             </div>}
             {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}

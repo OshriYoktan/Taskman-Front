@@ -1,3 +1,4 @@
+@import "../../mixins";
 .user-menu {
     position: absolute;
     width: 340px;
@@ -21,7 +22,7 @@
             font-size: 17px;
             font-weight: 600;
         }
-        > p {
+        >p {
             position: absolute;
             right: 20px;
             cursor: pointer;
@@ -97,7 +98,7 @@
         input {
             width: 200px;
         }
-        > * {
+        >* {
             margin: 5px 0;
         }
     }

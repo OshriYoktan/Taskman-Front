@@ -121,7 +121,7 @@ export function CardPreview(props) {
                                                             {(!task.checklists.length || (task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0) <= 0)) ? null :
                                                                 < p > <FontAwesomeIcon icon={faList} />{task.checklists.reduce((accTotal, checklist) => {
                                                                     return accTotal + checklist.list.reduce((acc, itemInList) => itemInList.isChecked + acc, 0)
-                                                                }, 0)}/
+                                                                }, 0)}
                                                                     {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
                                                                 </p>}
                                                         </section>
@@ -135,12 +135,12 @@ export function CardPreview(props) {
                             </ul>)}
                     </Droppable>
                 </DragDropContext>
-                {!isAddTask && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
+                {(!isAddTask && card.title !== 'No search results.') && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
                 {isAddTask && <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
-                    <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card…" defaultValue={newTask.title} />
+                    <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card" defaultValue={newTask.title} />
                     <div className="add-task-btns">
                         <button>Add Task</button>
-                        <p onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                        <button onClick={() => setIsAddTask(!isAddTask)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></button>
                     </div>
                 </form>}
             </div>

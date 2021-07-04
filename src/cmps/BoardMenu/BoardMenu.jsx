@@ -11,12 +11,13 @@ import { utilService } from '../../services/utilService'
 import { PolarArea, Bar } from 'react-chartjs-2';
 import { Cloudinary } from '../Cloudinary/Cloudinary'
 import userService from '../../services/userService'
+import loader from '../../assets/imgs/taskman-loader.svg'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 export function BoardMenu({ boardMenuOp }) {
     const dispatch = useDispatch()
-    const { register, handleSubmit } = useForm();
+    const { register, handleSubmit, reset } = useForm();
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const user = useSelector(state => state.userReducer.user)
     const [isAbout, setIsAbout] = useState(false)
@@ -26,6 +27,7 @@ export function BoardMenu({ boardMenuOp }) {
     const [labels, setLabels] = useState(null)
     const [cloudImgs, setCloudImgs] = useState(null)
     const [activity, setActivity] = useState(null)
+    const [msg, setMsg] = useState(null)
     const [tasks, setTasks] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
@@ -110,6 +112,7 @@ export function BoardMenu({ boardMenuOp }) {
         setIsFilter(false)
         setIsLabels(false)
         onSearchTask('')
+        reset()
     }
 
     const membersTaskLength = async () => {
@@ -122,7 +125,10 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const onDeleteBoard = () => {
-        confirmAlert({
+        if (!user) setMsg('Please login to delete this board')
+        else if (user.username !== 'avivzo9') setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
+        // else if (!user.admin) setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
+        else confirmAlert({
             title: 'Confirm to submit',
             message: 'Are you sure want to delete this board?',
             buttons: [
@@ -137,30 +143,36 @@ export function BoardMenu({ boardMenuOp }) {
         });
     }
 
-    if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="loader-container">Loading</div>)
+    if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
 
-    const inProgress = []
-    const overdue = []
-    const completed = []
+    const tasksProgress = {
+        inProgress: [],
+        overdue: [],
+        completed: []
+    }
+
+    const membersTasks = {
+        membersLabels: [],
+        membersTasks: []
+    }
+
     currBoard.cards.forEach(card => {
         card.tasks.forEach(task => {
-            if (task.doneAt) completed.push(task)
-            else if (!task.dueDate) inProgress.push(task)
-            else task.dueDate > Date.now() ? inProgress.push(task) : overdue.push(task)
+            if (task.doneAt) tasksProgress.completed.push(task)
+            else if (!task.dueDate) tasksProgress.inProgress.push(task)
+            else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
         })
     })
-    const membersLabels = []
-    const membersTasks = []
     currBoard.members.forEach(m => {
-        membersLabels.push(m.name)
-        membersTasks.push(m.tasks.length)
+        membersTasks.membersLabels.push(m.name)
+        membersTasks.membersTasks.push(m.tasks.length)
     })
 
     const dataForMembersChart = {
-        labels: membersLabels,
+        labels: membersTasks.membersLabels,
         datasets: [{
             label: 'Members',
-            data: membersTasks,
+            data: membersTasks.membersTasks,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.7)',
                 'rgba(75, 192, 192, 0.7)',
@@ -176,7 +188,7 @@ export function BoardMenu({ boardMenuOp }) {
         labels: ['Completed', 'In progress', 'Overdue'],
         datasets: [{
             label: 'Status',
-            data: [completed.length, inProgress.length, overdue.length],
+            data: [tasksProgress.completed.length, tasksProgress.inProgress.length, tasksProgress.overdue.length],
             backgroundColor: [
                 'rgba(29, 185, 84, 0.7)',
                 'rgba(255, 159, 64, 0.7)',
@@ -196,7 +208,7 @@ export function BoardMenu({ boardMenuOp }) {
             <article className="menu-main">
                 <div className="flex">
                     <h3>Menu</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="flex">
                     <p onClick={() => setIsAbout(!isAbout)}>About & Statistics</p>
@@ -218,9 +230,9 @@ export function BoardMenu({ boardMenuOp }) {
             </article>
             <article className="menu-about sub-menu" style={isAbout ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsAbout(!isAbout)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsAbout(!isAbout)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>About & Statistics</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="flex hide-overflow">
                     <div className="flex">
@@ -243,15 +255,16 @@ export function BoardMenu({ boardMenuOp }) {
                     </div>
                     <div className="flex">
                         <h3>Danger Zone</h3>
+                        {msg && <h3 className="authMsg">{msg}</h3>}
                         <button onClick={onDeleteBoard}>Delete board</button>
                     </div>
                 </div>
             </article>
             <article className="menu-background sub-menu" style={isBackground ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsBackground(!isBackground)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsBackground(!isBackground)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>Change background</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="hide-overflow flex">
                     <div className="flex">
@@ -271,9 +284,9 @@ export function BoardMenu({ boardMenuOp }) {
             </article>
             <article className="menu-filter sub-menu" style={isFilter ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsFilter(!isFilter)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsFilter(!isFilter)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>Search cards</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div>
                     <form onChange={handleSubmit(onSearchTask)}>
@@ -292,9 +305,9 @@ export function BoardMenu({ boardMenuOp }) {
             </article>
             <article className="menu-labels sub-menu" style={isLabels ? { maxWidth: 100 + '%' } : { maxWidth: 0 }}>
                 <div className="flex">
-                    <p onClick={() => setIsLabels(!isLabels)}><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
+                    <p onClick={() => setIsLabels(!isLabels)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faChevronLeft} /></p>
                     <h3>Labels</h3>
-                    <p onClick={closeMenu}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                    <p onClick={closeMenu} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></p>
                 </div>
                 <div className="hide-overflow">
                     <ul>

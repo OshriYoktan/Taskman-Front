@@ -21,6 +21,7 @@ import { socketService } from '../../services/socketService.js';
 import Color from 'color-thief-react';
 import { confirmAlert } from 'react-confirm-alert';
 import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
+import { updateUser } from '../../store/actions/userActions.js';
 
 export function TaskModal({ taskModalOp }) {
     const { currTask, currBoard, setCurrTask } = taskModalOp
@@ -94,7 +95,7 @@ export function TaskModal({ taskModalOp }) {
         })
     })
     const onSubmitDesc = data => {
-        currTask.desc = data.desc
+        currTask.desc = data.desc.replace(/'/g, '')
         updateBoard(currTask)
     }
 
@@ -110,6 +111,7 @@ export function TaskModal({ taskModalOp }) {
     const onSubmitAtt = (data, idx) => {
         const input = Object.keys(data).find(str => str === ('attItem' + idx))
         currTask.attachments[idx].title = data[input];
+        updateBoard(currTask)
         setAttNameModal(false)
     }
 
@@ -202,6 +204,11 @@ export function TaskModal({ taskModalOp }) {
                         currCard.tasks.splice(taskIdx, 1)
                         setCurrTask(null)
                         dispatch(saveBoard(currBoard))
+                        currTask.members.forEach(async m => {
+                            const taskIdx = m.tasks.findIndex(memberTask => memberTask.title === currTask.title)
+                            m.tasks.splice(taskIdx, 1)
+                            const res = await dispatch(updateUser(m))
+                        })
                     }
                 },
                 {
@@ -220,7 +227,7 @@ export function TaskModal({ taskModalOp }) {
 
     return (
         <section className="task-modal hide-overflow">
-            <div className="task-modal-form" style={currTask.cover ? { marginTop: '172px' } : { marginTop: 0 }}>
+            <div className="task-modal-form" style={currTask.cover ? { marginTop: '164px' } : { marginTop: 0 }}>
                 {!currTask.cover ? null : currTask.cover.includes('#') ? <div className="cover-section" style={{ backgroundColor: `${currTask.cover}` }} /> :
                     <Color src={currTask.cover} crossOrigin="anonymous" format="hex">
                         {({ data, loading }) => {
@@ -263,9 +270,6 @@ export function TaskModal({ taskModalOp }) {
                         </div>
                         <form onChange={handleSubmit(res => onSubmitDesc(res))}>
                             <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
-                            {isDesc && <div className="save-desc">
-                                <button onClick={(ev) => { ev.preventDefault(); setIsDesc(!isDesc) }}>Save</button>
-                                <button onClick={() => setIsDesc(false)}><FontAwesomeIcon icon={faTimes} ></FontAwesomeIcon></button> </div>}
                         </form>
                     </section>
                 </div>
