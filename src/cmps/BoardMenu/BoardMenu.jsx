@@ -66,8 +66,10 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const saveLabels = data => {
+        console.log('data:', data)
         var entries = Object.entries(data)
-        entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor')
+        entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor' && en[0] !== 'boardDesc' && en[0] !== 'searchTask')
+        console.log('entries:', entries)
         const labels = entries.map((label, idx) => {
             if (!idx) return
             if (idx % 2 === 0) return { color: label[1] }
@@ -75,6 +77,7 @@ export function BoardMenu({ boardMenuOp }) {
         })
         labels.splice(0, 1)
         const arr = []
+        console.log('labels:', labels)
         labels.forEach((label, idx) => {
             if (idx % 2 === 0) arr.push({ _id: utilService.makeId(), desc: label.desc, color: labels[idx + 1].color })
         })
@@ -83,7 +86,7 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const onBoardDesc = data => {
-        const descToUpdate = data.boardDesc.replace(/'/g, '')
+        const descToUpdate = data.boardDesc.replace(/'|"/g, '')
         dispatch(saveBoard({ ...currBoard, description: descToUpdate }))
     }
 

@@ -95,7 +95,8 @@ export function TaskModal({ taskModalOp }) {
         })
     })
     const onSubmitDesc = data => {
-        currTask.desc = data.desc.replace(/'/g, '')
+        currTask.desc = data.desc.replace(/'|"/g, '\\"').replace(/\n/g, ' S1P2A3C4E5 ')
+        console.log('currTask.desc:', currTask.desc)
         updateBoard(currTask)
     }
 
@@ -220,6 +221,8 @@ export function TaskModal({ taskModalOp }) {
     }
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+    currTask.desc = currTask.desc.replace(/ S1P2A3C4E5 /g, '\n')
+
 
     const cloudOp = {
         updateBoard
@@ -268,7 +271,7 @@ export function TaskModal({ taskModalOp }) {
                         <div className="desc-svg"><FontAwesomeIcon icon={faAlignLeft} />
                             <p>Description</p>
                         </div>
-                        <form onChange={handleSubmit(res => onSubmitDesc(res))}>
+                        <form onBlur={handleSubmit(res => onSubmitDesc(res))}>
                             <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
                         </form>
                     </section>

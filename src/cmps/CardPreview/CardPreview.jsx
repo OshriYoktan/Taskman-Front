@@ -27,7 +27,7 @@ export function CardPreview(props) {
 
     const setCardTitle = data => {
         if (!data.cardTitle) return
-        card.title = data.cardTitle.replace(/'/g, '')
+        card.title = data.cardTitle.replace(/'|"/g, '')
         const boardToUpdate = boardService.updateBoard(card, currBoard)
         socketService.emit('card to-update-card', card)
         socketService.emit('card to-update-card-title', card)

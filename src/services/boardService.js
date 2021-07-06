@@ -86,7 +86,6 @@ async function saveBoard(board) {
 }
 
 function updateCard(taskToUpdate, cardToUpdate, boardToUpdate) {
-    // if you want to delete a task use the func and send the idx ----updateBoard(idx)----
     if (typeof (taskToUpdate) !== 'number') {
         const taskIdx = cardToUpdate.tasks.findIndex(t => t._id === taskToUpdate._id)
         cardToUpdate.tasks.splice(taskIdx, 1, taskToUpdate)

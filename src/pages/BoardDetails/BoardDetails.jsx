@@ -207,7 +207,7 @@ export function BoardDetails(props) {
     }
 
     const setBoardTitle = (data) => {
-        var title = data.boardTitle.replace(/'/g, '');
+        var title = data.boardTitle.replace(/'|"/g, '');
         dispatch(saveBoard({ ...currBoard, title }))
     }
 
@@ -292,7 +292,6 @@ export function BoardDetails(props) {
         }
         else if (currTask.members.some(currMember => currMember._id === member._id)) {
             const taskIdx = member.tasks.findIndex(t => t._id === currTask._id)
-            console.log('member.tasks:', member.tasks)
             member.tasks.splice(taskIdx, 1)
             const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
             currTask.members.splice(memberToRemove, 1)
@@ -347,7 +346,6 @@ export function BoardDetails(props) {
                         setDraggedCards(currBoard.cards)
                         dispatch(saveBoard(boardToSave))
                         closeModal()
-                        console.log('user', user);
                     }
                 },
                 {
