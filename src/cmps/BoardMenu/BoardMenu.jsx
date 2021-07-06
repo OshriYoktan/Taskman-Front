@@ -86,7 +86,7 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const onBoardDesc = data => {
-        const descToUpdate = data.boardDesc.replace(/'|"/g, '')
+        const descToUpdate = data.boardDesc.replace(/'|"/g, '\\"').replace(/\n/g, ' S1P2A3C4E5 ')
         dispatch(saveBoard({ ...currBoard, description: descToUpdate }))
     }
 
@@ -147,6 +147,8 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
+
+    currBoard.description = currBoard.description.replace(/ S1P2A3C4E5 /g, '\n')
 
     const tasksProgress = {
         inProgress: [],
