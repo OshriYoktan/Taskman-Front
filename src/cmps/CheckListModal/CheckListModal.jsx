@@ -5,7 +5,9 @@ import './CheckListModal.scss'
 
 export function CheckListModal(props) {
     const { register, handleSubmit } = useForm();
+
     const setTitle = data => {
+        data.title=data.title.replace(/'|"/g, '\\"')
         const newChecklistToSend = { title: data.title, list: [], range: 0 }
         props.addChecklist(newChecklistToSend)
         props.setChecklistModal(false)
