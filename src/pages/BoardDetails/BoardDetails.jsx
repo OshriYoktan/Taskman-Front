@@ -444,7 +444,8 @@ export function BoardDetails(props) {
         addChecklist,
         addDueDate,
         addCover,
-        currBoard: currBoard
+        currBoard: currBoard,
+        user
     }
 
     return (

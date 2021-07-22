@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadBoards, saveBoard, setCurrBoard, updateBackground } from '../../store/actions/boardActions.js'
 import { BoardList } from '../../cmps/BoardList'
@@ -6,10 +6,15 @@ import './TaskmanApp.scss'
 import boardService from '../../services/boardService.js'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService.js'
+import userService from '../../services/userService.js'
+import { login } from '../../store/actions/userActions.js'
+import { useHistory } from 'react-router-dom'
 
 export function TaskmanApp() {
     const dispatch = useDispatch()
     const boards = useSelector(state => state.boardReducer.boards)
+    const loggedinUser = userService.storage.loadUserFromStorage()
+    const history = useHistory()
 
     useEffect(() => {
         socketService.setup();
@@ -17,6 +22,13 @@ export function TaskmanApp() {
         dispatch(loadBoards())
         dispatch(updateBackground(true))
     }, [dispatch])
+
+    useEffect(() => {
+        if (loggedinUser) {
+            dispatch(login(loggedinUser))
+            history.push('/boards')
+        }
+    }, [])
 
     const addBoard = async (title) => {
         const newBoard = boardService.getEmptyBoard()

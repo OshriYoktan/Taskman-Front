@@ -24,7 +24,7 @@ import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
 import { updateUser } from '../../store/actions/userActions.js';
 
 export function TaskModal({ taskModalOp }) {
-    const { currTask, currBoard, setCurrTask } = taskModalOp
+    const { currTask, currBoard, setCurrTask, user } = taskModalOp
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
     const [clientX, setClientX] = useState(null)
@@ -52,7 +52,6 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const attRef = useRef()
-
     const [labelModal, setLabelModal] = useState(false)
     const labelRef = useRef()
     useOnClickOutside(labelRef, () => setLabelModal(false));
@@ -104,7 +103,6 @@ export function TaskModal({ taskModalOp }) {
         if (!data[input]) return
         const addToList = data[input].replace(/'|"/g, '\"')
         currTask.checklists[idxInList].list.push({ desc: addToList, isChecked: false })
-        console.log('currTask.checklists:', currTask.checklists)
         setRange(currTask.checklists[idxInList])
         reset({ inputItem0: '', inputItem1: '', inputItem2: '', inputItem3: '', inputItem4: '' })
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
@@ -118,8 +116,8 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const onSumbitComment = data => {
-        const newComment = { _id: utilService.makeId(), member: 'guest', timeStamp: Date.now(), title: data.comment }
-        currTask.comments.push(newComment)
+        const newComment = { _id: utilService.makeId(), member: user ? user.username : 'Guest', timeStamp: Date.now(), title: data.comment }
+        currTask.comments.unshift(newComment)
         updateBoard(currTask)
         reset({ comment: '', })
     }
