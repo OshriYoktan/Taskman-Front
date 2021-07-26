@@ -24,7 +24,7 @@ import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
 import { updateUser } from '../../store/actions/userActions.js';
 
 export function TaskModal({ taskModalOp }) {
-    const { currTask, currBoard, setCurrTask } = taskModalOp
+    const { currTask, currBoard, setCurrTask, user } = taskModalOp
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm();
     const [clientX, setClientX] = useState(null)
@@ -52,7 +52,6 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const attRef = useRef()
-
     const [labelModal, setLabelModal] = useState(false)
     const labelRef = useRef()
     useOnClickOutside(labelRef, () => setLabelModal(false));
@@ -95,15 +94,20 @@ export function TaskModal({ taskModalOp }) {
         })
     })
     const onSubmitDesc = data => {
+<<<<<<< HEAD
         console.log('data.desc:', data.desc)
         currTask.desc = data.desc.replace(/'/g, '')
+=======
+        currTask.desc = data.desc.replace(/'|"/g, '\\"').replace(/\n/g, ' S1P2A3C4E5 ')
+>>>>>>> c087c65a3b6ad7df4aff18a9c9444f49c4830c5c
         updateBoard(currTask)
     }
 
     const onSubmitItemInList = (data, idxInList) => {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
         if (!data[input]) return
-        currTask.checklists[idxInList].list.push({ desc: data[input], isChecked: false })
+        const addToList = data[input].replace(/'|"/g, '\"')
+        currTask.checklists[idxInList].list.push({ desc: addToList, isChecked: false })
         setRange(currTask.checklists[idxInList])
         reset({ inputItem0: '', inputItem1: '', inputItem2: '', inputItem3: '', inputItem4: '' })
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
@@ -117,8 +121,8 @@ export function TaskModal({ taskModalOp }) {
     }
 
     const onSumbitComment = data => {
-        const newComment = { _id: utilService.makeId(), member: 'guest', timeStamp: Date.now(), title: data.comment }
-        currTask.comments.push(newComment)
+        const newComment = { _id: utilService.makeId(), member: user ? user.username : 'Guest', timeStamp: Date.now(), title: data.comment }
+        currTask.comments.unshift(newComment)
         updateBoard(currTask)
         reset({ comment: '', })
     }
@@ -222,6 +226,8 @@ export function TaskModal({ taskModalOp }) {
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
+    currTask.desc = currTask.desc.replace(/ S1P2A3C4E5 /g, '\n')
+
     const cloudOp = {
         updateBoard
     }
@@ -269,7 +275,7 @@ export function TaskModal({ taskModalOp }) {
                         <div className="desc-svg"><FontAwesomeIcon icon={faAlignLeft} />
                             <p>Description</p>
                         </div>
-                        <form onChange={handleSubmit(res => onSubmitDesc(res))}>
+                        <form onBlur={handleSubmit(res => onSubmitDesc(res))}>
                             <textarea id="desc" name="desc" onClick={() => setIsDesc(!isDesc)} defaultValue={descValue} placeholder="Add some detailed description..." {...register("desc")} defaultValue={taskModalOp.currTask.desc} />
                         </form>
                     </section>

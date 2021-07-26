@@ -27,7 +27,7 @@ export function CardPreview(props) {
 
     const setCardTitle = data => {
         if (!data.cardTitle) return
-        card.title = data.cardTitle.replace(/'/g, '')
+        card.title = data.cardTitle.replace(/'|"/g, '')
         const boardToUpdate = boardService.updateBoard(card, currBoard)
         socketService.emit('card to-update-card', card)
         socketService.emit('card to-update-card-title', card)
@@ -121,7 +121,7 @@ export function CardPreview(props) {
                                                             {(!task.checklists.length || (task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0) <= 0)) ? null :
                                                                 < p > <FontAwesomeIcon icon={faList} />{task.checklists.reduce((accTotal, checklist) => {
                                                                     return accTotal + checklist.list.reduce((acc, itemInList) => itemInList.isChecked + acc, 0)
-                                                                }, 0)}
+                                                                }, 0)}/
                                                                     {task.checklists.reduce((acc, checklist) => checklist.list.length + acc, 0)}
                                                                 </p>}
                                                         </section>

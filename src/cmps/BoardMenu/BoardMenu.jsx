@@ -67,7 +67,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     const saveLabels = data => {
         var entries = Object.entries(data)
-        entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor')
+        entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor' && en[0] !== 'boardDesc' && en[0] !== 'searchTask')
         const labels = entries.map((label, idx) => {
             if (!idx) return
             if (idx % 2 === 0) return { color: label[1] }
@@ -83,7 +83,7 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     const onBoardDesc = data => {
-        const descToUpdate = data.boardDesc.replace(/'/g, '')
+        const descToUpdate = data.boardDesc.replace(/'|"/g, '\\"').replace(/\n/g, ' S1P2A3C4E5 ')
         dispatch(saveBoard({ ...currBoard, description: descToUpdate }))
     }
 
@@ -144,6 +144,8 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
+
+    currBoard.description = currBoard.description.replace(/ S1P2A3C4E5 /g, '\n')
 
     const tasksProgress = {
         inProgress: [],
