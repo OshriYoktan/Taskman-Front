@@ -9,7 +9,7 @@ export function CheckListModal(props) {
     const setTitle = data => {
         data.title=data.title.replace(/'|"/g, '\\"')
         const newChecklistToSend = { title: data.title, list: [], range: 0 }
-        props.addChecklist(newChecklistToSend)
+        props.handleChecklist(newChecklistToSend)
         props.setChecklistModal(false)
     }
 
