@@ -260,12 +260,13 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
-    const addChecklist = (list) => {
+    const handleChecklist = (list) => {
         if (typeof list === 'object') currTask.checklists.push(list)
         else currTask.checklists.splice(list, 1);
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
+        dispatch(setCurrBoard(newBoard._id))
     }
 
     const addDueDate = (date) => {
@@ -415,6 +416,7 @@ export function BoardDetails(props) {
     }
 
     if (!currBoard || !draggedCards || !draggedCards || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
+    console.log('members:', members)
 
     const cardPreviewOp = {
         openCardModal,
@@ -441,7 +443,7 @@ export function BoardDetails(props) {
         currTask,
         addLabel,
         addMember,
-        addChecklist,
+        handleChecklist,
         addDueDate,
         addCover,
         currBoard: currBoard,

@@ -126,7 +126,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     const onDeleteBoard = () => {
         if (!user) setMsg('Please login to delete this board')
-        else if (user.username !== 'avivzo9') setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
+        else if (user.username !== 'avivzo9' || user.username !== 'hadarMa' || user.username !== 'OshYok') setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
         // else if (!user.admin) setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
         else confirmAlert({
             title: 'Confirm to submit',

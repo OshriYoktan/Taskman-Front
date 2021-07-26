@@ -48,6 +48,6 @@ export function TaskmanApp() {
         <div className="sub-container taskman-container">
             <h2>Your Workspace boards</h2>
             <BoardList boardListOp={boardListOp}></BoardList>
-        </div >
+        </div>
     )
 }

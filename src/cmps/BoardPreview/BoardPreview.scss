@@ -20,14 +20,24 @@
         height: 100%;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-evenly;
+        flex-direction: column;
         transition: 0.3s;
+        input {
+            width: 80%;
+        }
         h4 {
             font-weight: 600;
+            letter-spacing: 0.04rem;
             color: white;
-            -webkit-filter: invert(100%);
             filter: invert(100%);
+            -webkit-filter: invert(100%);
             transition: 0.3s;
+        }
+        button {
+            width: 80%;
+            height: 60px;
+            padding: 0;
         }
     }
     .add-board {
@@ -36,11 +46,6 @@
         &:hover {
             filter: brightness(75%);
         }
-    }
-    button {
-        height: 100%;
-        width: 100%;
-        padding: 0;
     }
     &:hover {
         opacity: 1;

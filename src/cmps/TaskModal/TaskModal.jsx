@@ -284,7 +284,7 @@ export function TaskModal({ taskModalOp }) {
                     {currTask.checklists.map((checklist, listIdx) =>
                         <div className="checklist-in-modal" key={listIdx}>
                             <div className="checklist-svg"> <div className="flex"> <FontAwesomeIcon icon={faList} ></FontAwesomeIcon> <p>{checklist.title}:</p></div>
-                                <button onClick={() => taskModalOp.addChecklist(listIdx)}>Delete list</button>
+                                <button onClick={() => taskModalOp.handleChecklist(listIdx)}>Delete list</button>
                             </div>
                             {!checklist.list.length ? null : <h6>{checklist.range}%</h6>}
                             {!checklist.list.length ? null : <div className="demo-range-container">
@@ -390,7 +390,7 @@ export function TaskModal({ taskModalOp }) {
                     <div onClick={() => setChecklistModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faList}></FontAwesomeIcon>
                         <p> Checklist </p>
-                        {(!checklistModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} addChecklist={taskModalOp.addChecklist} ></CheckListModal></div>}
+                        {(!checklistModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={checklistRef}> <CheckListModal setChecklistModal={setChecklistModal} checklistModal={checklistModal} currTask={currTask} handleChecklist={taskModalOp.handleChecklist} ></CheckListModal></div>}
                     </div>
                     <div onClick={() => setDueDateModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faClock}></FontAwesomeIcon>
