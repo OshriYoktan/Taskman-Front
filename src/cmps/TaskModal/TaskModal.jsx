@@ -94,19 +94,14 @@ export function TaskModal({ taskModalOp }) {
         })
     })
     const onSubmitDesc = data => {
-<<<<<<< HEAD
-        console.log('data.desc:', data.desc)
-        currTask.desc = data.desc.replace(/'/g, '')
-=======
-        currTask.desc = data.desc.replace(/'|"/g, '\\"').replace(/\n/g, ' S1P2A3C4E5 ')
->>>>>>> c087c65a3b6ad7df4aff18a9c9444f49c4830c5c
+        currTask.desc = data.desc.replace(/'|"/g, '\'').replace(/\n/g, ' S1P2A3C4E5 ')
         updateBoard(currTask)
     }
 
     const onSubmitItemInList = (data, idxInList) => {
         const input = Object.keys(data).find(str => str === ('inputItem' + idxInList))
         if (!data[input]) return
-        const addToList = data[input].replace(/'|"/g, '\"')
+        const addToList = data[input].replace(/'|"/g, '\'')
         currTask.checklists[idxInList].list.push({ desc: addToList, isChecked: false })
         setRange(currTask.checklists[idxInList])
         reset({ inputItem0: '', inputItem1: '', inputItem2: '', inputItem3: '', inputItem4: '' })
@@ -226,7 +221,7 @@ export function TaskModal({ taskModalOp }) {
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
-    currTask.desc = currTask.desc.replace(/ S1P2A3C4E5 /g, '\n')
+    currTask.desc = currTask.desc.replace(/ S1P2A3C4E5 /g, '\n').replace( /\\'/g, '\'')
 
     const cloudOp = {
         updateBoard
