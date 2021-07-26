@@ -30,8 +30,20 @@ export function BoardMenu({ boardMenuOp }) {
     const [msg, setMsg] = useState(null)
     const [tasks, setTasks] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
+    const [membersTasks, setMembersTasks] = useState(null)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
     const colors = ['lightgreen', 'lightyellow', 'lightblue', 'orange', 'slateblue', 'lightpink', 'lightgray', 'white']
+
+    const tasksProgress = {
+        inProgress: [],
+        overdue: [],
+        completed: []
+    }
+
+    const tasksLeng = {
+        names: [],
+        tasks: []
+    }
 
     useEffect(async () => {
         setCloudImgs(currBoard.images)
@@ -46,6 +58,7 @@ export function BoardMenu({ boardMenuOp }) {
         setLabels(currBoard.labels)
         setActivity(currBoard.activity)
         membersTaskLength()
+        setStatistics()
     }, [currBoard])
 
     const onSearchTask = data => {
@@ -126,7 +139,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     const onDeleteBoard = () => {
         if (!user) setMsg('Please login to delete this board')
-        else if (user.username !== 'avivzo9' || user.username !== 'hadarMa' || user.username !== 'OshYok') setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
+        else if (user.username !== 'avivzo9' && user.username !== 'hadarMa' && user.username !== 'OshYok') setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
         // else if (!user.admin) setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
         else confirmAlert({
             title: 'Confirm to submit',
@@ -143,38 +156,32 @@ export function BoardMenu({ boardMenuOp }) {
         });
     }
 
-    if (!cloudImgs || !currBoard || !labels || !tasks || !activity) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
 
+    const setStatistics = async () => {
+        await currBoard.members.forEach(async m => {
+            const member = await userService.getUserById(m._id)
+            tasksLeng.names.push(member.name)
+            tasksLeng.tasks.push(member.tasks.length)
+        })
+        currBoard.cards.forEach(card => {
+            card.tasks.forEach(task => {
+                if (task.doneAt) tasksProgress.completed.push(task)
+                else if (!task.dueDate) tasksProgress.inProgress.push(task)
+                else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
+            })
+        })
+        setMembersTasks(tasksLeng)
+    }
+
+    if (!cloudImgs || !currBoard || !labels || !tasks || !activity || !membersTasks) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
+    console.log('membersTasks:', membersTasks)
     currBoard.description = currBoard.description.replace(/ S1P2A3C4E5 /g, '\n')
 
-    const tasksProgress = {
-        inProgress: [],
-        overdue: [],
-        completed: []
-    }
-
-    const membersTasks = {
-        membersLabels: [],
-        membersTasks: []
-    }
-
-    currBoard.cards.forEach(card => {
-        card.tasks.forEach(task => {
-            if (task.doneAt) tasksProgress.completed.push(task)
-            else if (!task.dueDate) tasksProgress.inProgress.push(task)
-            else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
-        })
-    })
-    currBoard.members.forEach(m => {
-        membersTasks.membersLabels.push(m.name)
-        membersTasks.membersTasks.push(m.tasks.length)
-    })
-
     const dataForMembersChart = {
-        labels: membersTasks.membersLabels,
+        labels: membersTasks.names,
         datasets: [{
             label: 'Members',
-            data: membersTasks.membersTasks,
+            data: membersTasks.tasks,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.7)',
                 'rgba(75, 192, 192, 0.7)',

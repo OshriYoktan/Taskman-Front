@@ -39,5 +39,6 @@ export function updateUser(user) {
     userService.storage.saveUserToStorage(updatedUser)
     const action = { type: 'UPDATE_USER', updatedUser }
     dispatch(action)
+    return updatedUser;
   }
 }

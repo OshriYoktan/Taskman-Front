@@ -306,9 +306,11 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
-        if (member._id === user._id) {
-            dispatch(login(member))
-        }
+        // if (user) {
+        //     if (member._id === user._id) {
+        //         dispatch(login(member))
+        //     }
+        // }
     }
 
     const addNewCard = (data) => {
@@ -329,7 +331,7 @@ export function BoardDetails(props) {
             message: 'Are you sure want to delete this card?',
             buttons: [
                 {
-                    label: 'Delete board',
+                    label: 'Delete card',
                     onClick: () => {
                         const cardIdx = currBoard.cards.findIndex(card => card._id === currCard._id)
                         const boardToSave = boardService.updateBoard(cardIdx, currBoard)
@@ -410,13 +412,26 @@ export function BoardDetails(props) {
     }
 
     const deleteBoard = async (boardId) => {
-        const res = await dispatch(removeBoard(boardId || currBoard._id))
+        const board = await boardService.getBoardById(boardId || currBoard._id)
+        console.log('board:', board)
+        board.cards.forEach(c => {
+            c.tasks.forEach(t => {
+                if (t.members.length) {
+                    t.members.forEach(async m => {
+                        const taskIdx = m.tasks.findIndex(memberTask => memberTask.title === t.title)
+                        m.tasks.splice(taskIdx, 1)
+                        const res = await dispatch(updateUser(m))
+                    })
+                }
+            })
+        })
+        const res = await dispatch(removeBoard(board._id))
         if (!res) return
         else history.push('/boards')
+
     }
 
     if (!currBoard || !draggedCards || !draggedCards || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
-    console.log('members:', members)
 
     const cardPreviewOp = {
         openCardModal,
