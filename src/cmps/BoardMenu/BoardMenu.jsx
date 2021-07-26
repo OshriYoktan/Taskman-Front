@@ -132,6 +132,8 @@ export function BoardMenu({ boardMenuOp }) {
         const membersLength = []
         await currBoard.members.forEach(async m => {
             const member = await userService.getUserById(m._id)
+            tasksLeng.names.push(member.name)
+            tasksLeng.tasks.push(member.tasks.length)
             membersLength.push(member.tasks.length);
         })
         setTasks(membersLength)
@@ -156,13 +158,7 @@ export function BoardMenu({ boardMenuOp }) {
         });
     }
 
-
     const setStatistics = async () => {
-        await currBoard.members.forEach(async m => {
-            const member = await userService.getUserById(m._id)
-            tasksLeng.names.push(member.name)
-            tasksLeng.tasks.push(member.tasks.length)
-        })
         currBoard.cards.forEach(card => {
             card.tasks.forEach(task => {
                 if (task.doneAt) tasksProgress.completed.push(task)
