@@ -54,7 +54,6 @@ const gCoverColors = ['#7bc86c', '#f5dd29', '#ffaf3f', '#ef7564', '#cd8de5', '#5
 // CRUDL
 async function query() {
     try {
-        console.log('KEY:', KEY)
         return await httpService.get(KEY)
     } catch (err) {
         console.log('err:', err)

@@ -95,6 +95,7 @@ export function TaskModal({ taskModalOp }) {
         })
     })
     const onSubmitDesc = data => {
+        console.log('data.desc:', data.desc)
         currTask.desc = data.desc.replace(/'/g, '')
         updateBoard(currTask)
     }
