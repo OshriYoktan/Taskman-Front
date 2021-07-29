@@ -95,6 +95,7 @@ export function TaskModal({ taskModalOp }) {
     })
     const onSubmitDesc = data => {
         currTask.desc = data.desc.replace(/'|"/g, '\'').replace(/\n/g, ' S1P2A3C4E5 ')
+        console.log('currTask.desc:', currTask.desc)
         updateBoard(currTask)
     }
 
