@@ -43,12 +43,29 @@ input {
     &::placeholder {
         color: black;
         font-size: 1em;
+        opacity: 0.5;
     }
     &:focus-visible {
         outline: solid 1px #0079bf;
         cursor: text;
         background-color: #fff;
     }
+}
+
+textarea {
+    width: 200px;
+    padding: 1em;
+    border: 1px solid rgba(128, 128, 128, 0.5);
+    border-radius: 7px;
+    font-family: abril;
+    resize: none;
+    &::placeholder {
+        color: black;
+        font-size: 1em;
+        opacity: 0.5;
+    }
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 button {
@@ -65,17 +82,6 @@ button {
         background-color: #516079;
         color: white;
     }
-}
-
-textarea {
-    width: 200px;
-    padding: 1em;
-    border: 1px solid rgba(128, 128, 128, 0.5);
-    border-radius: 7px;
-    font-family: abril;
-    resize: none;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
 
 .App {

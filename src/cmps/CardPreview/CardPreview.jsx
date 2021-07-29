@@ -94,7 +94,7 @@ export function CardPreview(props) {
                 <DragDropContext onDragEnd={handleOnDragTaskEnd}>
                     <Droppable droppableId="tasks">
                         {(provided) => (
-                            <ul {...provided.droppableProps} ref={provided.innerRef} className="tasks-container">
+                            <ul {...provided.droppableProps} ref={provided.innerRef} className="hide-overflow" style={isAddTask ? {maxHeight: '63vh'} : {maxHeight: '65vh'}}>
                                 {tasks.map((task, idx) => {
                                     return (
                                         <Draggable key={task._id} draggableId={task._id} index={idx}>
