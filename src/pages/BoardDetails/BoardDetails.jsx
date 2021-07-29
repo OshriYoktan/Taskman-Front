@@ -470,7 +470,7 @@ export function BoardDetails(props) {
             <div className="board-header flex">
                 <div className="flex">
                     <form onBlur={handleSubmit(setBoardTitle)}>
-                        <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} autoComplete="off" />
+                        <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} autoComplete="off" />
                     </form>
                     <div className="flex">
                         <div className="avatars hide-overflow">
