@@ -107,8 +107,6 @@ export function BoardDetails(props) {
     const [isMenu, setIsMenu] = useState(false)
     const menuRef = useRef()
     useOnClickOutside(menuRef, () => setIsMenu(false));
-    const cardModalRef = useRef()
-    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
     const inviteRef = useRef()
     useOnClickOutside(inviteRef, () => setIsInvite(false));
     const [isAddCard, setIsAddCard] = useState(null)
@@ -190,11 +188,6 @@ export function BoardDetails(props) {
             currBoard.cards = [...items]
             dispatch(saveBoard(currBoard))
         }
-    }
-
-    const closeModal = () => {
-        setCardModal(null)
-        setIsCardModal(false)
     }
 
     const setBoardTitle = (data) => {
@@ -334,7 +327,6 @@ export function BoardDetails(props) {
                         addActivity(user ? user.username : 'Guest', 'deleted', 'card')
                         setDraggedCards(currBoard.cards)
                         dispatch(saveBoard(boardToSave))
-                        closeModal()
                     }
                 },
                 {
@@ -420,8 +412,6 @@ export function BoardDetails(props) {
     if (!currBoard || !draggedCards || !draggedCards || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
-        openCardModal,
-        closeModal,
         addActivity,
         setCurrCard,
         setCurrTask,
