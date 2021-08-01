@@ -112,8 +112,6 @@ export function BoardDetails(props) {
     const [isMenu, setIsMenu] = useState(false)
     const menuRef = useRef()
     useOnClickOutside(menuRef, () => setIsMenu(false));
-
-    const [cardModal, setCardModal] = useState(null)
     const cardModalRef = useRef()
     useOnClickOutside(cardModalRef, () => setIsCardModal(false));
 
@@ -127,9 +125,6 @@ export function BoardDetails(props) {
 
     const [isAddCard, setIsAddCard] = useState(null)
     const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
-    const [isCardModal, setIsCardModal] = useState(null)
-    const [xPosEl, setXPosEl] = useState(null)
-    const [yPosEl, setYPosEl] = useState(null)
     const [addMembersToBoard, setMembersToBoard] = useState([])
     const [isDescShown, setIsDescShown] = useState(false)
     const [isScrollOnDradAllowed, setIsScrollOnDradAllowed] = useState(true)
@@ -209,12 +204,25 @@ export function BoardDetails(props) {
     }
 
     const openCardModal = (ev, card) => {
-        if (ev.target.localName === 'p') {
-            setXPosEl(ev.target.parentElement.offsetLeft)
-            setYPosEl(ev.target.parentElement.offsetTop + 40)
-        } else {
-            setXPosEl(ev.target.offsetLeft)
-            setYPosEl(ev.target.offsetTop + 40)
+        console.log('ev:', ev)
+        // if (ev.target.parentElement.offsetLeft > 800 &&) {
+        if (ev.target.parentElement.offsetLeft > 1300) {
+            if (ev.target.localName === 'p') {
+                setXPosEl(ev.clientX)
+                setYPosEl(ev.target.parentElement.offsetTop + 40)
+            } else {
+                setXPosEl(ev.clientX)
+                setYPosEl(ev.target.offsetTop + 40)
+            }
+        }
+        else {
+            if (ev.target.localName === 'p') {
+                setXPosEl(ev.target.parentElement.offsetLeft)
+                setYPosEl(ev.target.parentElement.offsetTop + 40)
+            } else {
+                setXPosEl(ev.target.offsetLeft)
+                setYPosEl(ev.target.offsetTop + 40)
+            }
         }
         setIsCardModal(true)
         setCardModal(card)
@@ -374,15 +382,16 @@ export function BoardDetails(props) {
 
     const changeBackground = (background, type) => {
         if (type) {
-            addActivity(user ? user.username : 'Guest', 'change', 'color')
-            dispatch(saveBoard({ ...currBoard, background: { color: background, img: null } }))
+            addActivity(user ? user.username : 'Guest', 'changed', 'color')
+            currBoard.background = { color: background, img: null }
+            dispatch(saveBoard(currBoard))
         }
         else {
-            addActivity(user ? user.username : 'Guest', 'change', 'image')
-            dispatch(saveBoard({ ...currBoard, background: { color: null, img: background } }))
+            addActivity(user ? user.username : 'Guest', 'changed', 'image')
+            currBoard.background = { color: null, img: background }
+            dispatch(saveBoard(currBoard))
         }
         dispatch(setCurrBackground(background))
-        // setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
     }
 
     const filterTasks = (filterBy) => {
@@ -428,7 +437,6 @@ export function BoardDetails(props) {
 
     const deleteBoard = async (boardId) => {
         const board = await boardService.getBoardById(boardId || currBoard._id)
-        console.log('board:', board)
         board.cards.forEach(c => {
             c.tasks.forEach(t => {
                 if (t.members.length) {
@@ -507,7 +515,7 @@ export function BoardDetails(props) {
                                 <p>Suggested Members:</p>
                                 <ul>
                                     {addMembersToBoard.map((member, idx) => {
-                                        return (idx >= 3) ? null : <li key={member._id} onClick={() => onAddMember(member)}>
+                                        return (idx >= 5) ? null : <li key={member._id} onClick={() => onAddMember(member)}>
                                             <Avatar key={member._id} name={member.name} size="30" round={true} />
                                             <p>{member.name}</p>
                                             <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
@@ -539,9 +547,9 @@ export function BoardDetails(props) {
                 <DragDropContext onDragEnd={(res, type) => handleOnDragEnd(res, type)}>
                     <div className="flex">
                         {draggedCards.map((card, idx) => {
-                            return (<Droppable droppableId={card._id} key={card._id} type='CARD' direction="vartical">
+                            return (<Droppable droppableId={card._id} key={card._id} type='CARD'>
                                 {(provided) => {
-                                    return (<div className="test" {...provided.droppableProps} ref={provided.innerRef}>
+                                    return (<div {...provided.droppableProps} ref={provided.innerRef}>
                                         <div onMouseDownCapture={() => setIsScrollOnDradAllowed(false)}>
                                             <Draggable key={card._id} draggableId={card._id} index={idx}>
                                                 {(provided) => {
@@ -565,20 +573,7 @@ export function BoardDetails(props) {
                     </div>
                 </DragDropContext>
             </div>
-            {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
-                <div className="card-modal-header">
-                    <h3>{cardModal.title}</h3>
-                    <p onClick={() => closeModal()}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
-                </div>
-                <div className="card-modal-btns">
-                    <button onClick={deleteCard}>Delete Card</button>
-                </div>
-            </div>}
-            {(currTask || fullImg) && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
-            {fullImg && currTask && <div className="img-full-screen-bgc">
-                <h2 className="img-name-full-screen">{fullImg.name}</h2>
-                <img className="img-full-screen" ref={fullImgRef} src={fullImg.imgSrc} />
-            </div>}
+            {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
         </div >
     )
 }
