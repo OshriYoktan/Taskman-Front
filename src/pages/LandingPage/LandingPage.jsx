@@ -44,7 +44,7 @@ export function LandingPage() {
                     <img src="https://cdn.dribbble.com/users/2851002/screenshots/7736965/media/e08e0676dd54ae8715c2d72bbdd51eb2.gif" alt="" />
                 </article>
             </div>
-            <div className="flex try-btn">
+            <div className="flex try-btn bounce-animation">
                 <Link to="/boards" className="link">Try Taskman!</Link>
             </div>
             <div className="landing-page-header">

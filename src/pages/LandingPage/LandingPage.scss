@@ -41,14 +41,43 @@
     border-radius: 7px;
     color: white;
     font-weight: 600;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    transform-origin: bottom;
     transition: 0.3s;
     a {
         padding: 0.7em 0.5em;
         width: 100%;
         height: 100%;
     }
-    &:hover {
-        transform: translateY(-10%);
+}
+
+.bounce-animation {
+    animation-name: bounce-animation;
+    animation-timing-function: ease;
+}
+
+@keyframes bounce-animation {
+    0% {
+        transform: scale(1, 1) translateY(0);
+    }
+    10% {
+        transform: scale(1.1, 0.9) translateY(0);
+    }
+    30% {
+        transform: scale(0.9, 1.1) translateY(-10px);
+    }
+    50% {
+        transform: scale(1.05, 0.95) translateY(0);
+    }
+    57% {
+        transform: scale(1, 1) translateY(-7px);
+    }
+    64% {
+        transform: scale(1, 1) translateY(0);
+    }
+    100% {
+        transform: scale(1, 1) translateY(0);
     }
 }
 
@@ -123,7 +152,7 @@
         }
     }
     .landing-page-section-right {
-        >:first-child {
+        > :first-child {
             grid-row: 2/3;
         }
     }
