@@ -85,6 +85,7 @@
                 background-color: hsla(0, 0, 100%, 0.24);
                 padding: 10px;
                 border-radius: 5px;
+                transition: 0.3s;
                 &:hover {
                     background-color: hsla(0, 0, 100%, 0.34);
                 }

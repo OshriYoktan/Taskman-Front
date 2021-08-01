@@ -124,9 +124,8 @@ function CardPreview(props, ref) {
 
     const taskListHeight = () => {
         if (isAddTask) return '60vh'
-        if (isCardModal) return '51vh'
+        if (isCardModal) return '60vh'
         return '65vh'
-        // isAddTask ? { maxHeight: '60vh' } : { maxHeight: '65vh' }, isCardModal ? { maxHeight: '51vh' } : {}
     }
 
     return (
@@ -138,16 +137,13 @@ function CardPreview(props, ref) {
                             <form onBlur={handleSubmit(setCardTitle)}>
                                 <input type="text" required onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
                             </form>
-                            <div onClick={() => setIsCardModal(true)} className="manage-card"><p>⋮</p></div>
+                            <div onClick={() => {
+                                setIsCardModal(true)
+                                // setTimeout(() => setIsCardModal(false), 3000)
+                            }} className="manage-card"><p>⋮</p></div>
                         </div>
                         <div className="card-modal" ref={cardModalRef} style={{ maxWidth: isCardModal ? '100vw' : '0' }, { maxHeight: isCardModal ? '100vw' : '0' }}>
-                            <div>
-                                <h3>Options</h3>
-                                <p className="btn-close-icon" onClick={() => setIsCardModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
-                            </div>
-                            <div>
-                                <button>Delete Card</button>
-                            </div>
+                            <button>Delete Card</button>
                         </div>
                         <ul className="hide-overflow" style={{ maxHeight: taskListHeight() }}>
                             {tasks.map((task, idx) => {

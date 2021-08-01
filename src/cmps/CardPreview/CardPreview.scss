@@ -190,7 +190,6 @@
 .card-modal {
     position: relative;
     left: -5px;
-    // top: -50px;
     width: 280px;
     display: flex;
     justify-content: center;
@@ -199,38 +198,12 @@
     overflow: hidden;
     white-space: nowrap;
     z-index: 10;
-    border-top: 1px solid rgba(128, 128, 128, 0.5);
     transition: 0.3s;
-    > * {
-        width: 100%;
-    }
-    > :first-child {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        height: 7vh;
-        border-bottom: 1px solid rgba(128, 128, 128, 0.5);
-        h3 {
-            font-size: 17px;
-            font-weight: 600;
-        }
-        > p {
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-        }
-    }
-    > :nth-child(2) {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        height: 50px;
-        button {
-            width: 60%;
-            height: 40px;
-            &:hover {
-                background-color: red;
-            }
+    button {
+        width: 95%;
+        height: 40px;
+        &:hover {
+            background-color: red;
         }
     }
 }

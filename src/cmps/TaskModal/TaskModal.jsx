@@ -97,7 +97,6 @@ export function TaskModal({ taskModalOp }) {
     })
     const onSubmitDesc = data => {
         currTask.desc = data.desc.replace(/'|"/g, '\'').replace(/\n/g, ' S1P2A3C4E5 ')
-        console.log('currTask.desc:', currTask.desc)
         updateBoard(currTask)
     }
 
@@ -283,8 +282,8 @@ export function TaskModal({ taskModalOp }) {
                             </div>)}
                         <button onClick={() => setLabelModal(true)}><FontAwesomeIcon icon={faPlus} /></button>
                     </section>}
-                    {!currTask.dueDate ? null : <section className="due-date-moment-section" onClick={toggleTaskDone}><h3>DUE DATE:</h3>
-                        <span className="due-date-moment"> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', display: displayDueDate(currTask), backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
+                    {!currTask.dueDate ? null : <section className="due-date-moment-section"><h3>DUE DATE:</h3>
+                        <span className="due-date-moment" onClick={toggleTaskDone}> {!currTask.doneAt ? <FontAwesomeIcon icon={faClock} /> : <FontAwesomeIcon icon={faCheckSquare} />}<Moment format="MMM D YYYY" withTitle>{currTask.dueDate}</Moment><small style={{ color: 'white', display: displayDueDate(currTask), backgroundColor: backgroundColorDueDate(currTask) }} >{dueDateSpanText(currTask)}</small>
                         </span> </section>}
                     <section className="desc-section">
                         <div className="desc-svg"><FontAwesomeIcon icon={faAlignLeft} />
