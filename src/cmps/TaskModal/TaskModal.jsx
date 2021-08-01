@@ -22,6 +22,7 @@ import Color from 'color-thief-react';
 import { confirmAlert } from 'react-confirm-alert';
 import { Cloudinary } from '../Cloudinary/Cloudinary.jsx';
 import { updateUser } from '../../store/actions/userActions.js';
+import axios from 'axios';
 
 export function TaskModal({ taskModalOp }) {
     const { currTask, currBoard, setCurrTask, user } = taskModalOp
@@ -192,7 +193,20 @@ export function TaskModal({ taskModalOp }) {
         dispatch(saveBoard(updatedBoard))
         dispatch(setCurrBoard(currBoard._id))
     }
-
+    const downloadItem = (fileSrc, name = 'photo') => {
+        axios
+            .get(fileSrc, { responseType: "blob" })
+            .then(({ data }) => {
+                //object of size and type of the file
+                const link = document.createElement("a");
+                const blob = new Blob([data], { type: "image/png" }); //Blob is a file-like object of immutable, raw data; it can be read as text or binary data
+                link.href = URL.createObjectURL(blob); //creates a DOMString containing a URL of the object given
+                link.download = name;
+                link.click();
+                URL.revokeObjectURL(link.href); //when finished- let the browser know not to keep the reference to the file any longer (like destroyed).
+            })
+            .catch(console.error);
+    }
     const onDeleteTask = () => {
         confirmAlert({
             title: 'Confirm to submit',
@@ -222,7 +236,7 @@ export function TaskModal({ taskModalOp }) {
 
     if (!currTask || !currCard) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
-    currTask.desc = currTask.desc.replace(/ S1P2A3C4E5 /g, '\n').replace( /\\'/g, '\'')
+    currTask.desc = currTask.desc.replace(/ S1P2A3C4E5 /g, '\n').replace(/\\'/g, '\'')
 
     const cloudOp = {
         updateBoard
@@ -305,13 +319,13 @@ export function TaskModal({ taskModalOp }) {
                     <div className="att-svg"><FontAwesomeIcon icon={faPaperclip} />
                         <p>Attachments</p>
                     </div>
-                    {currTask.attachments.map((attac, attIdx) =>
-                        <div key={attIdx} className="attachments-container">
+                    {currTask.attachments.map((attac, attIdx) => (
+                        <div key={attIdx} className="attachments-container" >
                             <div className="att-src">
                                 <Color crossOrigin="anonymous" src={attac.src} format="hex">
                                     {({ data, loading }) => {
                                         if (loading) return <div className="att-loader"><img src={smallLoader} alt="" /></div>;
-                                        return (<div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src})` }} alt="photo" />)
+                                        return ((attac.src.endsWith('.pdf')) ? <div className="attachment-img-pdf" alt="docx"></div> : <div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src})` }} alt="photo" />)
                                     }}
                                 </Color>
                             </div>
@@ -322,6 +336,7 @@ export function TaskModal({ taskModalOp }) {
                                 </div>
                                 <div className="att-btns">
                                     <button onClick={(ev) => { setAttNameModal(!attNameModal); testLog(ev) }}>Edit</button>
+                                    <button onClick={(() => downloadItem(attac.src, attac.title))}>Download</button>
                                     <button onClick={() => onAttRemove(attac._id)}>Delete</button>
                                 </div>
                             </div>
@@ -339,7 +354,7 @@ export function TaskModal({ taskModalOp }) {
                                 </div>
                             </div>}
                         </div>
-                    )}
+                    ))}
                 </section>}
                 <div className="att-svg"><FontAwesomeIcon icon={faComment} />
                     <p>Comments</p>
