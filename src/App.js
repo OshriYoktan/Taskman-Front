@@ -27,12 +27,11 @@ function App() {
         if (loggedinUser) {
             dispatch(login(loggedinUser))
         }
-        console.log('currBackground:', currBackground)
-    }, [currBoard])
+    }, [currBoard, currBackground])
 
     return (
         <Router>
-            <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBoard.background.color } : { backgroundImage: currBoard.background.img ? `url(${currBoard.background.img})` : '' } : { backgroundColor: 'white' } : { backgroundColor: 'white' }}>
+            <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBackground } : { backgroundImage: currBoard.background.img ? `url(${currBackground})` : '' } : { backgroundColor: 'white' } : { backgroundColor: 'white' }}>
                 <AppHeader />
                 <WidgetLoader />
                 <Switch>

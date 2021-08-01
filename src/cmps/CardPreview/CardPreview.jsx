@@ -1,4 +1,4 @@
-import { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { useEffect, useState, forwardRef, useImperativeHandle, useRef } from 'react';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
 import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
@@ -21,11 +21,37 @@ function CardPreview(props, ref) {
     const [tasks, setTasks] = useState(card.tasks)
     const [isAddTask, setIsAddTask] = useState(null)
     const [isEditTitle, setIsEditTitle] = useState(false)
+    const [isCardModal, setIsCardModal] = useState(false)
     var newTask = boardService.getEmptyTask()
 
     useEffect(() => {
         setIsEditTitle(!isEditTitle)
     }, [currBoard])
+
+    const useOnClickOutside = (ref, handler) => {
+        useEffect(
+            () => {
+                const listener = (event) => {
+                    if (!ref.current || ref.current.contains(event.target)) {
+                        return;
+                    }
+                    handler(event);
+                };
+                document.addEventListener("mousedown", listener);
+                document.addEventListener("touchstart", listener);
+                return () => {
+                    document.removeEventListener("mousedown", listener);
+                    document.removeEventListener("touchstart", listener);
+                };
+            },
+            [ref, handler]
+        );
+    }
+
+    const addTaskRef = useRef()
+    useOnClickOutside(addTaskRef, () => setIsAddTask(false));
+    const cardModalRef = useRef()
+    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
 
     useImperativeHandle(ref, () => ({
         async setFromOutside(res) {
@@ -96,6 +122,13 @@ function CardPreview(props, ref) {
         return task.doneAt ? 'white' : ((task.dueDate > Date.now()) ? '#8b95a7' : 'white')
     }
 
+    const taskListHeight = () => {
+        if (isAddTask) return '60vh'
+        if (isCardModal) return '51vh'
+        return '65vh'
+        // isAddTask ? { maxHeight: '60vh' } : { maxHeight: '65vh' }, isCardModal ? { maxHeight: '51vh' } : {}
+    }
+
     return (
         <div className="board-card" onClick={() => cardPreviewOp.setCurrCard(card)}>
             <Droppable droppableId={card._id} key={card._id} type='TASK'>
@@ -105,9 +138,18 @@ function CardPreview(props, ref) {
                             <form onBlur={handleSubmit(setCardTitle)}>
                                 <input type="text" required onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} {...register("cardTitle")} defaultValue={card.title} placeholder="Card name" autoComplete="off" />
                             </form>
-                            <div onClick={(ev) => cardPreviewOp.openCardModal(ev, card)} className="manage-card"><p>⋮</p></div>
+                            <div onClick={() => setIsCardModal(true)} className="manage-card"><p>⋮</p></div>
                         </div>
-                        <ul className="hide-overflow" style={isAddTask ? { maxHeight: '63vh' } : { maxHeight: '65vh' }}>
+                        <div className="card-modal" ref={cardModalRef} style={{ maxWidth: isCardModal ? '100vw' : '0' }, { maxHeight: isCardModal ? '100vw' : '0' }}>
+                            <div>
+                                <h3>Options</h3>
+                                <p className="btn-close-icon" onClick={() => setIsCardModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                            </div>
+                            <div>
+                                <button>Delete Card</button>
+                            </div>
+                        </div>
+                        <ul className="hide-overflow" style={{ maxHeight: taskListHeight() }}>
                             {tasks.map((task, idx) => {
                                 return (
                                     <Draggable key={task._id} draggableId={task._id} index={idx}>
@@ -146,14 +188,13 @@ function CardPreview(props, ref) {
                                         }}</Draggable>)
                             })}</ul>
                         {(!isAddTask && card.title !== 'No search results.') && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
-                        {
-                            isAddTask && <form className="add-task-container" onSubmit={handleSubmit(addTask)}>
-                                <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card" defaultValue={newTask.title} />
-                                <div className="add-task-btns">
-                                    <button>Add Task</button>
-                                    <button onClick={() => setIsAddTask(!isAddTask)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></button>
-                                </div>
-                            </form>
+                        {isAddTask && <form ref={addTaskRef} className="add-task-container" onSubmit={handleSubmit(addTask)}>
+                            <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card" defaultValue={newTask.title} />
+                            <div className="add-task-btns">
+                                <button>Add Task</button>
+                                <button onClick={() => setIsAddTask(!isAddTask)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></button>
+                            </div>
+                        </form>
                         }
                         {provided.placeholder}</div>)
                 }}</Droppable>
