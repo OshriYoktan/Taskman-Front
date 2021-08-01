@@ -16,7 +16,7 @@ export function CoverModal(props) {
                 <p className="btn-close-icon" onClick={() => props.setCoverModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </div>
             <div className="cover-modal-body">
-                    <h3>Colors</h3>
+                <h3>Colors</h3>
                 <div className="cover-color-container">
                     {coverColors.map((color, idx) => <span className="cover-color" key={idx} onClick={() => props.addCover(color)} style={{ backgroundColor: color }}></span>)}
                 </div>
@@ -24,6 +24,7 @@ export function CoverModal(props) {
                     <h3>Attachments</h3>
                     <div className="cover-attachments-container hide-overflow">
                         {props.currTask.attachments.map((attach) => {
+                            if (attach.src.endsWith('pdf')) return
                             return <Color crossOrigin="anonymous" key={attach._id} src={attach.src} format="hex">
                                 {({ data, loading }) => {
                                     if (loading) return <div className="att-loader-cover-modal"><img src={smallLoader} alt="" /></div>;

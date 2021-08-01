@@ -470,6 +470,18 @@
                 background-color: dimgray;
                 width: 150px;
                 height: 110px;
+                cursor: pointer;
+            }
+            .attachment-img-pdf {
+                background-position: 50%;
+                background-size: contain;
+                background-repeat: no-repeat;
+                border-radius: 3px;
+                background-color: dimgray;
+                background-color: #fff;
+                background-image: url("https://www.wisecam.com.br/img/uploads/pdf/pdf-ico.png");
+                width: 150px;
+                height: 110px;
             }
         }
         &:hover {
