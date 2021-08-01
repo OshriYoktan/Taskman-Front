@@ -192,31 +192,6 @@ export function BoardDetails(props) {
         }
     }
 
-    const openCardModal = (ev, card) => {
-        console.log('ev:', ev)
-        // if (ev.target.parentElement.offsetLeft > 800 &&) {
-        if (ev.target.parentElement.offsetLeft > 1300) {
-            if (ev.target.localName === 'p') {
-                setXPosEl(ev.clientX)
-                setYPosEl(ev.target.parentElement.offsetTop + 40)
-            } else {
-                setXPosEl(ev.clientX)
-                setYPosEl(ev.target.offsetTop + 40)
-            }
-        }
-        else {
-            if (ev.target.localName === 'p') {
-                setXPosEl(ev.target.parentElement.offsetLeft)
-                setYPosEl(ev.target.parentElement.offsetTop + 40)
-            } else {
-                setXPosEl(ev.target.offsetLeft)
-                setYPosEl(ev.target.offsetTop + 40)
-            }
-        }
-        setIsCardModal(true)
-        setCardModal(card)
-    }
-
     const closeModal = () => {
         setCardModal(null)
         setIsCardModal(false)
