@@ -8,25 +8,27 @@ import { BoardDetails } from './pages/BoardDetails';
 import { LandingPage } from './pages/LandingPage';
 import { TaskmanApp } from './pages/TaskmanApp';
 import userService from './services/userService';
-import { loadBoards } from './store/actions/boardActions';
+import { loadBoards, setCurrBackground } from './store/actions/boardActions';
 import { loadUsers, login } from './store/actions/userActions';
 
 function App() {
     const dispatch = useDispatch()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
     const background = useSelector(state => state.boardReducer.background)
+    const currBackground = useSelector(state => state.boardReducer.currBackground)
     const loggedinUser = userService.storage.loadUserFromStorage()
 
     useEffect(() => {
         dispatch(loadUsers())
         dispatch(loadBoards())
-    }, [currBoard])
+    }, [])
 
     useEffect(() => {
         if (loggedinUser) {
             dispatch(login(loggedinUser))
         }
-    }, [])
+        console.log('currBackground:', currBackground)
+    }, [currBoard])
 
     return (
         <Router>

@@ -42,6 +42,11 @@ export function updateBackground(background) {
     await dispatch({ type: 'UPDATE_BACKGROUND', background })
   }
 }
+export function setCurrBackground(currBackground) {
+  return async dispatch => {
+    await dispatch({ type: 'SET_BACKGROUND', currBackground })
+  }
+}
 export function updateFilterBy(filterBy) {
   return async dispatch => {
     await dispatch({ type: 'UPDATE_FILTERBY', filterBy })

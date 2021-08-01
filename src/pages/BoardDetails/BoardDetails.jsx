@@ -1,13 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadBoards, saveBoard, setCurrBoard, updateBackground, removeBoard } from '../../store/actions/boardActions'
-import { CardPreview } from '../../cmps/CardPreview'
+import { loadBoards, saveBoard, setCurrBoard, updateBackground, removeBoard, setCurrBackground } from '../../store/actions/boardActions'
+import CardPreview from '../../cmps/CardPreview/CardPreview'
 import { TaskModal } from '../../cmps/TaskModal/TaskModal'
 import { useForm } from "react-hook-form";
 import boardService from '../../services/boardService'
 import Avatar from 'react-avatar';
 import { BoardMenu } from '../../cmps/BoardMenu'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars, faCheckCircle, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { utilService } from '../../services/utilService'
@@ -15,7 +15,7 @@ import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
 import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
-import { login, updateUser } from '../../store/actions/userActions'
+import { updateUser } from '../../store/actions/userActions'
 import userService from '../../services/userService'
 import { useHistory } from 'react-router-dom'
 import { confirmAlert } from 'react-confirm-alert'
@@ -31,9 +31,10 @@ export function BoardDetails(props) {
     const [filter, setFilter] = useState(null)
     const [members, setMembers] = useState(null)
     const ref = useRef()
-    var containerRef = useRef()
+    const containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
+    const fref = useRef()
 
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -90,7 +91,10 @@ export function BoardDetails(props) {
                 addActivityForSockets(activity)
             })
         }
-        if (currBoard) setMembers(currBoard.members)
+        if (currBoard) {
+            setMembers(currBoard.members)
+            dispatch(setCurrBackground(currBoard.background.color ? currBoard.background.color : currBoard.background.img))
+        }
         // eslint-disable-next-line
     }, [currBoard])
 
@@ -178,15 +182,18 @@ export function BoardDetails(props) {
 
     ////////////////////////////////////////////////////////////////////
 
-    const handleOnDragEnd = (result) => {
-        if (!result.destination) return;
-        const items = Array.from(draggedCards);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-        setDraggedCards(items);
-        currBoard.cards = [...items]
-        dispatch(saveBoard(currBoard))
-        setIsScrollOnDradAllowed(true)
+    const handleOnDragEnd = async (res) => {
+        if (!res.destination) return;
+        const { source, destination } = res
+        if (res.type === 'TASK') fref.current.setFromOutside(res)
+        else {
+            const items = Array.from(draggedCards);
+            const [removed] = items.splice(source.index, 1)
+            items.splice(destination.index, 0, removed)
+            setDraggedCards(items);
+            currBoard.cards = [...items]
+            dispatch(saveBoard(currBoard))
+        }
     }
 
     const openCardModal = (ev, card) => {
@@ -306,11 +313,6 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
-        // if (user) {
-        //     if (member._id === user._id) {
-        //         dispatch(login(member))
-        //     }
-        // }
     }
 
     const addNewCard = (data) => {
@@ -359,6 +361,7 @@ export function BoardDetails(props) {
     }
 
     const changeBackground = (background, type) => {
+        console.log('sadasdasdasdas');
         if (type) {
             addActivity(user ? user.username : 'Guest', 'change', 'color')
             dispatch(saveBoard({ ...currBoard, background: { color: background, img: null } }))
@@ -367,7 +370,8 @@ export function BoardDetails(props) {
             addActivity(user ? user.username : 'Guest', 'change', 'image')
             dispatch(saveBoard({ ...currBoard, background: { color: null, img: background } }))
         }
-        setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 100)
+        dispatch(setCurrBackground(background))
+        // setTimeout(() => dispatch(setCurrBoard(currBoard._id)), 150)
     }
 
     const filterTasks = (filterBy) => {
@@ -428,7 +432,6 @@ export function BoardDetails(props) {
         const res = await dispatch(removeBoard(board._id))
         if (!res) return
         else history.push('/boards')
-
     }
 
     if (!currBoard || !draggedCards || !draggedCards || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
@@ -520,56 +523,36 @@ export function BoardDetails(props) {
                     <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                 </div>
             </div>
-            <DragDropContext onDragEnd={handleOnDragEnd} >
-                <Droppable direction="horizontal" droppableId="cards" type="CARD">
-                    {(provided) => (
-                        <div className="cards-container flex" ref={provided.innerRef}>
-                            {isScrollOnDradAllowed ? < div {...provided.droppableProps}  {...events} ref={containerRef} className="cards-container flex">
-                                <div className="flex">
-                                    {draggedCards.map((card, idx) => {
-                                        return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
-                                            {(previewProvider) =>
-                                            (<div key={card._id} onMouseDownCapture={() => setIsScrollOnDradAllowed(false)} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
-                                                <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
-                                            </div>)}
-                                        </Draggable></div>
-                                    })}
-                                    {provided.placeholder}
-                                    {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
-                                    {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                                        <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
-                                        <div className="flex">
-                                            <button>Add Card</button>
-                                            <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+            <div className="cards-container flex">
+                <DragDropContext onDragEnd={(res, type) => handleOnDragEnd(res, type)}>
+                    <div className="flex">
+                        {draggedCards.map((card, idx) => {
+                            return (<Droppable droppableId={card._id} key={card._id} type='CARD' direction="vartical">
+                                {(provided) => {
+                                    return (<div className="test" {...provided.droppableProps} ref={provided.innerRef}>
+                                        <div onMouseDownCapture={() => setIsScrollOnDradAllowed(false)}>
+                                            <Draggable key={card._id} draggableId={card._id} index={idx}>
+                                                {(provided) => {
+                                                    return (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ userSelect: "none", ...provided.draggableProps.style }}>
+                                                        <CardPreview ref={fref} cardPreviewOp={cardPreviewOp} card={card} />
+                                                    </div>)
+                                                }}</Draggable>
                                         </div>
-                                    </form></div>}
-                                </div>
-                            </div> :
-                                < div {...provided.droppableProps} className="cards-container flex">
-                                    <div className="flex">
-                                        {draggedCards.map((card, idx) => {
-                                            return <div className="test" key={card._id}><Draggable key={card._id} draggableId={card._id} index={idx}>
-                                                {(previewProvider) =>
-                                                (<div key={card._id} onMouseOut={() => setIsScrollOnDradAllowed(true)} {...previewProvider.draggableProps} {...previewProvider.dragHandleProps} ref={previewProvider.innerRef}>
-                                                    <CardPreview key={card._id} cardPreviewOp={cardPreviewOp} card={card}></CardPreview>
-                                                </div>)}
-                                            </Draggable></div>
-                                        })}
                                         {provided.placeholder}
-                                        {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
-                                        {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                                            <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
-                                            <div className="flex">
-                                                <button>Add Card</button>
-                                                <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
-                                            </div>
-                                        </form></div>}
-                                    </div>
-                                </div>}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
+                                    </div>)
+                                }}</Droppable>)
+                        })}
+                        {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
+                        {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
+                            <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
+                            <div className="flex">
+                                <button>Add Card</button>
+                                <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+                            </div>
+                        </form></div>}
+                    </div>
+                </DragDropContext>
+            </div>
             {isCardModal && <div ref={cardModalRef} style={{ left: `${xPosEl}px`, top: `${yPosEl}px` }} className="card-modal">
                 <div className="card-modal-header">
                     <h3>{cardModal.title}</h3>

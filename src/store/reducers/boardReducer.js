@@ -2,11 +2,12 @@ const INITIAL_STATE = {
   boards: [],
   currBoard: null,
   background: false,
-  setBackground: null,
+  currBackground: null,
   filterBy: null,
 }
 
 export function boardReducer(state = INITIAL_STATE, action) {
+  console.log('action:', action)
   switch (action.type) {
     case 'SET_BOARDS':
       return {
@@ -30,8 +31,6 @@ export function boardReducer(state = INITIAL_STATE, action) {
       }
     case 'UPDATE_BOARD':
       const { updatedBoard } = action
-      console.log('action:', action)
-      console.log('state.boards:', state.boards)
       return {
         ...state,
         boards: state.boards.map(board => board._id === updatedBoard._id ? updatedBoard : board)
@@ -40,6 +39,11 @@ export function boardReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         background: action.background
+      }
+    case 'SET_BACKGROUND':
+      return {
+        ...state,
+        currBackground: action.currBackground
       }
     case 'UPDATE_FILTERBY':
       return {

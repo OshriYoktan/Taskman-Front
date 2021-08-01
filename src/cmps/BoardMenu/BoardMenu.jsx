@@ -175,7 +175,6 @@ export function BoardMenu({ boardMenuOp }) {
     }
 
     if (!cloudImgs || !currBoard || !labels || !tasks || !activity || !membersTasks) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
-    console.log('membersTasks:', membersTasks)
     currBoard.description = currBoard.description.replace(/ S1P2A3C4E5 /g, '\n')
 
     const dataForMembersChart = {
