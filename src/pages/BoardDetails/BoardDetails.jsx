@@ -27,14 +27,16 @@ export function BoardDetails(props) {
     const users = useSelector(state => state.userReducer.users)
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
-    const [currTask, setCurrTask] = useState(null)
+
     const [filter, setFilter] = useState(null)
     const [members, setMembers] = useState(null)
-    const ref = useRef()
     const containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
     const fref = useRef()
+
+    const [currTask, setCurrTask] = useState(null)
+
 
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -103,18 +105,28 @@ export function BoardDetails(props) {
         // eslint-disable-next-line
     }, [members])
 
-    useOnClickOutside(ref, () => setCurrTask(false));
+
+    const ref = useRef() //open and close taslModal
+    useOnClickOutside(ref, () => (!fullImg) ? setCurrTask(false) : undefined); //open and close taslModal
+
     const [isMenu, setIsMenu] = useState(false)
     const menuRef = useRef()
     useOnClickOutside(menuRef, () => setIsMenu(false));
+
     const [cardModal, setCardModal] = useState(null)
     const cardModalRef = useRef()
     useOnClickOutside(cardModalRef, () => setIsCardModal(false));
+
+    const [isInvite, setIsInvite] = useState(null)
     const inviteRef = useRef()
     useOnClickOutside(inviteRef, () => setIsInvite(false));
+
+    const [fullImg, setFullImg] = useState(null)
+    const fullImgRef = useRef()
+    useOnClickOutside(fullImgRef, () => setFullImg(null));
+
     const [isAddCard, setIsAddCard] = useState(null)
     const [draggedCards, setDraggedCards] = useState((currBoard?.cards) ? currBoard.cards : null)
-    const [isInvite, setIsInvite] = useState(null)
     const [isCardModal, setIsCardModal] = useState(null)
     const [xPosEl, setXPosEl] = useState(null)
     const [yPosEl, setYPosEl] = useState(null)
@@ -361,7 +373,6 @@ export function BoardDetails(props) {
     }
 
     const changeBackground = (background, type) => {
-        console.log('sadasdasdasdas');
         if (type) {
             addActivity(user ? user.username : 'Guest', 'change', 'color')
             dispatch(saveBoard({ ...currBoard, background: { color: background, img: null } }))
@@ -465,7 +476,8 @@ export function BoardDetails(props) {
         addDueDate,
         addCover,
         currBoard: currBoard,
-        user
+        user,
+        setFullImg
     }
 
     return (
@@ -562,7 +574,11 @@ export function BoardDetails(props) {
                     <button onClick={deleteCard}>Delete Card</button>
                 </div>
             </div>}
-            {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
+            {(currTask || fullImg) && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
+            {fullImg && currTask && <div className="img-full-screen-bgc">
+                <h2 className="img-name-full-screen">{fullImg.name}</h2>
+                <img className="img-full-screen" ref={fullImgRef} src={fullImg.imgSrc} />
+            </div>}
         </div >
     )
 }

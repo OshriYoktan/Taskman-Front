@@ -84,6 +84,7 @@ export function TaskModal({ taskModalOp }) {
     const [drawNoteModal, setDrawNoteModal] = useState(false)
     const drawNoteRef = useRef()
     useOnClickOutside(drawNoteRef, () => setDrawNoteModal(false));
+
     //--------------------------------------------------------------------\\
 
     var descValue;
@@ -207,6 +208,10 @@ export function TaskModal({ taskModalOp }) {
             })
             .catch(console.error);
     }
+    const toggleFullImg = (imgSrc, name = 'photo') => {
+        const imgDetails = { imgSrc, name }
+        taskModalOp.setFullImg(imgDetails)
+    }
     const onDeleteTask = () => {
         confirmAlert({
             title: 'Confirm to submit',
@@ -325,7 +330,7 @@ export function TaskModal({ taskModalOp }) {
                                 <Color crossOrigin="anonymous" src={attac.src} format="hex">
                                     {({ data, loading }) => {
                                         if (loading) return <div className="att-loader"><img src={smallLoader} alt="" /></div>;
-                                        return ((attac.src.endsWith('.pdf')) ? <div className="attachment-img-pdf" alt="docx"></div> : <div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src})` }} alt="photo" />)
+                                        return ((attac.src.endsWith('.pdf')) ? <div className="attachment-img-pdf" alt="docx"></div> : <div className="attachment-img" style={{ backgroundColor: data, backgroundImage: `url(${attac.src})` }} onClick={() => toggleFullImg(attac.src, attac.title)} alt="photo" />)
                                     }}
                                 </Color>
                             </div>
