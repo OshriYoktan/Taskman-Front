@@ -112,8 +112,6 @@ export function BoardDetails(props) {
     const [isMenu, setIsMenu] = useState(false)
     const menuRef = useRef()
     useOnClickOutside(menuRef, () => setIsMenu(false));
-    const cardModalRef = useRef()
-    useOnClickOutside(cardModalRef, () => setIsCardModal(false));
 
     const [isInvite, setIsInvite] = useState(null)
     const inviteRef = useRef()
@@ -201,36 +199,6 @@ export function BoardDetails(props) {
             currBoard.cards = [...items]
             dispatch(saveBoard(currBoard))
         }
-    }
-
-    const openCardModal = (ev, card) => {
-        console.log('ev:', ev)
-        // if (ev.target.parentElement.offsetLeft > 800 &&) {
-        if (ev.target.parentElement.offsetLeft > 1300) {
-            if (ev.target.localName === 'p') {
-                setXPosEl(ev.clientX)
-                setYPosEl(ev.target.parentElement.offsetTop + 40)
-            } else {
-                setXPosEl(ev.clientX)
-                setYPosEl(ev.target.offsetTop + 40)
-            }
-        }
-        else {
-            if (ev.target.localName === 'p') {
-                setXPosEl(ev.target.parentElement.offsetLeft)
-                setYPosEl(ev.target.parentElement.offsetTop + 40)
-            } else {
-                setXPosEl(ev.target.offsetLeft)
-                setYPosEl(ev.target.offsetTop + 40)
-            }
-        }
-        setIsCardModal(true)
-        setCardModal(card)
-    }
-
-    const closeModal = () => {
-        setCardModal(null)
-        setIsCardModal(false)
     }
 
     const setBoardTitle = (data) => {
@@ -370,7 +338,6 @@ export function BoardDetails(props) {
                         addActivity(user ? user.username : 'Guest', 'deleted', 'card')
                         setDraggedCards(currBoard.cards)
                         dispatch(saveBoard(boardToSave))
-                        closeModal()
                     }
                 },
                 {
@@ -456,8 +423,6 @@ export function BoardDetails(props) {
     if (!currBoard || !draggedCards || !draggedCards || !members) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const cardPreviewOp = {
-        openCardModal,
-        closeModal,
         addActivity,
         setCurrCard,
         setCurrTask,
@@ -573,7 +538,11 @@ export function BoardDetails(props) {
                     </div>
                 </DragDropContext>
             </div>
-            {currTask && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
+            {(currTask || fullImg) && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
+            {fullImg && currTask && <div className="img-full-screen-bgc">
+                <h2 className="img-name-full-screen">{fullImg.name}</h2>
+                <img className="img-full-screen" ref={fullImgRef} src={fullImg.imgSrc} />
+            </div>}
         </div >
     )
 }
