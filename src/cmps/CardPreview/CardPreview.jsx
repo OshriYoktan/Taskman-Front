@@ -145,7 +145,7 @@ function CardPreview(props, ref) {
                         <div className="card-modal" ref={cardModalRef} style={{ maxWidth: isCardModal ? '100vw' : '0' }, { maxHeight: isCardModal ? '100vw' : '0' }}>
                             <button>Delete Card</button>
                         </div>
-                        <ul className="hide-overflow" style={{  maxHeight: taskListHeight() }}>
+                        <ul className="hide-overflow" style={{ maxHeight: taskListHeight() }}>
                             {tasks.map((task, idx) => {
                                 return (
                                     <Draggable key={task._id} draggableId={task._id} index={idx}>
