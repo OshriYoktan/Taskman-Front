@@ -27,7 +27,7 @@ export function BoardDetails(props) {
     const users = useSelector(state => state.userReducer.users)
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
-
+    const [errMsg, setErrMsg] = useState(null)
     const [filter, setFilter] = useState(null)
     const [members, setMembers] = useState(null)
     const containerRef = useRef()
@@ -231,6 +231,12 @@ export function BoardDetails(props) {
     }
 
     const removeUserFromBoard = (id) => {
+        const isMemberInTasks = findMemberToDelete(id)
+        if (isMemberInTasks) {
+            setErrMsg('Cannot remove member. \n Member is currently on a task\\s.')
+            setTimeout(() => setErrMsg(null), 3000)
+            return
+        }
         const idx = currBoard.members.findIndex(member => member._id === id)
         members.splice(idx, 1)
         setMembers([...members])
@@ -301,6 +307,18 @@ export function BoardDetails(props) {
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
         dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
+    }
+
+    const findMemberToDelete = (memberId) => {
+        let isMember = false
+        currBoard.cards.forEach(card => {
+            card.tasks.forEach(task => {
+                task.members.forEach(m => {
+                    if (m._id === memberId) isMember = true
+                })
+            })
+        })
+        return isMember;
     }
 
     const addNewCard = (data) => {
@@ -543,6 +561,9 @@ export function BoardDetails(props) {
                 <h2 className="img-name-full-screen">{fullImg.name}</h2>
                 <img className="img-full-screen" ref={fullImgRef} src={fullImg.imgSrc} />
             </div>}
-        </div >
+            <section className="err-modal" style={{ maxWidth: errMsg ? '100vw' : '0' }}>
+                <p>{errMsg}</p>
+            </section>
+        </div>
     )
 }

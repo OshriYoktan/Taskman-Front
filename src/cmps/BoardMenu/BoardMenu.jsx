@@ -150,14 +150,12 @@ export function BoardMenu({ boardMenuOp }) {
             if (task.doneAt) tasksProgress.completed.push(task)
             else if (!task.dueDate) tasksProgress.inProgress.push(task)
             else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
-            console.log('task.members:', task.members)
             task.members.forEach(m => {
                 if (!membersTasks.names.includes(m.name)) {
                     membersTasks.names.push(m.name)
                 }
             })
         })
-        console.log('membersTasks.names:', membersTasks.names)
     })
 
     const dataForMembersChart = {
