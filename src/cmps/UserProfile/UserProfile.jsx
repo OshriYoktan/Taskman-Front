@@ -78,14 +78,14 @@ export function UserProfile({ profileOp }) {
                     <Avatar name={user.name} size="40" round={true} />
                     <p>{user.username}</p>
                 </div>
-                <div className="hide-overflow">
+                {/* <div className="hide-overflow">
                     <p>{user.tasks.length ? 'Tasks:' : 'No tasks assigned.'}</p>
                     {!user.tasks.length ? null : <p>{user.tasks.length} tasks.</p>}
                     <ul>
                         {user.tasks ? null : <li>{user.tasks.length}</li>}
                         {!user.tasks.length ? null : user.tasks.map(task => <li key={task._id}>{task.title}</li>)}
                     </ul>
-                </div>
+                </div> */}
                 <div>
                     <button onClick={onLogout}>Logout</button>
                 </div>

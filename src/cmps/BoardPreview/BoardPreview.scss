@@ -27,9 +27,9 @@
             width: 80%;
         }
         h4 {
+            font-size: 22px;
             font-weight: 600;
             letter-spacing: 0.04rem;
-            color: white;
             filter: invert(100%);
             -webkit-filter: invert(100%);
             transition: 0.3s;
@@ -50,6 +50,12 @@
     &:hover {
         opacity: 1;
         filter: grayscale(0);
+        transform: translateY(-5%);
+        > :first-child {
+            h4 {
+                font-size: 25px;
+            }
+        }
     }
 }
 

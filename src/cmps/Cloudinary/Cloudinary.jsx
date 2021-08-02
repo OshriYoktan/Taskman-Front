@@ -1,7 +1,7 @@
 import { Widget } from 'react-cloudinary-upload-widget'
 import { useDispatch, useSelector } from 'react-redux'
 import { utilService } from '../../services/utilService'
-import { saveBoard, setCurrBoard } from '../../store/actions/boardActions'
+import { saveBoard, setCurrBackground, setCurrBoard } from '../../store/actions/boardActions'
 import './Cloudinary.scss'
 
 export function Cloudinary({ type, txt, currTask, setCloudImgs, cloudOp }) {
@@ -18,7 +18,7 @@ export function Cloudinary({ type, txt, currTask, setCloudImgs, cloudOp }) {
             currBoard.images.unshift(res.info.secure_url)
             setCloudImgs(currBoard.images)
             dispatch(saveBoard(currBoard))
-            dispatch(setCurrBoard(currBoard._id))
+            dispatch(setCurrBackground(res.info.secure_url))
         }
         else {
             newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url, createdAt: Date.now() }

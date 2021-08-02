@@ -24,11 +24,18 @@ function App() {
     }, [])
 
     useEffect(() => {
+        dispatch(setCurrBackground(null))
+    }, [background])
+
+    useEffect(() => {
         if (loggedinUser) {
             dispatch(login(loggedinUser))
         }
-    }, [currBoard, currBackground])
+    }, [currBoard])
 
+    // console.log('currBoard:', currBoard)
+    // console.log('background:', background)
+    // console.log('currBackground:', currBackground)
     return (
         <Router>
             <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBackground } : { backgroundImage: currBoard.background.img ? `url(${currBackground})` : '' } : { backgroundColor: 'white' } : { backgroundColor: 'white' }}>
