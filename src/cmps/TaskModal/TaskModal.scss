@@ -468,6 +468,7 @@
         width: 90%;
         margin-bottom: 15px;
         margin-left: 25px;
+        transition: .3s;
         .att-src {
             .attachment-img {
                 background-position: 50%;
@@ -478,6 +479,10 @@
                 width: 150px;
                 height: 110px;
                 cursor: pointer;
+                transition: .3s;
+                &:hover {
+                    filter: brightness(85%)
+                }
             }
             .attachment-img-pdf {
                 background-position: 50%;
@@ -527,6 +532,9 @@
                     align-items: center;
                     &:not(:first-child) {
                         margin-left: 5px;
+                    }
+                    &:hover{
+                        color: white;
                     }
                 }
             }
@@ -594,6 +602,35 @@
             right: 10px;
             top: 20px;
             width: 40%;
+        }
+        .attachments-container {
+            flex-direction: column-reverse;
+            width: 100%;
+            margin-left: 0;
+            > :first-child {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+            > :nth-child(2) {
+                margin-left: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                > :nth-child(2) {
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: center;
+                    > * {
+                        font-size: 11px;
+                    }
+                }
+            }
+            > :nth-child(3) {
+                position: fixed !important;
+                left: 600px !important;
+            }
         }
     }
 }
