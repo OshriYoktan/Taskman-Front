@@ -22,6 +22,7 @@ function CardPreview(props, ref) {
     const [isAddTask, setIsAddTask] = useState(null)
     const [isEditTitle, setIsEditTitle] = useState(false)
     const [isCardModal, setIsCardModal] = useState(false)
+    const [isLabels, setIsLabels] = useState(false)
     var newTask = boardService.getEmptyTask()
 
     useEffect(() => {
@@ -86,9 +87,10 @@ function CardPreview(props, ref) {
         dispatch(saveBoard(boardToUpdate))
     }
 
-    const labelsDescToggle = (ev, bool) => {
+    const labelsDescToggle = (ev) => {
         ev.stopPropagation()
-        cardPreviewOp.setIsDescShown(bool)
+        cardPreviewOp.setIsDescShown(!cardPreviewOp.isDescShown)
+        // setIsLabels(!isLabels)
     }
 
     const doneAtToggle = (ev, task) => {
@@ -150,11 +152,19 @@ function CardPreview(props, ref) {
                                 return (
                                     <Draggable key={task._id} draggableId={task._id} index={idx}>
                                         {(provided, snapshot) => {
-                                            return (<li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{filter: snapshot.isDragging ? 'brightness(90%)' : 'brightness(100%)' ,...provided.draggableProps.style }} className="card-task">
+                                            return (<li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ filter: snapshot.isDragging ? 'brightness(90%)' : 'brightness(100%)', ...provided.draggableProps.style }} className="card-task">
                                                 {(!task.cover) ? null : (task.cover.includes('#')) ? <div className="task-cover-color" style={{ backgroundColor: `${task.cover}` }} ></div> : <div className="task-cover-img" style={{ backgroundImage: `url(${task.cover})` }}></div>}
                                                 <div className="label-color-to-preview-container">
-                                                    {!cardPreviewOp.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, true)}></label>)}
-                                                    {cardPreviewOp.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, false)}>{label.desc}</label>)}
+                                                    {/* {!cardPreviewOp.isDescShown && task.labels.map((label, idx) =>
+                                                        <label key={idx} className="label-color-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, true)}></label>
+                                                    )}
+                                                    {cardPreviewOp.isDescShown && task.labels.map((label, idx) =>
+                                                        <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, false)}>{label.desc}</label>
+                                                    )} */}
+                                                    {task.labels.map((label, idx) =>
+                                                        // <label key={idx} className="label-color-open-to-preview" style={{ backgroundColor: `${label.color}`, maxWidth: isLabels ? '100%' : '40px', overflow: 'hidden', maxHeight: isLabels ? '100%' : '8px', overflow: 'hidden' }} onClick={(ev) => labelsDescToggle(ev)}><span style={{ opacity: isLabels ? '1' : '0' }}>{label.desc}</span></label>
+                                                        <label key={idx} className="label-color-open-to-preview" style={cardPreviewOp.isDescShown ? { maxWidth: '100%', maxHeight: '100%', backgroundColor: `${label.color}` } : { maxWidth: '40px', maxHeight: '8px', backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev)}><span style={{ opacity: cardPreviewOp.isDescShown ? '1' : '0', transition: '1s', maxWidth: cardPreviewOp.isDescShown ? '100%' : '0', maxHeight: cardPreviewOp.isDescShown ? '100%' : '0' }}>{label.desc}</span></label>
+                                                    )}
                                                 </div>
                                                 <span>{task.title}</span>
                                                 <section className="container-of-all">
@@ -186,13 +196,15 @@ function CardPreview(props, ref) {
                             {provided.placeholder}
                         </ul>
                         {(!isAddTask && card.title !== 'No search results.') && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
-                        {isAddTask && <form ref={addTaskRef} className="add-task-container" onSubmit={handleSubmit(addTask)}>
-                            <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card" defaultValue={newTask.title} />
-                            <div className="add-task-btns">
-                                <button>Add Task</button>
-                                <button onClick={() => setIsAddTask(!isAddTask)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></button>
-                            </div>
-                        </form>}
+                        {
+                            isAddTask && <form ref={addTaskRef} className="add-task-container" onSubmit={handleSubmit(addTask)}>
+                                <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card" defaultValue={newTask.title} />
+                                <div className="add-task-btns">
+                                    <button>Add Task</button>
+                                    <button onClick={() => setIsAddTask(!isAddTask)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></button>
+                                </div>
+                            </form>
+                        }
                     </div>)
                 }}</Droppable>
         </div >

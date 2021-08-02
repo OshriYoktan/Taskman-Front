@@ -83,6 +83,8 @@
             margin: 0 4px 4px 0;
             cursor: pointer;
             font-size: 12px;
+            overflow: hidden;
+            transition: 1s;
         }
     }
     .task-cover-color {
