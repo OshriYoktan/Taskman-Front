@@ -139,7 +139,7 @@ function CardPreview(props, ref) {
                             </form>
                             <div onClick={() => {
                                 setIsCardModal(true)
-                                // setTimeout(() => setIsCardModal(false), 3000)
+                                setTimeout(() => setIsCardModal(false), 3000)
                             }} className="manage-card"><p>⋮</p></div>
                         </div>
                         <div className="card-modal" ref={cardModalRef} style={{ maxWidth: isCardModal ? '100vw' : '0' }, { maxHeight: isCardModal ? '100vw' : '0' }}>
