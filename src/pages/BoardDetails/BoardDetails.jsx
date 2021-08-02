@@ -34,7 +34,6 @@ export function BoardDetails(props) {
     const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
     const fref = useRef()
-
     const [currTask, setCurrTask] = useState(null)
 
 
@@ -334,7 +333,15 @@ export function BoardDetails(props) {
     }
 
     const deleteCard = () => {
-        confirmAlert({
+        if (!user) {
+            setErrMsg('Please login to delete this card')
+            setTimeout(() => setErrMsg(null), 3000)
+        }
+        else if (user.username !== 'avivzo9' && user.username !== 'hadarMa' && user.username !== 'OshYok') {
+            setErrMsg('You are not authorized to delete this card. Only the creator of this board can delete it.')
+            setTimeout(() => setErrMsg(null), 3000)
+        }
+        else confirmAlert({
             title: 'Confirm to submit',
             message: 'Are you sure want to delete this card?',
             buttons: [
@@ -353,6 +360,7 @@ export function BoardDetails(props) {
                                 })
                             }
                         })
+                        setCurrCard(null)
                         addActivity(user ? user.username : 'Guest', 'deleted', 'card')
                         setDraggedCards(currBoard.cards)
                         dispatch(saveBoard(boardToSave))
@@ -446,6 +454,7 @@ export function BoardDetails(props) {
         setCurrTask,
         isDescShown,
         setIsDescShown,
+        deleteCard
     }
 
     const boardMenuOp = {
