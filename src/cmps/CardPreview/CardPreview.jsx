@@ -149,8 +149,8 @@ function CardPreview(props, ref) {
                             {tasks.map((task, idx) => {
                                 return (
                                     <Draggable key={task._id} draggableId={task._id} index={idx}>
-                                        {(provided) => {
-                                            return (<li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ ...provided.draggableProps.style }} className="card-task">
+                                        {(provided, snapshot) => {
+                                            return (<li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{filter: snapshot.isDragging ? 'brightness(90%)' : 'brightness(100%)' ,...provided.draggableProps.style }} className="card-task">
                                                 {(!task.cover) ? null : (task.cover.includes('#')) ? <div className="task-cover-color" style={{ backgroundColor: `${task.cover}` }} ></div> : <div className="task-cover-img" style={{ backgroundImage: `url(${task.cover})` }}></div>}
                                                 <div className="label-color-to-preview-container">
                                                     {!cardPreviewOp.isDescShown && task.labels.map((label, idx) => <label key={idx} className="label-color-to-preview" style={{ backgroundColor: `${label.color}` }} onClick={(ev) => labelsDescToggle(ev, true)}></label>)}

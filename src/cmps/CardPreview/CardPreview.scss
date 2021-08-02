@@ -35,7 +35,6 @@
             }
         }
         ul {
-            
             overflow: auto;
             margin-block-start: 0;
             margin-block-end: 0;
@@ -52,9 +51,6 @@
                 font-size: 14px;
                 > span {
                     white-space: break-spaces;
-                }
-                &:hover {
-                    filter: brightness(90%);
                 }
             }
         }

@@ -10,7 +10,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { utilService } from '../../services/utilService'
 import { PolarArea, Bar } from 'react-chartjs-2';
 import { Cloudinary } from '../Cloudinary/Cloudinary'
-import userService from '../../services/userService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -28,22 +27,9 @@ export function BoardMenu({ boardMenuOp }) {
     const [cloudImgs, setCloudImgs] = useState(null)
     const [activity, setActivity] = useState(null)
     const [msg, setMsg] = useState(null)
-    const [tasks, setTasks] = useState(null)
     const [isAddLabel, setIsAddLabel] = useState(false)
-    const [membersTasks, setMembersTasks] = useState(null)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
     const colors = ['lightgreen', 'lightyellow', 'lightblue', 'orange', 'slateblue', 'lightpink', 'lightgray', 'white']
-
-    const tasksProgress = {
-        inProgress: [],
-        overdue: [],
-        completed: []
-    }
-
-    const tasksLeng = {
-        names: [],
-        tasks: []
-    }
 
     useEffect(async () => {
         setCloudImgs(currBoard.images)
@@ -57,8 +43,6 @@ export function BoardMenu({ boardMenuOp }) {
     useEffect(() => {
         setLabels(currBoard.labels)
         setActivity(currBoard.activity)
-        membersTaskLength()
-        setStatistics()
     }, [currBoard])
 
     const onSearchTask = data => {
@@ -128,17 +112,6 @@ export function BoardMenu({ boardMenuOp }) {
         reset()
     }
 
-    const membersTaskLength = async () => {
-        const membersLength = []
-        await currBoard.members.forEach(async m => {
-            const member = await userService.getUserById(m._id)
-            tasksLeng.names.push(member.name)
-            tasksLeng.tasks.push(member.tasks.length)
-            membersLength.push(member.tasks.length);
-        })
-        setTasks(membersLength)
-    }
-
     const onDeleteBoard = () => {
         if (!user) setMsg('Please login to delete this board')
         else if (user.username !== 'avivzo9' && user.username !== 'hadarMa' && user.username !== 'OshYok') setMsg('You are not authorized to delete this board. Only the creator of this board can delete it.')
@@ -158,24 +131,34 @@ export function BoardMenu({ boardMenuOp }) {
         });
     }
 
-    const setStatistics = async () => {
-        await currBoard.members.forEach(async m => {
-            const member = await userService.getUserById(m._id)
-            tasksLeng.names.push(member.name)
-            tasksLeng.tasks.push(member.tasks.length)
-        })
-        currBoard.cards.forEach(card => {
-            card.tasks.forEach(task => {
-                if (task.doneAt) tasksProgress.completed.push(task)
-                else if (!task.dueDate) tasksProgress.inProgress.push(task)
-                else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
-            })
-        })
-        setMembersTasks(tasksLeng)
+    if (!cloudImgs || !currBoard || !labels || !activity) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
+    currBoard.description = currBoard.description.replace(/ S1P2A3C4E5 /g, '\n')
+
+    const tasksProgress = {
+        inProgress: [],
+        overdue: [],
+        completed: []
     }
 
-    if (!cloudImgs || !currBoard || !labels || !tasks || !activity || !membersTasks) return (<div className="board-menu-loader"><img src={loader} alt="" /></div>)
-    currBoard.description = currBoard.description.replace(/ S1P2A3C4E5 /g, '\n')
+    const membersTasks = {
+        names: [],
+        tasks: []
+    }
+
+    currBoard.cards.forEach(card => {
+        card.tasks.forEach(task => {
+            if (task.doneAt) tasksProgress.completed.push(task)
+            else if (!task.dueDate) tasksProgress.inProgress.push(task)
+            else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
+            console.log('task.members:', task.members)
+            task.members.forEach(m => {
+                if (!membersTasks.names.includes(m.name)) {
+                    membersTasks.names.push(m.name)
+                }
+            })
+        })
+        console.log('membersTasks.names:', membersTasks.names)
+    })
 
     const dataForMembersChart = {
         labels: membersTasks.names,
