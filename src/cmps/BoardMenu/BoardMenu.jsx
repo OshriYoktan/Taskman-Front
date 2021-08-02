@@ -140,31 +140,34 @@ export function BoardMenu({ boardMenuOp }) {
         completed: []
     }
 
-    const membersTasks = {
-        names: [],
-        tasks: []
-    }
+    const memberNameList = []
+    const memberListIdx = currBoard.members.map((member) => {
+        memberNameList.push(member.name)
+        return 0
+    })
+
 
     currBoard.cards.forEach(card => {
         card.tasks.forEach(task => {
             if (task.doneAt) tasksProgress.completed.push(task)
             else if (!task.dueDate) tasksProgress.inProgress.push(task)
             else task.dueDate > Date.now() ? tasksProgress.inProgress.push(task) : tasksProgress.overdue.push(task)
-            console.log('task.members:', task.members)
             task.members.forEach(m => {
-                if (!membersTasks.names.includes(m.name)) {
-                    membersTasks.names.push(m.name)
-                }
+                memberNameList.forEach((mem, idx) => {
+                    if (m.name === mem) {
+                        memberListIdx[idx]++
+                    }
+                })
+
             })
         })
-        console.log('membersTasks.names:', membersTasks.names)
     })
 
     const dataForMembersChart = {
-        labels: membersTasks.names,
+        labels: memberNameList,
         datasets: [{
             label: 'Members',
-            data: membersTasks.tasks,
+            data: memberListIdx,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.7)',
                 'rgba(75, 192, 192, 0.7)',
