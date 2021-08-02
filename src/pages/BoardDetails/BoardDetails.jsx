@@ -522,8 +522,8 @@ export function BoardDetails(props) {
                                                         <CardPreview ref={fref} cardPreviewOp={cardPreviewOp} card={card} />
                                                     </div>)
                                                 }}</Draggable>
+                                            {provided.placeholder}
                                         </div>
-                                        {provided.placeholder}
                                     </div>)
                                 }}</Droppable>)
                         })}
