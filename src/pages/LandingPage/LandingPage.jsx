@@ -13,9 +13,10 @@ export function LandingPage() {
 
     return (
         <section className="sub-container landing-page-container">
+            
             <div className="landing-page-section">
                 <div>
-                    <h3>T<span>a</span>skm<span>a</span>n</h3>
+                    <h3>Taskman</h3>
                     <p>Taskman helps teams move work forward.
                         Collaborate, manage projects, and reach new productivity peaks. From high rises to the home office, the way your team works is unique-accomplish it all with Taskman.</p>
                 </div>
@@ -48,7 +49,7 @@ export function LandingPage() {
                 <Link to="/boards" className="link">Try Taskman!</Link>
             </div>
             <div className="landing-page-header">
-                <Link to="/boards" className="link">T<span>a</span>skm<span>a</span>n</Link>
+                <Link to="/boards" className="link">Task<span>man</span></Link>
             </div>
         </section>
     )

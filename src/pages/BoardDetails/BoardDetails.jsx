@@ -138,6 +138,7 @@ export function BoardDetails(props) {
 
     const updateTask = data => {
         const updateCard = currBoard.cards.find(c => c._id === data.card._id)
+        console.log('updateCard.tasks:', updateCard.tasks)
         const taskIdx = updateCard.tasks.findIndex(t => t._id === data.task._id)
         updateCard.tasks.splice(taskIdx, 1, data.task)
         dispatch(setCurrBoard(currBoard._id))
@@ -293,6 +294,8 @@ export function BoardDetails(props) {
             currTask.members.splice(memberToRemove, 1)
             addActivity(user ? user.username : 'Guest', 'removed', member.username, currTask.title)
         } else {
+            // console.log('currTask.title:', currTask.title)
+            // console.log('member.tasks:', member.tasks)
             member.tasks.push({ _id: utilService.makeId(), title: currTask.title })
             currTask.members.push(member)
             addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
