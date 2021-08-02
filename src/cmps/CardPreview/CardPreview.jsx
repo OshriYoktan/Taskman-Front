@@ -145,7 +145,7 @@ function CardPreview(props, ref) {
                         <div className="card-modal" ref={cardModalRef} style={{ maxWidth: isCardModal ? '100vw' : '0' }, { maxHeight: isCardModal ? '100vw' : '0' }}>
                             <button>Delete Card</button>
                         </div>
-                        <ul className="hide-overflow" style={{ maxHeight: taskListHeight() }}>
+                        <ul className="hide-overflow" style={{  maxHeight: taskListHeight() }}>
                             {tasks.map((task, idx) => {
                                 return (
                                     <Draggable key={task._id} draggableId={task._id} index={idx}>
@@ -182,7 +182,9 @@ function CardPreview(props, ref) {
                                                 </section>
                                             </li>)
                                         }}</Draggable>)
-                            })}</ul>
+                            })}
+                            {provided.placeholder}
+                        </ul>
                         {(!isAddTask && card.title !== 'No search results.') && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
                         {isAddTask && <form ref={addTaskRef} className="add-task-container" onSubmit={handleSubmit(addTask)}>
                             <input type="text" id="title" name="title" autoComplete="off" required {...register("newTask")} placeholder="Enter a title for this card" defaultValue={newTask.title} />
@@ -190,9 +192,8 @@ function CardPreview(props, ref) {
                                 <button>Add Task</button>
                                 <button onClick={() => setIsAddTask(!isAddTask)} className="btn-close-icon"><FontAwesomeIcon className="fa" icon={faTimes} /></button>
                             </div>
-                        </form>
-                        }
-                        {provided.placeholder}</div>)
+                        </form>}
+                    </div>)
                 }}</Droppable>
         </div >
     )

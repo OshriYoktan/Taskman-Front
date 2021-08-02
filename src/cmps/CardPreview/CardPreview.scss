@@ -35,10 +35,12 @@
             }
         }
         ul {
+            
             overflow: auto;
             margin-block-start: 0;
             margin-block-end: 0;
             li {
+                list-style: none;
                 background-color: #f4f5f7;
                 margin: 10px 0;
                 height: 100%;
