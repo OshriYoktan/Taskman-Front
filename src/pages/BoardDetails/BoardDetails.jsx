@@ -27,14 +27,13 @@ export function BoardDetails(props) {
     const users = useSelector(state => state.userReducer.users)
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
-
+    const [errMsg, setErrMsg] = useState(null)
     const [filter, setFilter] = useState(null)
     const [members, setMembers] = useState(null)
     const containerRef = useRef()
     const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
     const fref = useRef()
-
     const [currTask, setCurrTask] = useState(null)
 
 
@@ -232,6 +231,12 @@ export function BoardDetails(props) {
     }
 
     const removeUserFromBoard = (id) => {
+        const isMemberInTasks = findMemberToDelete(id)
+        if (isMemberInTasks) {
+            setErrMsg('Cannot remove member. \n Member is currently on a task\\s.')
+            setTimeout(() => setErrMsg(null), 3000)
+            return
+        }
         const idx = currBoard.members.findIndex(member => member._id === id)
         members.splice(idx, 1)
         setMembers([...members])
@@ -306,6 +311,18 @@ export function BoardDetails(props) {
         dispatch(updateUser(member))
     }
 
+    const findMemberToDelete = (memberId) => {
+        let isMember = false
+        currBoard.cards.forEach(card => {
+            card.tasks.forEach(task => {
+                task.members.forEach(m => {
+                    if (m._id === memberId) isMember = true
+                })
+            })
+        })
+        return isMember;
+    }
+
     const addNewCard = (data) => {
         var newCard = boardService.getEmptyCard()
         newCard.title = data.newCardTitle
@@ -319,7 +336,15 @@ export function BoardDetails(props) {
     }
 
     const deleteCard = () => {
-        confirmAlert({
+        if (!user) {
+            setErrMsg('Please login to delete this card')
+            setTimeout(() => setErrMsg(null), 3000)
+        }
+        else if (user.username !== 'avivzo9' && user.username !== 'hadarMa' && user.username !== 'OshYok') {
+            setErrMsg('You are not authorized to delete this card. Only the creator of this board can delete it.')
+            setTimeout(() => setErrMsg(null), 3000)
+        }
+        else confirmAlert({
             title: 'Confirm to submit',
             message: 'Are you sure want to delete this card?',
             buttons: [
@@ -338,6 +363,7 @@ export function BoardDetails(props) {
                                 })
                             }
                         })
+                        setCurrCard(null)
                         addActivity(user ? user.username : 'Guest', 'deleted', 'card')
                         setDraggedCards(currBoard.cards)
                         dispatch(saveBoard(boardToSave))
@@ -431,6 +457,7 @@ export function BoardDetails(props) {
         setCurrTask,
         isDescShown,
         setIsDescShown,
+        deleteCard
     }
 
     const boardMenuOp = {
@@ -546,6 +573,9 @@ export function BoardDetails(props) {
                 <h2 className="img-name-full-screen">{fullImg.name}</h2>
                 <img className="img-full-screen" ref={fullImgRef} src={fullImg.imgSrc} />
             </div>}
-        </div >
+            <section className="err-modal" style={{ maxWidth: errMsg ? '100vw' : '0' }}>
+                <p>{errMsg}</p>
+            </section>
+        </div>
     )
 }

@@ -64,6 +64,7 @@ export function BoardMenu({ boardMenuOp }) {
 
     const saveLabels = data => {
         var entries = Object.entries(data)
+        console.log('entries:', entries)
         entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor' && en[0] !== 'boardDesc' && en[0] !== 'searchTask')
         const labels = entries.map((label, idx) => {
             if (!idx) return
@@ -71,10 +72,13 @@ export function BoardMenu({ boardMenuOp }) {
             return { desc: label[1] }
         })
         labels.splice(0, 1)
+        console.log('labels:', labels)
         const arr = []
         labels.forEach((label, idx) => {
             if (idx % 2 === 0) arr.push({ _id: utilService.makeId(), desc: label.desc, color: labels[idx + 1].color })
         })
+        console.log('labels:', labels)
+        console.log('arr:', arr)
         setLabels(arr)
         dispatch(saveBoard({ ...currBoard, labels: arr }))
     }

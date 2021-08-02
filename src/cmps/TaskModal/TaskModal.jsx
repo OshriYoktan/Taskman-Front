@@ -324,7 +324,7 @@ export function TaskModal({ taskModalOp }) {
                         <p>Attachments</p>
                     </div>
                     {currTask.attachments.map((attac, attIdx) => (
-                        <div key={attIdx} className="attachments-container" >
+                        <div key={attIdx} className="attachments-container">
                             <div className="att-src">
                                 <Color crossOrigin="anonymous" src={attac.src} format="hex">
                                     {({ data, loading }) => {
@@ -336,7 +336,7 @@ export function TaskModal({ taskModalOp }) {
                             <div className="att-details">
                                 <div>
                                     <p>{attac.title || 'Photo'}</p>
-                                    <p>Added Right now!</p>
+                                    <Moment fromNow>{attac.createdAt}</Moment>
                                 </div>
                                 <div className="att-btns">
                                     <button onClick={(ev) => { setAttNameModal(!attNameModal); testLog(ev) }}>Edit</button>

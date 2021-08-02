@@ -26,6 +26,7 @@
                     user-select: none;
                     > * {
                         margin-left: -5%;
+                        margin-bottom: -5%;
                     }
                 }
                 > :nth-child(2) {
@@ -346,6 +347,27 @@
             object-fit: contain;
             z-index: 50;
         }
+    }
+}
+
+.err-modal {
+    position: fixed;
+    top: 5px;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 80px;
+    border-radius: 15px 0 0 15px;
+    text-align: center;
+    background-color: #f4f5f7;
+    font-size: 15px;
+    overflow: hidden;
+    white-space: pre-line;
+    transition: 0.3s;
+    p {
+        padding: 10px;
     }
 }
 

@@ -21,7 +21,7 @@ export function Cloudinary({ type, txt, currTask, setCloudImgs, cloudOp }) {
             dispatch(setCurrBoard(currBoard._id))
         }
         else {
-            newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url }
+            newAtt = { _id: utilService.makeId(), title: res.info.original_filename, src: res.info.secure_url, createdAt: Date.now() }
             currTask.attachments.push(newAtt)
             cloudOp.updateBoard(currTask)
         }
