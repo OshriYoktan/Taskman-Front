@@ -19,8 +19,10 @@
                     max-width: 140px;
                     max-height: 100%;
                     padding: 6px;
-                    overflow: auto;
+                    height: 36px;
+                    overflow-x: auto;
                     margin-left: 20px;
+                    -webkit-user-select: none;
                     user-select: none;
                     > * {
                         margin-left: -5%;
