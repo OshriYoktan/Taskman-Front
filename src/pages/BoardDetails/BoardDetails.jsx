@@ -549,7 +549,7 @@ export function BoardDetails(props) {
                                         <div onMouseDownCapture={() => setIsScrollOnDradAllowed(false)}>
                                             <Draggable key={card._id} draggableId={card._id} index={idx}>
                                                 {(provided, snapshot) => {
-                                                    return (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ filter: snapshot.isDragging ? 'brightness(90%)' : 'brightness(100%)', ...provided.draggableProps.style }}>
+                                                    return (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ ...provided.draggableProps.style }}>
                                                         <CardPreview ref={fref} cardPreviewOp={cardPreviewOp} card={card} />
                                                     </div>)
                                                 }}</Draggable>
