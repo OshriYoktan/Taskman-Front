@@ -188,6 +188,7 @@ function CardPreview(props, ref) {
                                         }}</Draggable>)
                             })}
                             {provided.placeholder}
+                            {provided.placeholder}
                         </ul>
                         {(!isAddTask && card.title !== 'No search results.') && <button className="add-task-btn" onClick={() => setIsAddTask(!isAddTask)}><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add task</button>}
                         {isAddTask && <form ref={addTaskRef} className="add-task-container" onSubmit={handleSubmit(addTask)}>

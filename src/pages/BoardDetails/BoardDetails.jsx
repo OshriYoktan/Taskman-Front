@@ -553,6 +553,7 @@ export function BoardDetails(props) {
                                                     </div>)
                                                 }}</Draggable>
                                             {provided.placeholder}
+                                            {provided.placeholder}
                                         </div>
                                     </div>)
                                 }}</Droppable>)
