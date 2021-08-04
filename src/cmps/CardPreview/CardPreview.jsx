@@ -154,6 +154,7 @@ function CardPreview(props, ref) {
                                             return (<li onClick={() => {
                                                 cardPreviewOp.setCurrTask(task)
                                                 cardPreviewOp.setTaskLabels(task.labels)
+                                                cardPreviewOp.setTaskMembers(task.members)
                                             }
                                             } key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ filter: snapshot.isDragging ? 'brightness(90%)' : 'brightness(100%)', ...provided.draggableProps.style }} className="card-task">
                                                 {(!task.cover) ? null : (task.cover.includes('#')) ? <div className="task-cover-color" style={{ backgroundColor: `${task.cover}` }} ></div> : <div className="task-cover-img" style={{ backgroundImage: `url(${task.cover})` }}></div>}
