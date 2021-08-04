@@ -24,10 +24,14 @@ function App() {
     }, [])
 
     useEffect(() => {
+        dispatch(setCurrBackground(null))
+    }, [background])
+
+    useEffect(() => {
         if (loggedinUser) {
             dispatch(login(loggedinUser))
         }
-    }, [currBoard, currBackground])
+    }, [currBoard])
 
     return (
         <Router>

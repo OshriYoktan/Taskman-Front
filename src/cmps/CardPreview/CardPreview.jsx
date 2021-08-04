@@ -200,6 +200,6 @@ function CardPreview(props, ref) {
                         </form>}
                     </div>)
                 }}</Droppable>
-        </div >
+        </div>
     )
 }

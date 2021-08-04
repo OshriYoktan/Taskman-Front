@@ -7,6 +7,7 @@ import { UserProfile } from '../UserProfile'
 import { useEffect, useState } from 'react'
 import { login } from '../../store/actions/userActions'
 import userService from '../../services/userService'
+import logo from '../../assets/imgs/Taskman-logo.png'
 
 export function AppHeader() {
     const dispatch = useDispatch()
@@ -26,7 +27,7 @@ export function AppHeader() {
         <>
             <nav className="app-header sub-container">
                 <Link className="link" to="/boards" ><FontAwesomeIcon icon={faHome} /></Link>
-                <Link className="link" to="/boards" >Taskman</Link>
+                <Link className="link" to="/boards" ><img src={logo} alt={logo} /> Task<span>man</span></Link>
                 <button className="link" onClick={() => setIsProfile(!isProfile)} ><FontAwesomeIcon icon={faUserCircle} /></button>
             </nav>
             <UserProfile profileOp={profileOp} />

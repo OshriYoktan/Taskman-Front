@@ -24,6 +24,7 @@ export function BoardDetails(props) {
     const dispatch = useDispatch()
     const { register, handleSubmit, reset } = useForm()
     const currBoard = useSelector(state => state.boardReducer.currBoard)
+    const currBackground = useSelector(state => state.boardReducer.currBackground)
     const users = useSelector(state => state.userReducer.users)
     const user = useSelector(state => state.userReducer.user)
     const [currCard, setCurrCard] = useState(null)
@@ -94,7 +95,9 @@ export function BoardDetails(props) {
         }
         if (currBoard) {
             setMembers(currBoard.members)
-            dispatch(setCurrBackground(currBoard.background.color ? currBoard.background.color : currBoard.background.img))
+            if (!currBackground) {
+                dispatch(setCurrBackground(currBoard.background.color ? currBoard.background.color : currBoard.background.img))
+            }
         }
         // eslint-disable-next-line
     }, [currBoard])
@@ -137,7 +140,6 @@ export function BoardDetails(props) {
 
     const updateTask = data => {
         const updateCard = currBoard.cards.find(c => c._id === data.card._id)
-        console.log('updateCard.tasks:', updateCard.tasks)
         const taskIdx = updateCard.tasks.findIndex(t => t._id === data.task._id)
         updateCard.tasks.splice(taskIdx, 1, data.task)
         dispatch(setCurrBoard(currBoard._id))
@@ -380,14 +382,13 @@ export function BoardDetails(props) {
         if (type) {
             addActivity(user ? user.username : 'Guest', 'changed', 'color')
             currBoard.background = { color: background, img: null }
-            dispatch(saveBoard(currBoard))
         }
         else {
             addActivity(user ? user.username : 'Guest', 'changed', 'image')
             currBoard.background = { color: null, img: background }
-            dispatch(saveBoard(currBoard))
         }
         dispatch(setCurrBackground(background))
+        dispatch(saveBoard(currBoard))
     }
 
     const filterTasks = (filterBy) => {
@@ -547,14 +548,13 @@ export function BoardDetails(props) {
                                     return (<div {...provided.droppableProps} ref={provided.innerRef}>
                                         <div onMouseDownCapture={() => setIsScrollOnDradAllowed(false)}>
                                             <Draggable key={card._id} draggableId={card._id} index={idx}>
-                                                {(provided) => {
-                                                    return (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ userSelect: "none", ...provided.draggableProps.style }}>
+                                                {(provided, snapshot) => {
+                                                    return (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ ...provided.draggableProps.style }}>
                                                         <CardPreview ref={fref} cardPreviewOp={cardPreviewOp} card={card} />
                                                     </div>)
                                                 }}</Draggable>
-                                            {provided.placeholder}
-                                            {provided.placeholder}
                                         </div>
+                                        {provided.placeholder}
                                     </div>)
                                 }}</Droppable>)
                         })}

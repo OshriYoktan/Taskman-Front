@@ -38,6 +38,14 @@
             }
         }
     }
+    > :last-child {
+        button {
+            font-size: 22px;
+            &:hover {
+                font-size: 25px;
+            }
+        }
+    }
 }
 
 @include wide {
