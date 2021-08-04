@@ -13,6 +13,7 @@ import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
 import { DrawNoteModal } from '../DrawNoteModal/DrawNoteModal.jsx';
 import { CoverModal } from '../CoverModal/CoverModal.jsx';
+import loader from '../../assets/imgs/taskman-loader.svg'
 import smallLoader from '../../assets/imgs/small-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';

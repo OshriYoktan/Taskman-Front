@@ -307,9 +307,7 @@ export function BoardDetails(props) {
         setTaskMembers([...taskMembers])
         currTask.members = [...taskMembers]
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
-        console.log('await 2 start');
         await dispatch(saveBoard(newBoard))
-        console.log('await 2 end');
         dispatch(updateUser(member))
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }

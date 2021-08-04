@@ -6,7 +6,7 @@ import Avatar from 'react-avatar'
 import { socketService } from '../../services/socketService'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import loader from '../../assets/imgs/taskman-loader.svg'
+import smallLoader from '../../assets/imgs/small-loader.svg'
 
 export function MemberModal(props) {
     const { register, handleSubmit } = useForm();
@@ -26,11 +26,10 @@ export function MemberModal(props) {
     }
 
     useEffect(() => {
-        socketService.on("add-member-to-task-from-back", (() => {
+        socketService.on("add-member-to-task-from-back", (member => {
+            chooseMemberForSockets(member)
         }))
-        // socketService.on("add-member-to-task-from-back", chooseMemberForSockets)
     })
-
 
     return (
         <div className="member-modal" >
@@ -38,7 +37,7 @@ export function MemberModal(props) {
                 <h3>Members</h3>
                 <p onClick={() => props.setMemberModal(false)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
             </div>
-            {props.memberModalLoader && <><form onChange={handleSubmit(onSearchMember)}>
+            {!props.memberModalLoader && <><form onChange={handleSubmit(onSearchMember)}>
                 <input autoComplete="off" onKeyDown={e => { if (e.key === 'Enter') e.preventDefault() }} {...register("searchMember")} type="text" placeholder="Search members..." />
             </form>
                 <h3>Users:</h3>
@@ -47,11 +46,10 @@ export function MemberModal(props) {
                         <Avatar key={member._id} name={member.name} size="30" round={true} />
                         <span>{member.name}</span>
                         <span className="member-icon">{(props.taskMembers.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span></li> :
-                        <li className="members-list" key={member._id}><span>{member.name}</span>
-                        </li>
+                        <li className="members-list" key={member._id}><span>{member.name}</span></li>
                     )}
                 </ul></>}
-            {!props.memberModalLoader && <div><img src={loader} alt={loader} /></div>}
+            {props.memberModalLoader && <div className='member-modal-loader'><img src={smallLoader} alt='loader' /></div>}
         </div>
     )
 }
