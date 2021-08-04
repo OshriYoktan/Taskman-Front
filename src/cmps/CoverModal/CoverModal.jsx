@@ -37,14 +37,13 @@ export function CoverModal(props) {
                         })}
                     </div>
                 </div>}
-
-                <Cloudinary cloudOp={props.cloudOp} currCard={props.currCard} className="add-attachment-cover-btn" txt={<div onClick={() => {
+                <Cloudinary cloudOp={props.cloudOp} currCard={props.currCard}  txt={<div className='cover-upload-btn' onClick={() => {
                     dispatch(updateIsCloudLoader(true))
                     setTimeout(() => {
                         dispatch(updateIsCloudLoader(false))
                     }, 3000);
-                }} className="right-task-btn">
-                    <p className='cover-upload-btn'>Upload image</p></div>} type='cover' currTask={props.currTask} />
+                }} >
+                    <p>Upload image</p></div>} type='cover' currTask={props.currTask} />
                 {props.currTask.cover && <button className="remove-cover-btn" onClick={() => props.addCover('')}>Remove cover</button>}
             </div>
         </section >

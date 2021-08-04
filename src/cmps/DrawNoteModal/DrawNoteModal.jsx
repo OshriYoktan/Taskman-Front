@@ -77,6 +77,7 @@ export function DrawNoteModal(props) {
         const canvas = canvasRef.current
         var dataURL = canvas.toDataURL();
         const newAtt = { _id: utilService.makeId(), title: title || '', src: dataURL }
+        console.log('newAtt:', newAtt)
         props.currTask.attachments.push(newAtt)
         props.updateBoard(props.currTask)
         reset({ title: '' })

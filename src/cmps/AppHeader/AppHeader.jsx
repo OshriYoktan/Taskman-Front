@@ -27,7 +27,7 @@ export function AppHeader() {
         <>
             <nav className="app-header sub-container">
                 <Link className="link" to="/boards" ><FontAwesomeIcon icon={faHome} /></Link>
-                <Link className="link" to="/boards" ><img src={logo} alt={logo} /> Taskman</Link>
+                <Link className="link" to="/boards" ><img src={logo} alt={logo} /> Task<span>man</span></Link>
                 <button className="link" onClick={() => setIsProfile(!isProfile)} ><FontAwesomeIcon icon={faUserCircle} /></button>
             </nav>
             <UserProfile profileOp={profileOp} />

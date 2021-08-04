@@ -44,7 +44,7 @@ const cloudUrls = [
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621016533/taskman/carolyn-christine-D7bmnvGJA2Q-unsplash_oz27jz.jpg',
     'https://res.cloudinary.com/dtu0lzwpw/image/upload/v1621018122/taskman/vlad-kutepov-WYJ9c7uSdnU-unsplash_c2g6gy.jpg',
 ]
-const gLabels = [{ "_id": utilService.makeId(), "desc": "Copy Request", "color": "#61BD4F" }, { "_id": utilService.makeId(), "desc": "One more step", "color": "#F2D600" }, { "_id": utilService.makeId(), "desc": "Design Team", "color": "#FF9F1A" }, { "_id": utilService.makeId(), "desc": "Product Marketing", "color": "#EB5A46" }, { "_id": utilService.makeId(), "desc": "Trello Tip", "color": "#C377E0" }, { "_id": utilService.makeId(), "desc": "Help", "color": "#0079BF" }, { "_id": utilService.makeId(), "desc": "Priority", "color": "#51E898" }]
+const gLabels = [{ "_id": utilService.makeId(), "desc": "Copy Request", "color": "#61BD4F" }, { "_id": utilService.makeId(), "desc": "One more step", "color": "#F2D600" }, { "_id": utilService.makeId(), "desc": "Design Team", "color": "#FF9F1A" }, { "_id": utilService.makeId(), "desc": "Product Marketing", "color": "#EB5A46" }, { "_id": utilService.makeId(), "desc": "Taskman Tip", "color": "#C377E0" }, { "_id": utilService.makeId(), "desc": "Help", "color": "#0079BF" }, { "_id": utilService.makeId(), "desc": "Priority", "color": "#51E898" }]
 const gCoverColors = ['#7bc86c', '#f5dd29', '#ffaf3f', '#ef7564', '#cd8de5', '#5ba4cf', '#29cce5', '#6deca9', '#ff8ed4', '#172b4d']
 
 // const newBoard = getEmptyBoard()

@@ -44,7 +44,7 @@ export function Cloudinary({ type, txt, currTask, setCloudImgs, cloudOp }) {
                     height: '100%',
                     backgroundColor: 'inherit',
                     borderRadius: '5px',
-                    padding: 0
+                    padding: 0,
                 }}
                 folder={'taskman'}
                 onSuccess={onAttAdd}
