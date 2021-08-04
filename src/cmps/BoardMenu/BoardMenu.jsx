@@ -64,21 +64,17 @@ export function BoardMenu({ boardMenuOp }) {
 
     const saveLabels = data => {
         var entries = Object.entries(data)
-        console.log('entries:', entries)
         entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor' && en[0] !== 'boardDesc' && en[0] !== 'searchTask')
         const labels = entries.map((label, idx) => {
-            if (!idx) return
-            if (idx % 2 === 0) return { color: label[1] }
+            // if (!idx) return
+            if (idx % 2 === 1) return { color: label[1] }
             return { desc: label[1] }
         })
-        labels.splice(0, 1)
-        console.log('labels:', labels)
+        // labels.splice(0, 1)
         const arr = []
         labels.forEach((label, idx) => {
             if (idx % 2 === 0) arr.push({ _id: utilService.makeId(), desc: label.desc, color: labels[idx + 1].color })
         })
-        console.log('labels:', labels)
-        console.log('arr:', arr)
         setLabels(arr)
         dispatch(saveBoard({ ...currBoard, labels: arr }))
     }
@@ -311,7 +307,7 @@ export function BoardMenu({ boardMenuOp }) {
                 <div className="hide-overflow">
                     <ul>
                         {labels.map((label, idx) => <li key={label._id} style={{ backgroundColor: label.color }}>
-                            <form onChange={handleSubmit(utilService.debounce(saveLabels, 100))}>
+                            <form onChange={handleSubmit(utilService.debounce(saveLabels, 1000))}>
                                 <input type="text" autoComplete="off" defaultValue={label.desc} placeholder="Label name" required {...register("editBoardLabel" + idx)} />
                                 <label name="label-color"><FontAwesomeIcon className="fa" icon={faPalette} />
                                     <input type="color" autoComplete="off" {...register("editBoardLabelColor" + idx)} defaultValue={label.color} /></label>
