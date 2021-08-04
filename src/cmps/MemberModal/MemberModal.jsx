@@ -19,10 +19,6 @@ export function MemberModal(props) {
         if (!users.length) users.push({ _id: "failMember", name: "Member not found." })
         setSearchMembers(users)
     }
-    const chooseMember = (member) => {
-        // socketService.emit("add-member-to-task", member);
-        props.addMemberToTask(member._id)
-    }
     const chooseMemberForSockets = (member) => {
         props.addMemberToTask(member)
     }
@@ -43,7 +39,7 @@ export function MemberModal(props) {
             </form>
             <h3>Users:</h3>
             <ul className="member-container">
-                {searchMembers.map(member => member._id !== 'failMember' ? <li onClick={() => chooseMember(member)} key={member._id} className="members-list" >
+                {searchMembers.map(member => member._id !== 'failMember' ? <li onClick={() => props.addMemberToTask(member._id)} key={member._id} className="members-list" >
                     <Avatar key={member._id} name={member.name} size="30" round={true} />
                     <span>{member.name}</span>
                     <span className="member-icon">{(props.currTask.members.find((currMember) => currMember._id === member._id) ? <FontAwesomeIcon icon={faCheckCircle}> </FontAwesomeIcon> : null)}</span></li> :

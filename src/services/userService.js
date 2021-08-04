@@ -3,10 +3,6 @@ import { httpService } from "./http.service"
 const KEY = 'user/'
 const AUTH = 'auth/'
 
-// const gUsersForBack = [{ name: 'Aviv Zohar', username: 'avivzo9', password: '1234', tasks: [] }, { name: 'Hadar Marom', username: 'hadarMa', password: '1234', tasks: [] }, { name: 'Oshri Yoktan', username: 'OshYok', password: '1234', tasks: [] }]
-// saveUser(gUsersForBack[2])
-
-
 // CRUDL
 async function query() {
     try {
@@ -68,7 +64,6 @@ const storage = {
 }
 
 // get functions
-
 function getEmptyUser() {
     return {
         name: '',
