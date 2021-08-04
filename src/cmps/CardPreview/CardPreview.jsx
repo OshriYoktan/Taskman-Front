@@ -22,7 +22,6 @@ function CardPreview(props, ref) {
     const [isAddTask, setIsAddTask] = useState(null)
     const [isEditTitle, setIsEditTitle] = useState(false)
     const [isCardModal, setIsCardModal] = useState(false)
-    const [isLabels, setIsLabels] = useState(false)
     var newTask = boardService.getEmptyTask()
 
     useEffect(() => {
@@ -152,7 +151,12 @@ function CardPreview(props, ref) {
                                 return (
                                     <Draggable key={task._id} draggableId={task._id} index={idx}>
                                         {(provided, snapshot) => {
-                                            return (<li onClick={() => cardPreviewOp.setCurrTask(task)} key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ filter: snapshot.isDragging ? 'brightness(90%)' : 'brightness(100%)', ...provided.draggableProps.style }} className="card-task">
+                                            return (<li onClick={() => {
+                                                cardPreviewOp.setCurrTask(task)
+                                                cardPreviewOp.setTaskLabels(task.labels)
+                                                cardPreviewOp.setTaskMembers(task.members)
+                                            }
+                                            } key={task._id} {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ filter: snapshot.isDragging ? 'brightness(90%)' : 'brightness(100%)', ...provided.draggableProps.style }} className="card-task">
                                                 {(!task.cover) ? null : (task.cover.includes('#')) ? <div className="task-cover-color" style={{ backgroundColor: `${task.cover}` }} ></div> : <div className="task-cover-img" style={{ backgroundImage: `url(${task.cover})` }}></div>}
                                                 <div className="label-color-to-preview-container">
 

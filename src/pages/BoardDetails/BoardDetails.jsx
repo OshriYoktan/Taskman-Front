@@ -36,7 +36,9 @@ export function BoardDetails(props) {
     const history = useHistory()
     const fref = useRef()
     const [currTask, setCurrTask] = useState(null)
-
+    const [taskLabels, setTaskLabels] = useState(null)
+    const [taskMembers, setTaskMembers] = useState(null)
+    const [memberModalLoader, setMemberModalLoader] = useState(false)
 
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -106,7 +108,6 @@ export function BoardDetails(props) {
         preMembers()
         // eslint-disable-next-line
     }, [members])
-
 
     const ref = useRef() //open and close taslModal
     useOnClickOutside(ref, () => (!fullImg) ? setCurrTask(false) : undefined); //open and close taslModal
@@ -246,19 +247,20 @@ export function BoardDetails(props) {
         dispatch(saveBoard(currBoard))
     }
 
-    const addLabel = (label) => {
-        if (!currTask.labels.length) currTask.labels.push(label)
+    const addLabel = async (label) => {
+        if (!taskLabels.length) taskLabels.push(label)
         else {
-            if (currTask.labels.some((currLabel) => currLabel.color === label.color)) {
-                const labelToRemove = currTask.labels.findIndex(currLabel => currLabel.color === label.color)
-                currTask.labels.splice(labelToRemove, 1)
+            if (taskLabels.some((currLabel) => currLabel.color === label.color)) {
+                const labelToRemove = taskLabels.findIndex(currLabel => currLabel.color === label.color)
+                taskLabels.splice(labelToRemove, 1)
             } else {
-                currTask.labels.push(label)
+                taskLabels.push(label)
             }
         }
+        setTaskLabels([...taskLabels])
+        currTask.labels = [...taskLabels]
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
-        dispatch(saveBoard(newBoard))
-        dispatch(setCurrBoard(newBoard._id))
+        await dispatch(saveBoard(newBoard))
         addActivity(user ? user.username : 'Guest', 'added', 'label', currCard.title)
         socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
@@ -288,29 +290,26 @@ export function BoardDetails(props) {
     }
 
     const addMember = async (memberId) => {
+        setMemberModalLoader(true)
         const member = await userService.getUserById(memberId)
-        if (!currTask.members.length) {
-            member.tasks.push({ _id: utilService.makeId(), title: currTask.title })
-            currTask.members.push(member)
-            addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
-        }
-        else if (currTask.members.some(currMember => currMember._id === member._id)) {
+        setMemberModalLoader(false)
+        if (taskMembers.some(currMember => currMember._id === member._id)) {
             const taskIdx = member.tasks.findIndex(t => t._id === currTask._id)
             member.tasks.splice(taskIdx, 1)
-            const memberToRemove = currTask.members.findIndex(currMember => currMember._id === member._id)
-            currTask.members.splice(memberToRemove, 1)
+            const memberToRemove = taskMembers.findIndex(currMember => currMember._id === member._id)
+            taskMembers.splice(memberToRemove, 1)
             addActivity(user ? user.username : 'Guest', 'removed', member.username, currTask.title)
         } else {
-            // console.log('currTask.title:', currTask.title)
-            // console.log('member.tasks:', member.tasks)
             member.tasks.push({ _id: utilService.makeId(), title: currTask.title })
-            currTask.members.push(member)
+            taskMembers.push(member)
             addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
         }
+        setTaskMembers([...taskMembers])
+        currTask.members = [...taskMembers]
         const newBoard = boardService.updateCard(currTask, currCard, currBoard)
-        socketService.emit('task to-update-task', { card: currCard, task: currTask })
-        dispatch(saveBoard(newBoard))
+        await dispatch(saveBoard(newBoard))
         dispatch(updateUser(member))
+        socketService.emit('task to-update-task', { card: currCard, task: currTask })
     }
 
     const findMemberToDelete = (memberId) => {
@@ -458,6 +457,8 @@ export function BoardDetails(props) {
         setCurrTask,
         isDescShown,
         setIsDescShown,
+        setTaskLabels,
+        setTaskMembers,
         deleteCard
     }
 
@@ -479,8 +480,11 @@ export function BoardDetails(props) {
         handleChecklist,
         addDueDate,
         addCover,
-        currBoard: currBoard,
+        currBoard,
         user,
+        taskLabels,
+        taskMembers,
+        memberModalLoader,
         setFullImg
     }
 
