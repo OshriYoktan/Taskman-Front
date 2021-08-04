@@ -13,7 +13,6 @@ import { saveBoard, setCurrBoard } from '../../store/actions/boardActions';
 import { DueDateModal } from '../DueDateModal/DueDateModal.jsx';
 import { DrawNoteModal } from '../DrawNoteModal/DrawNoteModal.jsx';
 import { CoverModal } from '../CoverModal/CoverModal.jsx';
-import loader from '../../assets/imgs/taskman-loader.svg'
 import smallLoader from '../../assets/imgs/small-loader.svg'
 import Moment from 'react-moment';
 import { utilService } from '../../services/utilService.js';
@@ -266,9 +265,9 @@ export function TaskModal({ taskModalOp }) {
                     </div>
                 </div>
                 <div className="task-description-modal">
-                    {!currTask.members.length ? null : <section className="members-section"><h3>MEMBERS:</h3>
+                    {!taskModalOp.taskMembers.length ? null : <section className="members-section"><h3>MEMBERS:</h3>
                         <div className="member-list">
-                            {currTask.members.map((member, idx) =>
+                            {taskModalOp.taskMembers.map((member, idx) =>
                                 <div className="member-in-modal" onClick={() => setMemberModal(true)} key={idx}>
                                     <Avatar key={idx} name={member.name} size="30" round={true} />
                                 </div>)}
@@ -400,7 +399,7 @@ export function TaskModal({ taskModalOp }) {
                     <div onClick={() => setMemberModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faUser}></FontAwesomeIcon>
                         <p> Members </p>
-                        {(!memberModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={memberRef}> <MemberModal setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} ></MemberModal></div>}
+                        {(!memberModal) ? null : <div onClick={(ev) => ev.stopPropagation()} style={{ position: 'absolute', width: 0 }} ref={memberRef}> <MemberModal memberModalLoader={taskModalOp.memberModalLoader} setMemberModal={setMemberModal} memberModal={memberModal} currTask={currTask} addMemberToTask={taskModalOp.addMember} taskMembers={taskModalOp.taskMembers} ></MemberModal></div>}
                     </div>
                     <div onClick={() => setChecklistModal(true)} className="right-task-btn">
                         <FontAwesomeIcon icon={faList}></FontAwesomeIcon>

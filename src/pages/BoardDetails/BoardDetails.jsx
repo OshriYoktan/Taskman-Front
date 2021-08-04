@@ -38,6 +38,7 @@ export function BoardDetails(props) {
     const [currTask, setCurrTask] = useState(null)
     const [taskLabels, setTaskLabels] = useState(null)
     const [taskMembers, setTaskMembers] = useState(null)
+    const [memberModalLoader, setMemberModalLoader] = useState(false)
 
     const useOnClickOutside = (ref, handler) => {
         useEffect(() => {
@@ -289,15 +290,10 @@ export function BoardDetails(props) {
     }
 
     const addMember = async (memberId) => {
-        console.log('await 1 start');
+        setMemberModalLoader(true)
         const member = await userService.getUserById(memberId)
-        console.log('await 1 end');
-        if (!taskMembers.length) {
-            member.tasks.push({ _id: utilService.makeId(), title: currTask.title })
-            taskMembers.push(member)
-            addActivity(user ? user.username : 'Guest', 'attached', member.username, currTask.title)
-        }
-        else if (taskMembers.some(currMember => currMember._id === member._id)) {
+        setMemberModalLoader(false)
+        if (taskMembers.some(currMember => currMember._id === member._id)) {
             const taskIdx = member.tasks.findIndex(t => t._id === currTask._id)
             member.tasks.splice(taskIdx, 1)
             const memberToRemove = taskMembers.findIndex(currMember => currMember._id === member._id)
@@ -490,6 +486,7 @@ export function BoardDetails(props) {
         user,
         taskLabels,
         taskMembers,
+        memberModalLoader,
         setFullImg
     }
 
