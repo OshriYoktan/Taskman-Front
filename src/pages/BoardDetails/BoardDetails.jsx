@@ -13,7 +13,6 @@ import { faBars, faCheckCircle, faPlus, faTimes } from '@fortawesome/free-solid-
 import { utilService } from '../../services/utilService'
 import loader from '../../assets/imgs/taskman-loader.svg'
 import { socketService } from '../../services/socketService'
-import useScrollOnDrag from 'react-scroll-ondrag';
 import './BoardDetails.scss'
 import { updateUser } from '../../store/actions/userActions'
 import userService from '../../services/userService'
@@ -27,12 +26,11 @@ export function BoardDetails(props) {
     const currBackground = useSelector(state => state.boardReducer.currBackground)
     const users = useSelector(state => state.userReducer.users)
     const user = useSelector(state => state.userReducer.user)
+    const isCloudLoader = useSelector(state => state.boardReducer.isCloudLoader)
     const [currCard, setCurrCard] = useState(null)
     const [errMsg, setErrMsg] = useState(null)
     const [filter, setFilter] = useState(null)
     const [members, setMembers] = useState(null)
-    const containerRef = useRef()
-    const { events } = useScrollOnDrag(containerRef);
     const history = useHistory()
     const fref = useRef()
     const [currTask, setCurrTask] = useState(null)
@@ -489,98 +487,101 @@ export function BoardDetails(props) {
     }
 
     return (
-        <div className="board-details sub-container">
-            <div className="board-header flex">
-                <div className="flex">
-                    <form onBlur={handleSubmit(setBoardTitle)}>
-                        <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} autoComplete="off" />
-                    </form>
+        <>
+            <div className="board-details sub-container">
+                <div className="board-header flex">
                     <div className="flex">
-                        <div className="avatars hide-overflow">
-                            {members.map(member => <Avatar key={member._id} name={member.name} size="30" round={true} />)}
+                        <form onBlur={handleSubmit(setBoardTitle)}>
+                            <input type="text" id="title" name="title" {...register("boardTitle")} defaultValue={currBoard.title} onKeyDown={(e) => { if (e.key === 'Enter') e.preventDefault(); if (e.key === '\'') return }} autoComplete="off" />
+                        </form>
+                        <div className="flex">
+                            <div className="avatars hide-overflow">
+                                {members.map(member => <Avatar key={member._id} name={member.name} size="30" round={true} />)}
+                            </div>
+                            <button onClick={() => {
+                                setIsInvite(!isInvite)
+                                preMembers()
+                            }}>Invite</button>
+                            {isInvite && <div ref={inviteRef} className="invite-members-modal hide-overflow">
+                                <div className="invite-modal-header">
+                                    <h3>Invite members</h3>
+                                    <p className="btn-close-icon" onClick={() => setIsInvite(!isInvite)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
+                                </div>
+                                <form onChange={handleSubmit(serachUser)} >
+                                    <input type="text" autoComplete="off" placeholder="Search users" id="member" name="member"  {...register("member")} />
+                                </form>
+                                {!addMembersToBoard.length ? null : <div className="invite-members">
+                                    <p>Suggested Members:</p>
+                                    <ul>
+                                        {addMembersToBoard.map((member, idx) => {
+                                            return (idx >= 5) ? null : <li key={member._id} onClick={() => onAddMember(member)}>
+                                                <Avatar key={member._id} name={member.name} size="30" round={true} />
+                                                <p>{member.name}</p>
+                                                <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
+                                            </li>
+                                        })}
+                                    </ul>
+                                </div>}
+                                {!members.length ? null : <div className="invite-members">
+                                    <p>In This Board:</p>
+                                    <ul>
+                                        {members.map((user, idx) => {
+                                            return <li key={user._id} onClick={() => removeUserFromBoard(user._id)}>
+                                                <Avatar key={idx} name={user.name} size="30" round={true} />
+                                                <p>{user.name}</p>
+                                                <p><FontAwesomeIcon icon={faCheckCircle} /></p>
+                                            </li>
+                                        })}
+                                    </ul>
+                                </div>}
+                            </div>}
                         </div>
-                        <button onClick={() => {
-                            setIsInvite(!isInvite)
-                            preMembers()
-                        }}>Invite</button>
-                        {isInvite && <div ref={inviteRef} className="invite-members-modal hide-overflow">
-                            <div className="invite-modal-header">
-                                <h3>Invite members</h3>
-                                <p className="btn-close-icon" onClick={() => setIsInvite(!isInvite)}><FontAwesomeIcon className="fa" icon={faTimes} /></p>
-                            </div>
-                            <form onChange={handleSubmit(serachUser)} >
-                                <input type="text" autoComplete="off" placeholder="Search users" id="member" name="member"  {...register("member")} />
-                            </form>
-                            {!addMembersToBoard.length ? null : <div className="invite-members">
-                                <p>Suggested Members:</p>
-                                <ul>
-                                    {addMembersToBoard.map((member, idx) => {
-                                        return (idx >= 5) ? null : <li key={member._id} onClick={() => onAddMember(member)}>
-                                            <Avatar key={member._id} name={member.name} size="30" round={true} />
-                                            <p>{member.name}</p>
-                                            <p><FontAwesomeIcon icon={faPlus}></FontAwesomeIcon></p>
-                                        </li>
-                                    })}
-                                </ul>
-                            </div>}
-                            {!members.length ? null : <div className="invite-members">
-                                <p>In This Board:</p>
-                                <ul>
-                                    {members.map((user, idx) => {
-                                        return <li key={user._id} onClick={() => removeUserFromBoard(user._id)}>
-                                            <Avatar key={idx} name={user.name} size="30" round={true} />
-                                            <p>{user.name}</p>
-                                            <p><FontAwesomeIcon icon={faCheckCircle} /></p>
-                                        </li>
-                                    })}
-                                </ul>
-                            </div>}
-                        </div>}
+                    </div>
+                    <div ref={filter ? (filter.task ? null : menuRef) : menuRef} className="flex">
+                        <p className="open-menu-btn" onClick={() => setIsMenu(true)}><FontAwesomeIcon className="fa" icon={faBars}></FontAwesomeIcon></p>
+                        <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
                     </div>
                 </div>
-                <div ref={filter ? (filter.task ? null : menuRef) : menuRef} className="flex">
-                    <p className="open-menu-btn" onClick={() => setIsMenu(true)}><FontAwesomeIcon className="fa" icon={faBars}></FontAwesomeIcon></p>
-                    <BoardMenu boardMenuOp={boardMenuOp}></BoardMenu>
+                <div className="cards-container flex">
+                    <DragDropContext onDragEnd={(res, type) => handleOnDragEnd(res, type)}>
+                        <div className="flex">
+                            {draggedCards.map((card, idx) => {
+                                return (<Droppable droppableId={card._id} key={card._id} type='CARD'>
+                                    {(provided) => {
+                                        return (<div {...provided.droppableProps} ref={provided.innerRef}>
+                                            <div onMouseDownCapture={() => setIsScrollOnDradAllowed(false)}>
+                                                <Draggable key={card._id} draggableId={card._id} index={idx}>
+                                                    {(provided, snapshot) => {
+                                                        return (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ ...provided.draggableProps.style }}>
+                                                            <CardPreview ref={fref} cardPreviewOp={cardPreviewOp} card={card} />
+                                                        </div>)
+                                                    }}</Draggable>
+                                            </div>
+                                            {provided.placeholder}
+                                        </div>)
+                                    }}</Droppable>)
+                            })}
+                            {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
+                            {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
+                                <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
+                                <div className="flex">
+                                    <button>Add Card</button>
+                                    <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
+                                </div>
+                            </form></div>}
+                        </div>
+                    </DragDropContext>
                 </div>
+                {(currTask || fullImg) && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
+                {fullImg && currTask && <div className="img-full-screen-bgc">
+                    <h2 className="img-name-full-screen">{fullImg.name}</h2>
+                    <img className="img-full-screen" ref={fullImgRef} src={fullImg.imgSrc} />
+                </div>}
+                <section className="err-modal" style={{ maxWidth: errMsg ? '100vw' : '0' }}>
+                    <p>{errMsg}</p>
+                </section>
             </div>
-            <div className="cards-container flex">
-                <DragDropContext onDragEnd={(res, type) => handleOnDragEnd(res, type)}>
-                    <div className="flex">
-                        {draggedCards.map((card, idx) => {
-                            return (<Droppable droppableId={card._id} key={card._id} type='CARD'>
-                                {(provided) => {
-                                    return (<div {...provided.droppableProps} ref={provided.innerRef}>
-                                        <div onMouseDownCapture={() => setIsScrollOnDradAllowed(false)}>
-                                            <Draggable key={card._id} draggableId={card._id} index={idx}>
-                                                {(provided, snapshot) => {
-                                                    return (<div {...provided.draggableProps} {...provided.dragHandleProps} ref={provided.innerRef} style={{ ...provided.draggableProps.style }}>
-                                                        <CardPreview ref={fref} cardPreviewOp={cardPreviewOp} card={card} />
-                                                    </div>)
-                                                }}</Draggable>
-                                        </div>
-                                        {provided.placeholder}
-                                    </div>)
-                                }}</Droppable>)
-                        })}
-                        {!isAddCard && <button className="add-card-btn" onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faPlus}></FontAwesomeIcon><p>Add another card</p></button>}
-                        {isAddCard && <div className="add-card"> <form className="add-card-container" onSubmit={handleSubmit(addNewCard)}>
-                            <input type="text" autoComplete="off" placeholder="Card name" id="title" name="title" {...register("newCardTitle")} />
-                            <div className="flex">
-                                <button>Add Card</button>
-                                <p onClick={() => setIsAddCard(!isAddCard)}><FontAwesomeIcon className="fa" icon={faTimes}></FontAwesomeIcon></p>
-                            </div>
-                        </form></div>}
-                    </div>
-                </DragDropContext>
-            </div>
-            {(currTask || fullImg) && <div ref={ref}><TaskModal taskModalOp={taskModalOp}></TaskModal></div>}
-            {fullImg && currTask && <div className="img-full-screen-bgc">
-                <h2 className="img-name-full-screen">{fullImg.name}</h2>
-                <img className="img-full-screen" ref={fullImgRef} src={fullImg.imgSrc} />
-            </div>}
-            <section className="err-modal" style={{ maxWidth: errMsg ? '100vw' : '0' }}>
-                <p>{errMsg}</p>
-            </section>
-        </div>
+            {isCloudLoader && <section className="cloud-loader"><img src={loader} alt="" /></section>}
+        </>
     )
 }

@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   background: false,
   currBackground: null,
   filterBy: null,
+  isCloudLoader: false
 }
 
 export function boardReducer(state = INITIAL_STATE, action) {
@@ -48,6 +49,11 @@ export function boardReducer(state = INITIAL_STATE, action) {
       return {
         ...state,
         filterBy: action.filterBy
+      }
+    case 'UPDATE_CLOUD_LOADER':
+      return {
+        ...state,
+        isCloudLoader: action.bool
       }
     default:
       return state

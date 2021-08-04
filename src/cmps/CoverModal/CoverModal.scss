@@ -102,6 +102,17 @@
     }
 }
 
+.cover-upload-btn {
+    border-radius: 3px;
+    padding: 10px;
+    color: #172b4d;
+    font-weight: 400;
+    opacity: 1;
+    &:hover {
+        color: white;
+    }
+}
+
 @include narrow {
     .cover-modal {
         position: fixed;

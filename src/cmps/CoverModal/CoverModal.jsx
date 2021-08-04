@@ -5,8 +5,11 @@ import Color from 'color-thief-react';
 import './CoverModal.scss'
 import { Cloudinary } from '../Cloudinary/Cloudinary'
 import smallLoader from '../../assets/imgs/small-loader.svg'
+import { useDispatch } from 'react-redux';
+import { updateIsCloudLoader } from '../../store/actions/boardActions';
 
 export function CoverModal(props) {
+    const dispatch = useDispatch()
     const coverColors = boardService.getCoverColors()
 
     return (
@@ -35,7 +38,13 @@ export function CoverModal(props) {
                     </div>
                 </div>}
 
-                <Cloudinary cloudOp={props.cloudOp} currCard={props.currCard} className="add-attachment-cover-btn" txt='Upload photo' type='cover' currTask={props.currTask} />
+                <Cloudinary cloudOp={props.cloudOp} currCard={props.currCard} className="add-attachment-cover-btn" txt={<div onClick={() => {
+                    dispatch(updateIsCloudLoader(true))
+                    setTimeout(() => {
+                        dispatch(updateIsCloudLoader(false))
+                    }, 3000);
+                }} className="right-task-btn">
+                    <p className='cover-upload-btn'>Upload image</p></div>} type='cover' currTask={props.currTask} />
                 {props.currTask.cover && <button className="remove-cover-btn" onClick={() => props.addCover('')}>Remove cover</button>}
             </div>
         </section >

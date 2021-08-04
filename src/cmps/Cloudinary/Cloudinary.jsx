@@ -1,7 +1,7 @@
 import { Widget } from 'react-cloudinary-upload-widget'
 import { useDispatch, useSelector } from 'react-redux'
 import { utilService } from '../../services/utilService'
-import { saveBoard, setCurrBackground, setCurrBoard } from '../../store/actions/boardActions'
+import { saveBoard, setCurrBackground, updateIsCloudLoader } from '../../store/actions/boardActions'
 import './Cloudinary.scss'
 
 export function Cloudinary({ type, txt, currTask, setCloudImgs, cloudOp }) {
@@ -25,6 +25,7 @@ export function Cloudinary({ type, txt, currTask, setCloudImgs, cloudOp }) {
             currTask.attachments.push(newAtt)
             cloudOp.updateBoard(currTask)
         }
+        dispatch(updateIsCloudLoader(false))
     }
 
     return (

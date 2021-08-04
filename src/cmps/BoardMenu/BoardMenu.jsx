@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Avatar from 'react-avatar'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { saveBoard } from '../../store/actions/boardActions'
+import { saveBoard, updateIsCloudLoader } from '../../store/actions/boardActions'
 import Moment from 'react-moment';
 import './BoardMenu.scss'
 import { faChevronLeft, faPalette, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -30,6 +30,7 @@ export function BoardMenu({ boardMenuOp }) {
     const [isAddLabel, setIsAddLabel] = useState(false)
     const [filterBy, setFilterBy] = useState({ task: '', labels: [] })
     const colors = ['lightgreen', 'lightyellow', 'lightblue', 'orange', 'slateblue', 'lightpink', 'lightgray', 'white']
+    const isCloudLoader = useSelector(state => state.boardReducer.isCloudLoader)
 
     useEffect(async () => {
         setCloudImgs(currBoard.images)
@@ -64,7 +65,6 @@ export function BoardMenu({ boardMenuOp }) {
 
     const saveLabels = data => {
         var entries = Object.entries(data)
-        console.log('entries:', entries)
         entries = entries.filter(en => en[0] !== 'addBoardLabel' && en[0] !== 'addBoardLabelColor' && en[0] !== 'boardDesc' && en[0] !== 'searchTask')
         const labels = entries.map((label, idx) => {
             if (!idx) return
@@ -72,13 +72,10 @@ export function BoardMenu({ boardMenuOp }) {
             return { desc: label[1] }
         })
         labels.splice(0, 1)
-        console.log('labels:', labels)
         const arr = []
         labels.forEach((label, idx) => {
             if (idx % 2 === 0) arr.push({ _id: utilService.makeId(), desc: label.desc, color: labels[idx + 1].color })
         })
-        console.log('labels:', labels)
-        console.log('arr:', arr)
         setLabels(arr)
         dispatch(saveBoard({ ...currBoard, labels: arr }))
     }
@@ -275,7 +272,12 @@ export function BoardMenu({ boardMenuOp }) {
                     <div className="flex">
                         <h4>Photos</h4>
                         <div className="flex">
-                            <Cloudinary txt="Upload photo" type="background" setCloudImgs={setCloudImgs} />
+                            <Cloudinary txt={<div onClick={() => {
+                                dispatch(updateIsCloudLoader(true))
+                                setTimeout(() => {
+                                    dispatch(updateIsCloudLoader(false))
+                                }, 3000);
+                            }} className='cloud-menu-btn'><p>Upload photo</p></div>} type="background" setCloudImgs={setCloudImgs} />
                             {cloudImgs.map((url, idx) => <img key={idx} onClick={() => boardMenuOp.changeBackground(url)} decoding="async" loading="lazy" src={url} alt={url} />)}
                         </div>
                     </div>
@@ -325,10 +327,11 @@ export function BoardMenu({ boardMenuOp }) {
                                 <input type="color" name="label-color" id="label-color" defaultValue="#FFFFFF" {...register("addBoardLabelColor")} />
                                 <button>Add label</button>
                             </form>
-                            <button onClick={() => setIsAddLabel(!isAddLabel)}>X</button></li>}
+                            <button onClick={() => setIsAddLabel(!isAddLabel)}>X</button>
+                        </li>}
                     </ul>
                 </div>
             </article>
-        </section >
+        </section>
     )
 }

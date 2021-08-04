@@ -52,3 +52,8 @@ export function updateFilterBy(filterBy) {
     await dispatch({ type: 'UPDATE_FILTERBY', filterBy })
   }
 }
+export function updateIsCloudLoader(bool) {
+  return async dispatch => {
+    await dispatch({ type: 'UPDATE_CLOUD_LOADER', bool })
+  }
+}
