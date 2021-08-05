@@ -89,6 +89,9 @@
         }
         .add-an-item-btn {
             margin-left: 25px;
+            &:hover {
+                color: white;
+            }
         }
         h6 {
             background-attachment: s;
@@ -206,6 +209,11 @@
         margin-bottom: 15px;
         > :first-child {
             margin-right: 12px;
+        }
+        button {
+            &:hover {
+                color: white;
+            }
         }
         .flex {
             align-items: center;
@@ -468,7 +476,7 @@
         width: 90%;
         margin-bottom: 15px;
         margin-left: 25px;
-        transition: .3s;
+        transition: 0.3s;
         .att-src {
             .attachment-img {
                 background-position: 50%;
@@ -479,9 +487,9 @@
                 width: 150px;
                 height: 110px;
                 cursor: pointer;
-                transition: .3s;
+                transition: 0.3s;
                 &:hover {
-                    filter: brightness(85%)
+                    filter: brightness(85%);
                 }
             }
             .attachment-img-pdf {
@@ -533,7 +541,7 @@
                     &:not(:first-child) {
                         margin-left: 5px;
                     }
-                    &:hover{
+                    &:hover {
                         color: white;
                     }
                 }
