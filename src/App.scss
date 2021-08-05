@@ -85,12 +85,13 @@ button {
 }
 
 .App {
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     background-size: cover;
     background-position-y: center;
     background-attachment: fixed;
-    height: 100vh;
     justify-content: flex-start !important;
+    height: 100vh;
+    overflow: auto;
 }
 
 // loader

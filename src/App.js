@@ -10,6 +10,7 @@ import { TaskmanApp } from './pages/TaskmanApp';
 import userService from './services/userService';
 import { loadBoards, setCurrBackground } from './store/actions/boardActions';
 import { loadUsers, login } from './store/actions/userActions';
+import backgroundImg from './assets/imgs/home-img.jpg'
 
 function App() {
     const dispatch = useDispatch()
@@ -35,7 +36,7 @@ function App() {
 
     return (
         <Router>
-            <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBackground } : { backgroundImage: currBoard.background.img ? `url(${currBackground})` : '' } : { backgroundColor: 'white' } : { backgroundColor: 'white' }}>
+            <div className="App container" style={!background ? currBoard ? currBoard.background.color ? { backgroundColor: currBackground } : { backgroundImage: currBoard.background.img ? `url(${currBackground})` : '' } : { backgroundColor: 'white' } : { backgroundImage: `url(${backgroundImg})` }}>
                 <AppHeader />
                 <WidgetLoader />
                 <Switch>

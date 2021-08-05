@@ -25,7 +25,7 @@ export function AppHeader() {
 
     return (
         <>
-            <nav className="app-header sub-container">
+            <nav className="app-header sub-container" style={window.location.hash.includes('boards') ? { backgroundColor: '#026AA7', position: 'sticky', top: 0, zIndex: 20 } : { backgroundColor: 'rgba(0, 0, 0, 0.32)' }}>
                 <Link className="link" to="/boards" ><FontAwesomeIcon icon={faHome} /></Link>
                 <Link className="link" to="/boards" ><img src={logo} alt={logo} /> Task<span>man</span></Link>
                 <button className="link" onClick={() => setIsProfile(!isProfile)} ><FontAwesomeIcon icon={faUserCircle} /></button>
