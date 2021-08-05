@@ -52,6 +52,9 @@
                 > span {
                     white-space: break-spaces;
                 }
+                &:hover {
+                    background-color: #dbdcdd;
+                }
             }
         }
     }
