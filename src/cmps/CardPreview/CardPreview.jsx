@@ -24,6 +24,7 @@ function CardPreview(props, ref) {
     const [isCardModal, setIsCardModal] = useState(false)
     var newTask = boardService.getEmptyTask()
 
+
     useEffect(() => {
         setIsEditTitle(!isEditTitle)
     }, [currBoard])
@@ -143,7 +144,7 @@ function CardPreview(props, ref) {
                                 setTimeout(() => setIsCardModal(false), 3000)
                             }} className="manage-card"><p>⋮</p></div>
                         </div>
-                        <div className="card-modal" ref={cardModalRef} style={{ maxWidth: isCardModal ? '100vw' : '0' }, { maxHeight: isCardModal ? '100vw' : '0' }}>
+                        <div className="card-modal" ref={cardModalRef} style={{ maxWidth: isCardModal ? '100vw' : '0' ,  maxHeight: isCardModal ? '100vw' : '0' }}>
                             <button onClick={cardPreviewOp.deleteCard}>Delete Card</button>
                         </div>
                         <ul className="hide-overflow" style={{ maxHeight: taskListHeight() }}>

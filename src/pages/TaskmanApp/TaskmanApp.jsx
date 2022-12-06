@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadBoards, saveBoard, setCurrBoard, updateBackground } from '../../store/actions/boardActions.js'
+import { loadBoards, saveBoard, setCurrBoard, updateBackground,removeBoard } from '../../store/actions/boardActions.js'
 import { BoardList } from '../../cmps/BoardList'
 import './TaskmanApp.scss'
 import boardService from '../../services/boardService.js'
@@ -36,7 +36,6 @@ export function TaskmanApp() {
         await dispatch(saveBoard(newBoard))
         boards.push(newBoard)
     }
-
     if (!boards || !boards.length) return (<div className="loader-container"><img src={loader} alt="" /></div>)
 
     const boardListOp = {
